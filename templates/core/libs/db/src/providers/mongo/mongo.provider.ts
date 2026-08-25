@@ -9,6 +9,9 @@ export const mongoProvider: DbProvider = {
     if (!config.uri) {
       throw new Error('MongoDB URI is required in DbConfig');
     }
+    if (mongoose.connection.readyState >= 1) {
+      return;
+    }
     await mongoose.connect(config.uri);
   },
   disconnect: async () => {

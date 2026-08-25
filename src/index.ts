@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import { initCommand } from './commands/init.js';
 import { addCommand } from './commands/add.js';
+import { removeCommand } from './commands/remove.js';
 
 const program = new Command();
 
@@ -22,5 +23,12 @@ program
   .option('-d, --dev', 'Use local plugins directory for testing')
   .option('--skip-install', 'Skip running package manager install')
   .action(addCommand);
+
+program
+  .command('remove <plugin-name>')
+  .description('Eject and remove an Inithium plugin from the current workspace')
+  .option('-d, --dev', 'Use local plugins directory for testing')
+  .option('--skip-install', 'Skip running package manager install')
+  .action(removeCommand);
 
 program.parse(process.argv);

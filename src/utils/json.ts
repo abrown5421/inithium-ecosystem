@@ -56,3 +56,29 @@ export const updatePackageJsonWithPlugin = async (
 
   await writeJsonFile(pkgPath, updatedPkg);
 };
+
+export const removePackageDependencies = (
+  targetDeps: Record<string, string> = {},
+  depsToRemove: Record<string, string> = {}
+): Record<string, string> =>
+  Object.fromEntries(Object.entries(targetDeps).filter(([key]) => !(key in depsToRemove)));
+
+export const removePackageJsonPlugin = async (
+  targetProjectRoot: string,
+  pluginManifest: PluginManifest
+): Promise<void> => {
+  const pkgPath = path.join(targetProjectRoot, 'package.json');
+  const existingPkg = await readJsonFile<Record<string, unknown>>(pkgPath);
+
+  if (!existingPkg) return;
+
+  const currentDeps = (existingPkg['dependencies'] as Record<string, string>) || {};
+  const depsToRemove = pluginManifest.dependencies?.npm || {};
+
+  const updatedPkg = {
+    ...existingPkg,
+    dependencies: removePackageDependencies(currentDeps, depsToRemove),
+  };
+
+  await writeJsonFile(pkgPath, updatedPkg);
+};
