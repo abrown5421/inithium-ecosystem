@@ -1,0 +1,23 @@
+{
+  "name": "@inithium/cli",
+  "version": "0.1.0",
+  "description": "A la carte CLI engine and scaffolding boilerplate ecosystem.",
+  "main": "dist/index.js",
+  "bin": {
+    "inithium": "./bin/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "degit": "^2.8.0",
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
