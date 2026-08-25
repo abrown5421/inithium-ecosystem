@@ -16,6 +16,10 @@
     {
       "target": "libs/db/src/providers/firebase/userRepositoryFirebase.ts",
       "source": "src/userRepositoryFirebase.ts"
+    },
+    {
+      "target": "libs/db/src/providers/active-provider.ts",
+      "source": "src/active-provider.ts"
     }
   ]
 }

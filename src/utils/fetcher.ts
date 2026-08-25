@@ -10,10 +10,14 @@ export const fetchTemplate = async (
   await fs.ensureDir(destination);
 
   if (isDev) {
-    const absoluteSource = path.resolve(process.cwd(), source);
+    const absoluteSource = path.resolve(source);
     await fs.copy(absoluteSource, destination, {
       overwrite: true,
-      filter: (src) => !src.includes('node_modules') && !src.includes('.git'),
+      filter: (src) =>
+        !src.includes('node_modules') &&
+        !src.includes(path.sep + '.git') &&
+        !src.includes(path.sep + '.nx') &&
+        !src.includes(path.sep + 'dist'),
     });
     return;
   }

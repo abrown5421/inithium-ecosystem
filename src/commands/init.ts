@@ -1,13 +1,7 @@
 import path from 'path';
 import { fetchTemplate } from '../utils/fetcher.js';
 import { runPackageInstall } from '../utils/installer.js';
-
-export const resolveTemplateSource = (isDev: boolean = false): string => {
-  if (isDev) {
-    return './templates/core';
-  }
-  return 'github:abrown5421/inithium-ecosystem/templates/core';
-};
+import { resolveTemplateSource } from '../utils/paths.js';
 
 export const initCommand = async (
   projectName: string,

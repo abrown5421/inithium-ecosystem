@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "A la carte CLI engine and scaffolding boilerplate ecosystem.",
   "main": "dist/index.js",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "bin": {
     "inithium": "./bin/index.js"
   },
@@ -13,14 +16,13 @@
   "dependencies": {
     "commander": "^12.1.0",
     "degit": "^2.8.0",
-    "execa": "^10.0.1",
+    "execa": "^9.6.1",
     "fs-extra": "^11.2.0"
   },
   "devDependencies": {
     "@types/degit": "^2.8.6",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.0.0",
-    "firebase-admin": "^14.3.0",
     "typescript": "^5.0.0"
   }
 }
