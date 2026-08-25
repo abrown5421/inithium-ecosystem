@@ -1,5 +1,7 @@
 import express from 'express';
 import { connectDatabase } from '@inithium/db';
+import { getAuthProvider } from '@inithium/auth';
+import { registerCoreRoutes } from '@inithium/api-core';
 
 const app = express();
 app.use(express.json());
@@ -11,12 +13,15 @@ const startServer = async () => {
       credentials: JSON.parse(process.env['FIREBASE_SERVICE_ACCOUNT_KEY'] || '{}'),
     });
 
+    getAuthProvider().assertConfigured?.();
+    registerCoreRoutes(app);
+
     const port = process.env['PORT'] || 3000;
     app.listen(port, () => {
       console.log(`🚀 API listening at http://localhost:${port}`);
     });
   } catch (error) {
-    console.error('❌ Database connection failed:', error);
+    console.error('❌ Startup failed:', error);
     process.exit(1);
   }
 };

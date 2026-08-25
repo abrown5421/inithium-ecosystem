@@ -15,7 +15,9 @@
     "skipDefaultLibCheck": true,
     "paths": {
       "@inithium/*": ["./libs/*"],
-      "@inithium/db": ["./libs/db/src/index.ts"]
+      "@inithium/db": ["./libs/db/src/index.ts"],
+      "@inithium/auth": ["./libs/auth/src/index.ts"],
+      "@inithium/api-core": ["./libs/api-core/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
