@@ -1,21 +1,47 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import express from 'express';
-import * as path from 'path';
+import { connectDatabase, setDbProvider, getDbProvider, DbProvider } from '@inithium/db';
 
 const app = express();
+app.use(express.json());
 
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
+const initializeDatabase = async (): Promise<void> => {
+  // Check if Firebase provider exists (injected via plugin)
+  try {
+    // Dynamic import to handle optional plugin presence gracefully
+    const firebaseModule = await import('@inithium/db/providers/firebase/firebase.provider' as string);
+    if (firebaseModule?.firebaseProvider) {
+      setDbProvider(firebaseModule.firebaseProvider as DbProvider);
+    }
+  } catch {
+    // Firebase plugin not present; defaults silently to mongoProvider
+  }
 
-app.get('/api', (req, res) => {
-  res.send({ message: 'Welcome to api!' });
-});
+  // Connect using active provider (Firebase if injected, MongoDB as fallback)
+  const activeProvider = getDbProvider();
+  
+  if (activeProvider.name === 'Firebase Firestore') {
+    await connectDatabase({
+      credentials: JSON.parse(process.env['FIREBASE_SERVICE_ACCOUNT_KEY'] || '{}'),
+    });
+  } else {
+    await connectDatabase({
+      uri: process.env['MONGO_URI'],
+    });
+  }
+};
 
-const port = process.env.PORT || 3333;
-const server = app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/api`);
-});
-server.on('error', console.error);
+const startServer = async () => {
+  try {
+    await initializeDatabase();
+
+    const port = process.env['PORT'] || 3000;
+    app.listen(port, () => {
+      console.log(`🚀 API listening at http://localhost:${port}`);
+    });
+  } catch (error) {
+    console.error('❌ Database connection failed:', error);
+    process.exit(1);
+  }
+};
+
+startServer();

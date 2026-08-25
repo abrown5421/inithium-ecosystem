@@ -7,8 +7,15 @@ export interface UserEntity {
   createdAt: Date;
 }
 
+export interface CreateUserInput {
+  email: string;
+  firstName: string;
+  lastName?: string;
+  passwordHash: string;
+}
+
 export interface UserRepository {
   findById: (id: string) => Promise<UserEntity | null>;
   findByEmail: (email: string) => Promise<UserEntity | null>;
-  create: (data: Omit<UserEntity, 'id' | 'createdAt'>) => Promise<UserEntity>;
+  create: (input: CreateUserInput) => Promise<UserEntity>;
 }
