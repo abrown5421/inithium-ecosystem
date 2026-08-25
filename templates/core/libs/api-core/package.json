@@ -1,0 +1,11 @@
+{
+  "name": "@inithium/api-core",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "dependencies": {
+    "express": "^5.1.0",
+    "zod": "^4.4.3"
+  }
+}
