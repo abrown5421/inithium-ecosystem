@@ -1,42 +1,31 @@
-import { UserRepository, UserEntity } from '../../contracts/userRepository';
-import { UserModel } from './models/userModel';
+import { UserRepository, UserEntity, CreateUserInput } from '../../contracts/userRepository';
+import { UserModel, UserDocument } from './models/userModel';
 
-export const createMongoUserRepository = (): UserRepository => ({
-  findById: async (id) => {
-    const doc = await UserModel.findById(id).lean();
-    if (!doc) return null;
-    return {
-      id: doc._id.toString(),
-      email: doc.email,
-      firstName: doc.firstName,
-      lastName: doc.lastName,
-      passwordHash: doc.passwordHash,
-      createdAt: doc.createdAt,
-    };
-  },
-
-  findByEmail: async (email) => {
-    const doc = await UserModel.findOne({ email }).lean();
-    if (!doc) return null;
-    return {
-      id: doc._id.toString(),
-      email: doc.email,
-      firstName: doc.firstName,
-      lastName: doc.lastName,
-      passwordHash: doc.passwordHash,
-      createdAt: doc.createdAt,
-    };
-  },
-
-  create: async (data) => {
-    const doc = await UserModel.create(data);
-    return {
-      id: doc._id.toString(),
-      email: doc.email,
-      firstName: doc.firstName,
-      lastName: doc.lastName,
-      passwordHash: doc.passwordHash,
-      createdAt: doc.createdAt,
-    };
-  },
+const mapToUserEntity = (doc: UserDocument): UserEntity => ({
+  id: doc._id.toString(),
+  email: doc.email,
+  firstName: doc.firstName,
+  lastName: doc.lastName,
+  passwordHash: doc.passwordHash,
+  createdAt: doc.createdAt,
 });
+
+export const userRepositoryMongo: UserRepository = {
+  findById: async (id: string): Promise<UserEntity | null> => {
+    const user = await UserModel.findById(id).exec();
+    return user ? mapToUserEntity(user) : null;
+  },
+  findByEmail: async (email: string): Promise<UserEntity | null> => {
+    const user = await UserModel.findOne({ email }).exec();
+    return user ? mapToUserEntity(user) : null;
+  },
+  create: async (input: CreateUserInput): Promise<UserEntity> => {
+    const user = await UserModel.create({
+      email: input.email,
+      firstName: input.firstName,
+      lastName: input.lastName,
+      passwordHash: input.passwordHash,
+    });
+    return mapToUserEntity(user);
+  },
+};

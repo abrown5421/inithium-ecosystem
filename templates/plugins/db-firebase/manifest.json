@@ -1,0 +1,21 @@
+{
+  "name": "db-firebase",
+  "version": "1.0.0",
+  "description": "Firebase Firestore database provider implementation for @inithium/db",
+  "dependencies": {
+    "npm": {
+      "firebase-admin": "^12.0.0"
+    },
+    "plugins": []
+  },
+  "injections": [
+    {
+      "target": "libs/db/src/providers/firebase/firebase.provider.ts",
+      "source": "src/firebase.provider.ts"
+    },
+    {
+      "target": "libs/db/src/providers/firebase/userRepositoryFirebase.ts",
+      "source": "src/userRepositoryFirebase.ts"
+    }
+  ]
+}
