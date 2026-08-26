@@ -9,3 +9,9 @@ export type { AnimateBoxProps } from './AnimateBox/AnimateBox';
 
 export { Button } from './Button/Button';
 export type { ButtonProps } from './Button/Button';
+
+export { Icon } from './Icon/Icon';
+export type { IconProps } from './Icon/Icon';
+
+export { AdornedContent } from './AdornedContent/AdornedContent';
+export type { AdornedContentProps } from './AdornedContent/AdornedContent';

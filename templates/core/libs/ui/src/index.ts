@@ -44,6 +44,10 @@ export {
 export type { ButtonVariantKind, ButtonVariantSpec } from './tokens/button';
 export { BUTTON_VARIANT_KINDS } from './tokens/button';
 
+export type { IconName, IconWeight } from './tokens/icon';
+
+export type { AdornmentProps } from './tokens/adornment';
+
 export { resolveColorClass } from './theme/resolveColorClass';
 export { mergeClassNames } from './theme/mergeClassNames';
 export { resolveAnimationClasses } from './utils/resolveAnimationClasses';
@@ -51,6 +55,14 @@ export { resolveMargin, resolvePadding } from './utils/resolveSpacing';
 export { resolveFlexClasses } from './utils/resolveFlexClasses';
 export { resolveButtonVariant } from './utils/resolveButtonVariant';
 export type { ButtonVariantDefaults } from './utils/resolveButtonVariant';
+export { resolvePhosphorIcon } from './utils/resolvePhosphorIcon';
 
-export { Text, Box, AnimateBox, Button } from './components';
-export type { TextProps, BoxProps, AnimateBoxProps, ButtonProps } from './components';
+export { Text, Box, AnimateBox, Button, Icon, AdornedContent } from './components';
+export type {
+  TextProps,
+  BoxProps,
+  AnimateBoxProps,
+  ButtonProps,
+  IconProps,
+  AdornedContentProps,
+} from './components';
