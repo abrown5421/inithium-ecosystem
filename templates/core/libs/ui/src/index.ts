@@ -75,6 +75,8 @@ export {
   Switch,
   Slider,
   Checkbox,
+  RadioGroup,
+  RadioGroupItem,
 } from './components';
 export type {
   TextProps,
@@ -89,4 +91,6 @@ export type {
   SwitchProps,
   SliderProps,
   CheckboxProps,
+  RadioGroupProps,
+  RadioGroupItemProps,
 } from './components';
