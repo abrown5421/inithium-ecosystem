@@ -11,11 +11,11 @@
   "injections": [
     {
       "target": "libs/db/src/providers/firebase/firebase.provider.ts",
-      "source": "src/firebase.provider.ts"
+      "source": "src/firebase/firebase.provider.ts"
     },
     {
       "target": "libs/db/src/providers/firebase/userRepositoryFirebase.ts",
-      "source": "src/userRepositoryFirebase.ts"
+      "source": "src/firebase/userRepositoryFirebase.ts"
     },
     {
       "target": "libs/db/src/providers/active-provider.ts",

@@ -1,6 +1,6 @@
 import { initializeApp, getApps, cert, deleteApp } from 'firebase-admin/app';
 import { DbProvider, DbConfig, UserRepository } from '@inithium/db';
-import { userRepositoryFirebase } from './userRepositoryFirebase'; 
+import { userRepositoryFirebase } from './userRepositoryFirebase';
 
 export const firebaseProvider: DbProvider = {
   name: 'Firebase Firestore',
