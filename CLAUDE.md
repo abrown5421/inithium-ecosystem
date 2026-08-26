@@ -21,6 +21,8 @@ Inithium is an a la carte, modular full-stack monorepo scaffolding ecosystem. It
 - **Authentication:** JWT (JSON Web Tokens) with stateless bearer token authorization middleware in `@inithium/auth`
 - **TypeScript:** Strict mode enabled (`noImplicitAny`, `strictNullChecks`, `exactOptionalPropertyTypes`)
 
+## API Documentation & Testing Guidelines
+
 ### Frontend Architecture (`apps/web` + `libs/ui`, `libs/state`)
 - **UI Engine & Templating:** React (v18+), TypeScript (thin shell host in `apps/web`)
 - **State & Data Fetching:** 
@@ -165,8 +167,21 @@ export const { useGetFeatureDataQuery } = featureApi;
 ```
 
 ---
+## 5. API Documentation & Testing Guidelines
 
-## 5. Developer & AI Assistant Workflow Instructions
+### Core API Route Modifications
+When adding, modifying, or removing routes in the **Core API ONLY**:
+- **Postman Collection Update Required:** You must update the Postman collection file located at:
+  `templates/core/inithium_postman_import.json`[cite: 1]
+- **Collection Standards:**
+  - Place new endpoints inside their respective module folder within the `item` array[cite: 1].
+  - Use variable placeholders (`{{baseUrl}}`, `{{accessToken}}`) for host, paths, and authorization headers[cite: 1].
+  - Provide test scripts in the `event` array to validate response status codes where applicable[cite: 1].
+---
+
+---
+
+## 6. Developer & AI Assistant Workflow Instructions
 
 ### Application Verification
 Server restarts, builds, and browser testing are handled **manually by the developer**. AI agents must **not** attempt to run dev servers or execute browser automation steps.
