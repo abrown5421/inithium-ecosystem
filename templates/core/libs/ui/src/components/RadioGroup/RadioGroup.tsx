@@ -138,7 +138,7 @@ export const RadioGroupItem = forwardRef<ElementRef<typeof RadioGroupPrimitive.I
           </RadioGroupPrimitive.Indicator>
         </RadioGroupPrimitive.Item>
         {label && (
-          <label htmlFor={itemId} className="text-sm text-surface-foreground-900">
+          <label htmlFor={itemId} className="text-sm text-surface-900">
             {label}
           </label>
         )}

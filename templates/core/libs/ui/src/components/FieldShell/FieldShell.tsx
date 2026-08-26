@@ -31,7 +31,7 @@ export const FieldShell = ({
 }: FieldShellProps) => (
   <div className={mergeClassNames('flex flex-col gap-1.5', className)}>
     {label && (
-      <label id={labelId} htmlFor={htmlFor} className="text-sm font-medium text-surface-foreground-900">
+      <label id={labelId} htmlFor={htmlFor} className="text-sm font-medium text-surface-900">
         {label}
         {required && <span className="text-red-500"> *</span>}
       </label>

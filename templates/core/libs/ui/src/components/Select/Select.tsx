@@ -50,7 +50,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
     const { border, focusRing } = resolveFieldColorClasses(color, error);
 
     const triggerClasses = mergeClassNames(
-      'flex w-full items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm text-surface-foreground-900 transition-colors',
+      'flex w-full items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm text-surface-900 transition-colors',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
       'disabled:opacity-50 disabled:cursor-not-allowed',
       border,
@@ -94,7 +94,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
             <SelectPrimitive.Content
               position="popper"
               sideOffset={4}
-              className="z-50 overflow-hidden rounded-md border border-surface-300 bg-surface-100 text-surface-foreground-900 shadow-md"
+              className="z-50 overflow-hidden rounded-md border border-surface-300 bg-surface-100 text-surface-foreground-100 shadow-md"
             >
               <SelectPrimitive.ScrollUpButton className="flex items-center justify-center py-1">
                 <Icon as="span" name="CaretUp" size={14} />
