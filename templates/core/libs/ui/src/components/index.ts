@@ -30,3 +30,6 @@ export type { SliderProps } from './Slider/Slider';
 
 export { Checkbox } from './Checkbox/Checkbox';
 export type { CheckboxProps } from './Checkbox/Checkbox';
+
+export { RadioGroup, RadioGroupItem } from './RadioGroup/RadioGroup';
+export type { RadioGroupProps, RadioGroupItemProps } from './RadioGroup/RadioGroup';
