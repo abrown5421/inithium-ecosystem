@@ -2,6 +2,7 @@ import express from 'express';
 import { connectDatabase } from '@inithium/db';
 import { getAuthProvider } from '@inithium/auth';
 import { registerCoreRoutes } from '@inithium/api-core';
+import { errorHandler } from '@inithium/api-utils';
 
 const app = express();
 app.use(express.json());
@@ -15,6 +16,7 @@ const startServer = async () => {
 
     getAuthProvider().assertConfigured?.();
     registerCoreRoutes(app);
+    app.use(errorHandler);
 
     const port = process.env['PORT'] || 3000;
     app.listen(port, () => {
