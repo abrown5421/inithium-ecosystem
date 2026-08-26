@@ -57,9 +57,11 @@ export { resolveMargin, resolvePadding } from './utils/resolveSpacing';
 export { resolveFlexClasses } from './utils/resolveFlexClasses';
 export { resolveButtonVariant } from './utils/resolveButtonVariant';
 export type { ButtonVariantDefaults } from './utils/resolveButtonVariant';
+export { resolveFieldColorClasses } from './utils/resolveFieldColorClasses';
+export type { FieldColorClasses } from './utils/resolveFieldColorClasses';
 export { resolvePhosphorIcon } from './utils/resolvePhosphorIcon';
 
-export { Text, Box, AnimateBox, Button, Icon, AdornedContent, Input } from './components';
+export { Text, Box, AnimateBox, Button, Icon, AdornedContent, Input, Select, SelectItem } from './components';
 export type {
   TextProps,
   BoxProps,
@@ -68,4 +70,6 @@ export type {
   IconProps,
   AdornedContentProps,
   InputProps,
+  SelectProps,
+  SelectItemProps,
 } from './components';
