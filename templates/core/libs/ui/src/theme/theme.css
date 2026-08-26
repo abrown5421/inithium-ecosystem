@@ -258,9 +258,15 @@
 @source inline("focus-visible:ring-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{100,200,300,400,500,600,700,800,900,950}{,/10,/20,/30,/40,/50,/60,/70,/80,/90}");
 
 /*
- * Switch's track (and, later, Checkbox/RadioGroup's checked fill) build
+ * Switch's track and Checkbox/RadioGroup's checked fill build
  * "data-[state=checked]:bg-{color}-{shade}" from a caller-supplied ColorSpec - same
  * runtime-interpolation gap as the blocks above, this time keyed off Radix's own
  * `data-state` attribute rather than a CSS pseudo-class.
  */
 @source inline("data-[state=checked]:bg-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{100,200,300,400,500,600,700,800,900,950}{,/10,/20,/30,/40,/50,/60,/70,/80,/90}");
+
+/*
+ * Checkbox's indeterminate fill needs the identical treatment as its checked fill above,
+ * just keyed off Radix's "indeterminate" data-state instead of "checked".
+ */
+@source inline("data-[state=indeterminate]:bg-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{100,200,300,400,500,600,700,800,900,950}{,/10,/20,/30,/40,/50,/60,/70,/80,/90}");
