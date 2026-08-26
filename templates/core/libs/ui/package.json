@@ -5,6 +5,7 @@
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "dependencies": {
+    "@radix-ui/react-slot": "^1.3.3",
     "animate.css": "^4.1.1",
     "react": "^19.0.0",
     "tailwind-merge": "^3.0.0"
