@@ -1,0 +1,230 @@
+/*
+ * Inithium UI - semantic color theme.
+ *
+ * Two layers, by design:
+ *  - The --ui-* custom properties below are the brand surface. Redefine them
+ *    (e.g. in a consuming app's :root, or under a data-theme selector) to apply a
+ *    custom brand theme without touching this file.
+ *  - The @theme block registers each token into Tailwind v4's --color-* namespace so
+ *    "bg-primary-500", "text-primary-foreground-500", opacity modifiers
+ *    ("bg-accent-500/40"), etc. all work exactly like Tailwind's built-in palette.
+ *
+ * Import this file *after* '@import "tailwindcss";' in the consuming app's global
+ * stylesheet.
+ */
+
+:root {
+  --ui-primary-100: #e6f3f8;
+  --ui-primary-200: #c0e3ef;
+  --ui-primary-300: #8ccce1;
+  --ui-primary-400: #4daed0;
+  --ui-primary-500: #006a8e;
+  --ui-primary-600: #005a7b;
+  --ui-primary-700: #004a66;
+  --ui-primary-800: #003b51;
+  --ui-primary-900: #002c3d;
+  --ui-primary-950: #001924;
+
+  --ui-secondary-100: #edf6f6;
+  --ui-secondary-200: #d0e7e8;
+  --ui-secondary-300: #a5d3d4;
+  --ui-secondary-400: #6eb7b9;
+  --ui-secondary-500: #397e7f;
+  --ui-secondary-600: #2d6b6c;
+  --ui-secondary-700: #235758;
+  --ui-secondary-800: #1b4546;
+  --ui-secondary-900: #143536;
+  --ui-secondary-950: #0b1f20;
+
+  --ui-accent-100: #fef5e6;
+  --ui-accent-200: #fde5bf;
+  --ui-accent-300: #fbd18d;
+  --ui-accent-400: #f8ba58;
+  --ui-accent-500: #f5a42d;
+  --ui-accent-600: #d9881d;
+  --ui-accent-700: #b36b13;
+  --ui-accent-800: #8e5210;
+  --ui-accent-900: #734211;
+  --ui-accent-950: #422305;
+
+  --ui-surface-100: #f8fafc;
+  --ui-surface-200: #f1f5f9;
+  --ui-surface-300: #e2e8f0;
+  --ui-surface-400: #cbd5e1;
+  --ui-surface-500: #94a3b8;
+  --ui-surface-600: #64748b;
+  --ui-surface-700: #475569;
+  --ui-surface-800: #334155;
+  --ui-surface-900: #1e293b;
+  --ui-surface-950: #0f172a;
+
+  --ui-primary-foreground-100: #0a0a0a;
+  --ui-primary-foreground-200: #0a0a0a;
+  --ui-primary-foreground-300: #0a0a0a;
+  --ui-primary-foreground-400: #0a0a0a;
+  --ui-primary-foreground-500: #fafafa;
+  --ui-primary-foreground-600: #fafafa;
+  --ui-primary-foreground-700: #fafafa;
+  --ui-primary-foreground-800: #fafafa;
+  --ui-primary-foreground-900: #fafafa;
+  --ui-primary-foreground-950: #fafafa;
+
+  --ui-secondary-foreground-100: #0a0a0a;
+  --ui-secondary-foreground-200: #0a0a0a;
+  --ui-secondary-foreground-300: #0a0a0a;
+  --ui-secondary-foreground-400: #0a0a0a;
+  --ui-secondary-foreground-500: #fafafa;
+  --ui-secondary-foreground-600: #fafafa;
+  --ui-secondary-foreground-700: #fafafa;
+  --ui-secondary-foreground-800: #fafafa;
+  --ui-secondary-foreground-900: #fafafa;
+  --ui-secondary-foreground-950: #fafafa;
+
+  --ui-accent-foreground-100: #0a0a0a;
+  --ui-accent-foreground-200: #0a0a0a;
+  --ui-accent-foreground-300: #0a0a0a;
+  --ui-accent-foreground-400: #0a0a0a;
+  --ui-accent-foreground-500: #fafafa;
+  --ui-accent-foreground-600: #fafafa;
+  --ui-accent-foreground-700: #fafafa;
+  --ui-accent-foreground-800: #fafafa;
+  --ui-accent-foreground-900: #fafafa;
+  --ui-accent-foreground-950: #fafafa;
+
+  --ui-surface-foreground-100: #0a0a0a;
+  --ui-surface-foreground-200: #0a0a0a;
+  --ui-surface-foreground-300: #0a0a0a;
+  --ui-surface-foreground-400: #0a0a0a;
+  --ui-surface-foreground-500: #0a0a0a;
+  --ui-surface-foreground-600: #fafafa;
+  --ui-surface-foreground-700: #fafafa;
+  --ui-surface-foreground-800: #fafafa;
+  --ui-surface-foreground-900: #fafafa;
+  --ui-surface-foreground-950: #fafafa;
+}
+
+@theme {
+  --color-primary-100: var(--ui-primary-100);
+  --color-primary-200: var(--ui-primary-200);
+  --color-primary-300: var(--ui-primary-300);
+  --color-primary-400: var(--ui-primary-400);
+  --color-primary-500: var(--ui-primary-500);
+  --color-primary-600: var(--ui-primary-600);
+  --color-primary-700: var(--ui-primary-700);
+  --color-primary-800: var(--ui-primary-800);
+  --color-primary-900: var(--ui-primary-900);
+  --color-primary-950: var(--ui-primary-950);
+
+  --color-secondary-100: var(--ui-secondary-100);
+  --color-secondary-200: var(--ui-secondary-200);
+  --color-secondary-300: var(--ui-secondary-300);
+  --color-secondary-400: var(--ui-secondary-400);
+  --color-secondary-500: var(--ui-secondary-500);
+  --color-secondary-600: var(--ui-secondary-600);
+  --color-secondary-700: var(--ui-secondary-700);
+  --color-secondary-800: var(--ui-secondary-800);
+  --color-secondary-900: var(--ui-secondary-900);
+  --color-secondary-950: var(--ui-secondary-950);
+
+  --color-accent-100: var(--ui-accent-100);
+  --color-accent-200: var(--ui-accent-200);
+  --color-accent-300: var(--ui-accent-300);
+  --color-accent-400: var(--ui-accent-400);
+  --color-accent-500: var(--ui-accent-500);
+  --color-accent-600: var(--ui-accent-600);
+  --color-accent-700: var(--ui-accent-700);
+  --color-accent-800: var(--ui-accent-800);
+  --color-accent-900: var(--ui-accent-900);
+  --color-accent-950: var(--ui-accent-950);
+
+  --color-surface-100: var(--ui-surface-100);
+  --color-surface-200: var(--ui-surface-200);
+  --color-surface-300: var(--ui-surface-300);
+  --color-surface-400: var(--ui-surface-400);
+  --color-surface-500: var(--ui-surface-500);
+  --color-surface-600: var(--ui-surface-600);
+  --color-surface-700: var(--ui-surface-700);
+  --color-surface-800: var(--ui-surface-800);
+  --color-surface-900: var(--ui-surface-900);
+  --color-surface-950: var(--ui-surface-950);
+
+  --color-primary-foreground-100: var(--ui-primary-foreground-100);
+  --color-primary-foreground-200: var(--ui-primary-foreground-200);
+  --color-primary-foreground-300: var(--ui-primary-foreground-300);
+  --color-primary-foreground-400: var(--ui-primary-foreground-400);
+  --color-primary-foreground-500: var(--ui-primary-foreground-500);
+  --color-primary-foreground-600: var(--ui-primary-foreground-600);
+  --color-primary-foreground-700: var(--ui-primary-foreground-700);
+  --color-primary-foreground-800: var(--ui-primary-foreground-800);
+  --color-primary-foreground-900: var(--ui-primary-foreground-900);
+  --color-primary-foreground-950: var(--ui-primary-foreground-950);
+
+  --color-secondary-foreground-100: var(--ui-secondary-foreground-100);
+  --color-secondary-foreground-200: var(--ui-secondary-foreground-200);
+  --color-secondary-foreground-300: var(--ui-secondary-foreground-300);
+  --color-secondary-foreground-400: var(--ui-secondary-foreground-400);
+  --color-secondary-foreground-500: var(--ui-secondary-foreground-500);
+  --color-secondary-foreground-600: var(--ui-secondary-foreground-600);
+  --color-secondary-foreground-700: var(--ui-secondary-foreground-700);
+  --color-secondary-foreground-800: var(--ui-secondary-foreground-800);
+  --color-secondary-foreground-900: var(--ui-secondary-foreground-900);
+  --color-secondary-foreground-950: var(--ui-secondary-foreground-950);
+
+  --color-accent-foreground-100: var(--ui-accent-foreground-100);
+  --color-accent-foreground-200: var(--ui-accent-foreground-200);
+  --color-accent-foreground-300: var(--ui-accent-foreground-300);
+  --color-accent-foreground-400: var(--ui-accent-foreground-400);
+  --color-accent-foreground-500: var(--ui-accent-foreground-500);
+  --color-accent-foreground-600: var(--ui-accent-foreground-600);
+  --color-accent-foreground-700: var(--ui-accent-foreground-700);
+  --color-accent-foreground-800: var(--ui-accent-foreground-800);
+  --color-accent-foreground-900: var(--ui-accent-foreground-900);
+  --color-accent-foreground-950: var(--ui-accent-foreground-950);
+
+  --color-surface-foreground-100: var(--ui-surface-foreground-100);
+  --color-surface-foreground-200: var(--ui-surface-foreground-200);
+  --color-surface-foreground-300: var(--ui-surface-foreground-300);
+  --color-surface-foreground-400: var(--ui-surface-foreground-400);
+  --color-surface-foreground-500: var(--ui-surface-foreground-500);
+  --color-surface-foreground-600: var(--ui-surface-foreground-600);
+  --color-surface-foreground-700: var(--ui-surface-foreground-700);
+  --color-surface-foreground-800: var(--ui-surface-foreground-800);
+  --color-surface-foreground-900: var(--ui-surface-foreground-900);
+  --color-surface-foreground-950: var(--ui-surface-foreground-950);
+}
+
+/*
+ * Tailwind v4 only emits CSS for class names it finds literally in scanned source.
+ * resolveColorClass() builds class strings at runtime (template interpolation), so
+ * without this, none of the resulting classes would ever be generated. This inlines
+ * every {prefix}-{semantic token}-{shade}[/opacity] combination so the bounded,
+ * library-owned semantic token surface always renders regardless of how a caller
+ * assembles the string. Raw Tailwind palette colors (e.g. "emerald") hit the same gap
+ * and get the same treatment below.
+ */
+@source inline("{text,bg,border,ring}-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground}-{100,200,300,400,500,600,700,800,900,950}{,/10,/20,/30,/40,/50,/60,/70,/80,/90}");
+
+
+/*
+ * Same problem, Tailwind's own default palette: "emerald", "amber", etc. passed
+ * dynamically through ColorSpec.color hit the identical JIT-scanning gap as the
+ * semantic tokens above, since resolveColorClass() builds those class strings at
+ * runtime too. This force-generates the standard palette the same way. It trades CSS
+ * weight for "any Tailwind color, fully dynamic" actually working - Tailwind can't
+ * tree-shake force-generated candidates, so this ships every listed color/shade/prefix
+ * combination whether or not an app uses it. Scope the prefix or family list down here
+ * if that cost matters more than the flexibility.
+ */
+@source inline("{text,bg,border,ring}-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{100,200,300,400,500,600,700,800,900,950}{,/10,/20,/30,/40,/50,/60,/70,/80,/90}");
+
+/*
+ * resolveMargin()/resolvePadding() build "{m,p}[t,r,b,l]-[Npx]" from a plain `number`
+ * (see src/utils/resolveSpacing.ts) - an unbounded domain, unlike the finite color and
+ * token sets above. There is no way to enumerate "every integer" in a safelist, so this
+ * can only ever cover a chosen range, not the type's full contract. This inlines every
+ * pixel value from 0-128 per direction, which covers ordinary spacing; a value outside
+ * that range (or negative, which margin - but not padding - legitimately wants) needs
+ * the consuming app's own @source inline(...) to render. Raise the range here instead
+ * if 0-128 doesn't cover this app's actual spacing values.
+ */
+@source inline("{m,mt,mr,mb,ml,p,pt,pr,pb,pl}-[{0..128}px]");
