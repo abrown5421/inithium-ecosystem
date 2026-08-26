@@ -158,10 +158,35 @@ which covers ordinary spacing but is a real ceiling, not a formality — a
 is valid for margin) won't render without extending that range, either in
 `theme.css` or with an app-level `@source inline(...)`.
 
+## Flexbox
+
+`FlexSpec` (in [`src/tokens/flex.ts`](./src/tokens/flex.ts)) is a single
+structured prop — `direction`, `wrap`, `justify`, `align`, `alignContent`,
+`gap`/`rowGap`/`columnGap`, and `inline` — for controlling how a container
+lays out its children, the same "one spec object" shape as `ColorSpec` and
+`AnimationSpec`. `resolveFlexClasses` (in
+[`src/utils/resolveFlexClasses.ts`](./src/utils/resolveFlexClasses.ts)) turns
+it into Tailwind utility classes:
+
+```ts
+import { resolveFlexClasses } from '@inithium/ui';
+
+resolveFlexClasses({ direction: 'row', justify: 'between', align: 'center', gap: 12 });
+// 'flex flex-row justify-between items-center gap-[12px]'
+
+resolveFlexClasses(undefined); // undefined - no spec, no flex layout
+```
+
+A container only becomes `display: flex` (or `inline-flex`, via
+`inline: true`) when a `flex` spec is actually passed — `Box`/`AnimateBox`
+stay plain, non-flex containers otherwise. `gap`/`rowGap`/`columnGap` share
+the same `0`-`128` safelist ceiling as margin/padding (see `theme.css`), for
+the same reason: they're arbitrary-value classes built at runtime.
+
 ## Components
 
 ```tsx
-import { Text, AnimateBox } from '@inithium/ui';
+import { Text, Box, AnimateBox } from '@inithium/ui';
 
 <Text
   textColor={{ color: 'primary-foreground', intensity: 500 }}
@@ -173,8 +198,18 @@ import { Text, AnimateBox } from '@inithium/ui';
   Hello world
 </Text>
 
+<Box
+  bgColor={{ color: 'surface', intensity: 500 }}
+  flex={{ direction: 'row', justify: 'between', align: 'center', gap: 16 }}
+  padding={{ base: 16 }}
+>
+  <Text>Left</Text>
+  <Text>Right</Text>
+</Box>
+
 <AnimateBox
   bgColor={{ color: 'surface', intensity: 500 }}
+  flex={{ direction: 'col', align: 'center', gap: 8 }}
   animation={{ entrance: 'animate__zoomIn', speed: 'animate__faster' }}
   margin={{ base: 8, top: 24 }}
 >
@@ -182,12 +217,21 @@ import { Text, AnimateBox } from '@inithium/ui';
 </AnimateBox>
 ```
 
-Both `Text` and `AnimateBox` implement `SpacingProps` (`margin?: SpacingProp`,
-`padding?: SpacingProp`) — new primitives should extend that interface
-instead of redeclaring the two props.
+`Text`, `Box`, and `AnimateBox` all implement `SpacingProps` (`margin?:
+SpacingProp`, `padding?: SpacingProp`) — new primitives should extend that
+interface instead of redeclaring the two props.
 
-Both `Text` and `AnimateBox` take the same `animation?: AnimationSpec` and
+`Box` and `AnimateBox` both implement `FlexProps`/accept a `flex?: FlexSpec`
+prop for controlling child layout. `AnimateBoxProps` extends `BoxProps`
+directly, and `AnimateBox` composes `Box` rather than reimplementing its
+class resolution — it resolves only `animation`/`trigger` into a `className`
+and hands everything else through, so `Box` stays the single place that
+resolves color/flex/spacing classes.
+
+`Text` and `AnimateBox` take the same `animation?: AnimationSpec` and
 `trigger?: AnimationTrigger` props (`trigger` defaults to `'entrance'`).
+`Box` has no animation props — reach for `AnimateBox` when a container needs
+to animate in/out.
 
 ### Variants (hover:, dark:, responsive, ...) and the `className` escape hatch
 

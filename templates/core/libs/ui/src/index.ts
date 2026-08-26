@@ -24,10 +24,28 @@ export type {
 
 export type { SpacingValue, DirectionalSpacing, SpacingProp, SpacingProps } from './tokens/spacing';
 
+export type {
+  FlexDirection,
+  FlexWrap,
+  JustifyContent,
+  AlignItems,
+  AlignContent,
+  FlexSpec,
+  FlexProps,
+} from './tokens/flex';
+export {
+  FLEX_DIRECTIONS,
+  FLEX_WRAPS,
+  JUSTIFY_CONTENTS,
+  ALIGN_ITEMS,
+  ALIGN_CONTENTS,
+} from './tokens/flex';
+
 export { resolveColorClass } from './theme/resolveColorClass';
 export { mergeClassNames } from './theme/mergeClassNames';
 export { resolveAnimationClasses } from './utils/resolveAnimationClasses';
 export { resolveMargin, resolvePadding } from './utils/resolveSpacing';
+export { resolveFlexClasses } from './utils/resolveFlexClasses';
 
-export { Text, AnimateBox } from './components';
-export type { TextProps, AnimateBoxProps } from './components';
+export { Text, Box, AnimateBox } from './components';
+export type { TextProps, BoxProps, AnimateBoxProps } from './components';

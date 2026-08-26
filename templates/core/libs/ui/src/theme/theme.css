@@ -228,3 +228,11 @@
  * if 0-128 doesn't cover this app's actual spacing values.
  */
 @source inline("{m,mt,mr,mb,ml,p,pt,pr,pb,pl}-[{0..128}px]");
+
+/*
+ * resolveFlexClasses() builds "gap[-x,-y]-[Npx]" from a plain `number` (see
+ * src/utils/resolveFlexClasses.ts) the same way resolveMargin()/resolvePadding() do -
+ * same unbounded-domain gap, same fix: inline every pixel value from 0-128. A gap value
+ * outside that range needs the consuming app's own @source inline(...) to render.
+ */
+@source inline("{gap,gap-x,gap-y}-[{0..128}px]");
