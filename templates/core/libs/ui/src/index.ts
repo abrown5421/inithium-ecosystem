@@ -74,6 +74,7 @@ export {
   SelectItem,
   Switch,
   Slider,
+  Checkbox,
 } from './components';
 export type {
   TextProps,
@@ -87,4 +88,5 @@ export type {
   SelectItemProps,
   SwitchProps,
   SliderProps,
+  CheckboxProps,
 } from './components';

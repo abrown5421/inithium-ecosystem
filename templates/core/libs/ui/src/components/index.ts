@@ -27,3 +27,6 @@ export type { SwitchProps } from './Switch/Switch';
 
 export { Slider } from './Slider/Slider';
 export type { SliderProps } from './Slider/Slider';
+
+export { Checkbox } from './Checkbox/Checkbox';
+export type { CheckboxProps } from './Checkbox/Checkbox';
