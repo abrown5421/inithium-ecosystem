@@ -21,3 +21,6 @@ export type { InputProps } from './Input/Input';
 
 export { Select, SelectItem } from './Select/Select';
 export type { SelectProps, SelectItemProps } from './Select/Select';
+
+export { Switch } from './Switch/Switch';
+export type { SwitchProps } from './Switch/Switch';
