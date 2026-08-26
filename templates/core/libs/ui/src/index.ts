@@ -48,6 +48,8 @@ export type { IconName, IconWeight } from './tokens/icon';
 
 export type { AdornmentProps } from './tokens/adornment';
 
+export type { FieldProps } from './tokens/field';
+
 export { resolveColorClass } from './theme/resolveColorClass';
 export { mergeClassNames } from './theme/mergeClassNames';
 export { resolveAnimationClasses } from './utils/resolveAnimationClasses';
@@ -57,7 +59,7 @@ export { resolveButtonVariant } from './utils/resolveButtonVariant';
 export type { ButtonVariantDefaults } from './utils/resolveButtonVariant';
 export { resolvePhosphorIcon } from './utils/resolvePhosphorIcon';
 
-export { Text, Box, AnimateBox, Button, Icon, AdornedContent } from './components';
+export { Text, Box, AnimateBox, Button, Icon, AdornedContent, Input } from './components';
 export type {
   TextProps,
   BoxProps,
@@ -65,4 +67,5 @@ export type {
   ButtonProps,
   IconProps,
   AdornedContentProps,
+  InputProps,
 } from './components';
