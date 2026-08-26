@@ -5,12 +5,17 @@ import { mergeClassNames } from '../../theme/mergeClassNames';
 import { resolveAnimationClasses } from '../../utils/resolveAnimationClasses';
 import { resolveMargin, resolvePadding } from '../../utils/resolveSpacing';
 import { resolveButtonVariant } from '../../utils/resolveButtonVariant';
+import { AdornedContent } from '../AdornedContent/AdornedContent';
 import type { ColorSpec } from '../../contracts/color.contract';
 import type { AnimationSpec, AnimationTrigger } from '../../tokens/animation';
 import type { SpacingProps } from '../../tokens/spacing';
+import type { AdornmentProps } from '../../tokens/adornment';
 import type { ButtonVariantSpec } from '../../tokens/button';
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, SpacingProps {
+export interface ButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
+    SpacingProps,
+    AdornmentProps {
   readonly asChild?: boolean;
   readonly variant?: ButtonVariantSpec;
   readonly bgColor?: ColorSpec;
@@ -43,6 +48,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       margin,
       padding,
       className,
+      entryAdornment,
+      exitAdornment,
+      children,
       ...rest
     },
     ref,
@@ -70,7 +78,24 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       className,
     );
 
-    return <Component ref={ref} className={classes} {...rest} />;
+    // asChild hands rendering entirely to the single child Slot merges its props onto (e.g.
+    // an <a>) - wrapping that child in AdornedContent would make Slot merge onto the wrapper
+    // span instead of the caller's actual element, defeating the point of asChild. Adornments
+    // only apply on the native <button> path; an asChild caller composes them inside their
+    // own child if it wants them.
+    const content = asChild ? (
+      children
+    ) : (
+      <AdornedContent entryAdornment={entryAdornment} exitAdornment={exitAdornment}>
+        {children}
+      </AdornedContent>
+    );
+
+    return (
+      <Component ref={ref} className={classes} {...rest}>
+        {content}
+      </Component>
+    );
   },
 );
 

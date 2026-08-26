@@ -287,6 +287,93 @@ native `<button>` attribute (`onClick`, `type`, `disabled`, `form`, `aria-*`,
 that spreads its remaining props onto the underlying element, since an
 interactive element needs the full native surface to be usable.
 
+`entryAdornment`/`exitAdornment` (`AdornmentProps`, in
+[`src/tokens/adornment.ts`](./src/tokens/adornment.ts)) place any node — most
+often an `Icon` — on the left/right of the button's children, spaced apart
+via `AdornedContent` (below) so they don't collide with the text:
+
+```tsx
+import { Button, Icon } from '@inithium/ui';
+
+<Button
+  variant={{ kind: 'filled', color: 'primary', intensity: 500 }}
+  entryAdornment={<Icon name="House" textColor={{ color: 'primary-foreground', intensity: 500 }} />}
+>
+  Go home
+</Button>
+```
+
+These are ignored when `asChild` is set — Slot needs its single JSX child to
+be the caller's actual element (the `<a>`, etc.) so it can merge Button's
+props onto it directly; wrapping that child in `AdornedContent` first would
+make Slot merge onto the wrapper `<span>` instead, defeating the point of
+`asChild`. An `asChild` caller composes any adornment inside its own child.
+
+### `Icon`
+
+```tsx
+import { Icon } from '@inithium/ui';
+
+{/* Red square, black smiley - textColor paints the glyph itself, bgColor the wrapper box */}
+<Icon name="Smiley" size={32} bgColor={{ color: 'red', intensity: 500 }} textColor={{ color: 'slate', intensity: 950 }} padding={{ base: 8 }} />
+
+{/* textColor only - no bgColor means no background is imparted */}
+<Icon name="Smiley" size={32} textColor={{ color: 'primary', intensity: 500 }} />
+```
+
+`name: IconName` (in [`src/tokens/icon.ts`](./src/tokens/icon.ts)) is a
+string union of every icon [phosphoricons.com](https://phosphoricons.com)
+ships (e.g. `'Smiley'`, `'House'`, `'ArrowRight'`), derived at the type level
+straight from `@phosphor-icons/react`'s own exports — no hand-maintained
+list to fall out of sync with the installed version. `resolvePhosphorIcon`
+(in [`src/utils/resolvePhosphorIcon.ts`](./src/utils/resolvePhosphorIcon.ts))
+does the runtime name → component lookup.
+
+`bgColor`/`borderColor`/`animation`/`margin`/`padding` land on the wrapper
+element (`inline-flex items-center justify-center` by default, so a
+background sits centered around the glyph) — a bare `<svg>` has no
+background or border box of its own. `textColor` lands on that *same*
+wrapper and reaches the glyph purely through CSS inheritance: Phosphor's
+icons render with `fill="currentColor"` by default, so a Tailwind `text-*`
+class here colors the glyph's actual paths, exactly like `Text`'s
+`textColor` — `Icon` just never renders a text node for it to apply to.
+There's no default `padding`, same as `Text` — pass one explicitly for
+breathing room between the glyph and a `bgColor`/`borderColor` box.
+
+`size?: number | string`, `weight?: IconWeight`, and `mirrored?: boolean`
+pass straight through to the underlying Phosphor icon. Leaving `size` unset
+falls through to Phosphor's own default of `'1em'`, so an icon scales with
+whatever font size it's rendered inside (e.g. a `Button`'s) rather than
+needing an explicit pixel value everywhere.
+
+**Bundle size**: looking up an icon by a runtime string (`name`) requires
+importing every `@phosphor-icons/react` icon (~1500+) into one namespace —
+unlike `import { SmileyIcon } from '@phosphor-icons/react'`, a
+dynamically-computed lookup key can't be tree-shaken. This is the trade that
+makes the `<Icon name="Smiley" />` string API possible at all; it added
+~1MB gzipped to this template's default build. Reach for per-icon imports
+directly instead if bundle size matters more than the convenience.
+
+### `AdornedContent`
+
+```tsx
+import { AdornedContent, Icon } from '@inithium/ui';
+
+<AdornedContent entryAdornment={<Icon name="MagnifyingGlass" />}>
+  Search
+</AdornedContent>
+```
+
+The shared entry/exit-adornment layout `Button` uses internally, pulled out
+as its own primitive (in
+[`src/components/AdornedContent/AdornedContent.tsx`](./src/components/AdornedContent/AdornedContent.tsx))
+so `Input`/`Select` can reuse the same "icon on one or both sides of the
+content, spaced apart" layout later instead of each reinventing it. Renders
+`entryAdornment`, `children`, and `exitAdornment` in a row (`gap` defaults to
+`8`px) via `resolveFlexClasses` — and renders `children` completely
+unwrapped when neither adornment is passed, so the common plain-content case
+doesn't pick up an extra `<span>` for nothing.
+
 Two of `resolveButtonVariant`'s hover treatments are dynamic — built from the
 variant's own `color` string at a fixed shade (`hover:text-{color}-500` for
 `filled`, `hover:bg-{color}-100` for `outlined`/`ghost`,
