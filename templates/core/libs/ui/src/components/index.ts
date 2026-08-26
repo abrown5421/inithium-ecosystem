@@ -6,3 +6,6 @@ export type { BoxProps } from './Box/Box';
 
 export { AnimateBox } from './AnimateBox/AnimateBox';
 export type { AnimateBoxProps } from './AnimateBox/AnimateBox';
+
+export { Button } from './Button/Button';
+export type { ButtonProps } from './Button/Button';

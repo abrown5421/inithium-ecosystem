@@ -236,3 +236,14 @@
  * outside that range needs the consuming app's own @source inline(...) to render.
  */
 @source inline("{gap,gap-x,gap-y}-[{0..128}px]");
+
+/*
+ * resolveButtonVariant() builds a few hover-state classes from an arbitrary `color` string
+ * at a FIXED shade per kind - hover:text-{color}-500 (filled), hover:bg-{color}-100
+ * (outlined/ghost), hover:border-b-{color}-500 (link) - same runtime-interpolation gap as
+ * the two blocks above, scoped to just the two shades Button actually varies by color
+ * instead of the full 100-950 range, since the fixed (non-hover) base color already goes
+ * through the general-purpose blocks above.
+ */
+@source inline("hover:{text,border-b}-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-500");
+@source inline("hover:bg-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-100");

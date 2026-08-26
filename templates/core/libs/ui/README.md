@@ -233,6 +233,68 @@ resolves color/flex/spacing classes.
 `Box` has no animation props — reach for `AnimateBox` when a container needs
 to animate in/out.
 
+### `Button`
+
+```tsx
+import { Button } from '@inithium/ui';
+
+<Button variant={{ kind: 'filled', color: 'red', intensity: 500 }}>Delete</Button>
+<Button variant={{ kind: 'outlined', color: 'primary', intensity: 500 }}>Cancel</Button>
+<Button variant={{ kind: 'ghost', color: 'secondary', intensity: 500 }}>Dismiss</Button>
+<Button variant={{ kind: 'link', color: 'accent', intensity: 500 }}>Learn more</Button>
+
+{/* asChild - Slot merges Button's classes/props onto the single child instead of rendering a <button> */}
+<Button asChild variant={{ kind: 'outlined', color: 'primary', intensity: 500 }}>
+  <a href="/settings">Settings</a>
+</Button>
+```
+
+`variant?: ButtonVariantSpec` (`{ kind: 'filled' | 'outlined' | 'ghost' |
+'link' } & ColorSpec`, in [`src/tokens/button.ts`](./src/tokens/button.ts))
+is a single high-level prop that resolves a coherent baseline for one of four
+visual kinds — background/text/border colors, structural classes, a hover
+treatment, and padding — via `resolveButtonVariant` (in
+[`src/utils/resolveButtonVariant.ts`](./src/utils/resolveButtonVariant.ts)).
+It extends `ColorSpec` rather than redeclaring `color`/`intensity`, so a
+variant's shade is constrained to the same `ColorIntensity` union as every
+other color prop (an unconstrained `intensity: number` could ask for a shade
+Tailwind doesn't ship, and the safelist below doesn't cover, silently
+rendering unstyled).
+
+`bgColor`/`textColor`/`borderColor`/`padding`/`margin`/`className` all stay
+available on `Button` underneath `variant` as a full override — each one, if
+passed, replaces just that field of the variant's resolved defaults, so
+overriding `textColor` doesn't require re-specifying the variant's `bgColor`
+or `borderColor` too:
+
+```tsx
+{/* Everything from the "filled" preset except the text color */}
+<Button
+  variant={{ kind: 'filled', color: 'red', intensity: 500 }}
+  textColor={{ color: 'yellow', intensity: 100 }}
+>
+  Delete
+</Button>
+```
+
+`Button` is `React.forwardRef<HTMLButtonElement, ButtonProps>`, so refs work
+normally. `asChild` renders through Radix's `Slot` instead of a `<button>`,
+merging Button's resolved classes and remaining props onto its single JSX
+child — use it to make a link, a custom component, etc. look and behave like
+this Button without nesting an actual `<button>` inside it. Every other
+native `<button>` attribute (`onClick`, `type`, `disabled`, `form`, `aria-*`,
+...) passes through directly — `Button` is the one primitive in this package
+that spreads its remaining props onto the underlying element, since an
+interactive element needs the full native surface to be usable.
+
+Two of `resolveButtonVariant`'s hover treatments are dynamic — built from the
+variant's own `color` string at a fixed shade (`hover:text-{color}-500` for
+`filled`, `hover:bg-{color}-100` for `outlined`/`ghost`,
+`hover:border-b-{color}-500` for `link`) — which hits the same runtime-
+interpolation gap as `resolveColorClass`, scoped to just those two shades
+under a `hover:` prefix (see `theme.css`'s third `@source inline(...)`
+block, added specifically for this).
+
 ### Variants (hover:, dark:, responsive, ...) and the `className` escape hatch
 
 `ColorSpec` intentionally has no `modifier` field. A structured modifier would
