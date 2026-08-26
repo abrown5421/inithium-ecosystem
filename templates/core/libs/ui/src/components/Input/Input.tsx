@@ -20,7 +20,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const { border, focusRing } = resolveFieldColorClasses(color, error);
 
     const classes = mergeClassNames(
-      'w-full rounded-md border bg-transparent px-3 py-2 text-sm text-surface-foreground-900 transition-colors placeholder:text-surface-400',
+      'w-full rounded-md border bg-transparent px-3 py-2 text-sm text-surface-900 transition-colors placeholder:text-surface-400',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
       'disabled:opacity-50 disabled:cursor-not-allowed',
       border,
