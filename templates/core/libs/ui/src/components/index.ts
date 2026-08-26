@@ -33,3 +33,6 @@ export type { CheckboxProps } from './Checkbox/Checkbox';
 
 export { RadioGroup, RadioGroupItem } from './RadioGroup/RadioGroup';
 export type { RadioGroupProps, RadioGroupItemProps } from './RadioGroup/RadioGroup';
+
+export { Textarea } from './Textarea/Textarea';
+export type { TextareaProps } from './Textarea/Textarea';

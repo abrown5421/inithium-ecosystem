@@ -77,6 +77,7 @@ export {
   Checkbox,
   RadioGroup,
   RadioGroupItem,
+  Textarea,
 } from './components';
 export type {
   TextProps,
@@ -93,4 +94,5 @@ export type {
   CheckboxProps,
   RadioGroupProps,
   RadioGroupItemProps,
+  TextareaProps,
 } from './components';
