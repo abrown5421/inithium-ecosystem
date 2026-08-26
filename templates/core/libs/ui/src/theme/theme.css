@@ -238,6 +238,23 @@
 @source inline("{gap,gap-x,gap-y}-[{0..128}px]");
 
 /*
+ * resolveFlexClasses() also assembles Box/AnimateBox's display/direction/wrap/justify/
+ * align/content classes from small lookup tables (same file). Unlike the gap/margin/
+ * padding case above this is a finite, fully enumerable set - not "any integer" - but it
+ * hits the identical JIT-scanning gap: the literal class strings live only inside that
+ * lookup table, never as a complete token in a file Tailwind's content scanner actually
+ * walks (a consumer only ever writes `flex={{ direction: 'col' }}`, never the string
+ * "flex-col" itself). Without this, every Box/AnimateBox using `flex` silently renders
+ * with the browser's initial flex-direction/justify-content/align-items instead of the
+ * one requested.
+ */
+@source inline("{flex,inline-flex}");
+@source inline("flex-{row,row-reverse,col,col-reverse,wrap,wrap-reverse,nowrap}");
+@source inline("justify-{start,end,center,between,around,evenly}");
+@source inline("items-{start,end,center,baseline,stretch}");
+@source inline("content-{start,end,center,between,around,evenly,stretch}");
+
+/*
  * resolveButtonVariant() builds a few hover-state classes from an arbitrary `color` string
  * at a FIXED shade per kind - hover:text-{color}-500 (filled), hover:bg-{color}-100
  * (outlined/ghost), hover:border-b-{color}-500 (link) - same runtime-interpolation gap as
