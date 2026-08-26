@@ -15,3 +15,6 @@ export type { IconProps } from './Icon/Icon';
 
 export { AdornedContent } from './AdornedContent/AdornedContent';
 export type { AdornedContentProps } from './AdornedContent/AdornedContent';
+
+export { Input } from './Input/Input';
+export type { InputProps } from './Input/Input';

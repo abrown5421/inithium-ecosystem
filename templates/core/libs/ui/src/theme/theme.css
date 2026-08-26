@@ -247,3 +247,12 @@
  */
 @source inline("hover:{text,border-b}-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-500");
 @source inline("hover:bg-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-100");
+
+/*
+ * Input/Select/Textarea build their focus ring color as "focus-visible:ring-{color}-{shade}"
+ * from a caller-supplied ColorSpec (see components/Input/Input.tsx) - same runtime-
+ * interpolation gap as the blocks above, this time under the focus-visible: variant, which
+ * needs its own safelist entry since Tailwind's JIT scanner keys candidates on the full
+ * variant+utility string, not the bare utility.
+ */
+@source inline("focus-visible:ring-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{100,200,300,400,500,600,700,800,900,950}{,/10,/20,/30,/40,/50,/60,/70,/80,/90}");
