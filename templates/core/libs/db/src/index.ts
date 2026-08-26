@@ -21,5 +21,5 @@ export const disconnectDatabase = async (): Promise<void> => {
 export const getUserRepository = () => activeProvider.getUserRepository();
 
 export type { DbProvider, DbConfig } from './contracts/db-provider.contract';
-export type { UserRepository, UserEntity, CreateUserInput } from './contracts/userRepository';
+export type { UserRepository, UserEntity, CreateUserInput } from './contracts/user.contract';
 export { mongoProvider } from './providers/mongo/mongo.provider';
