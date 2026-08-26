@@ -59,9 +59,10 @@ export { resolveButtonVariant } from './utils/resolveButtonVariant';
 export type { ButtonVariantDefaults } from './utils/resolveButtonVariant';
 export { resolveFieldColorClasses } from './utils/resolveFieldColorClasses';
 export type { FieldColorClasses } from './utils/resolveFieldColorClasses';
+export { resolveContrastColor } from './utils/resolveContrastColor';
 export { resolvePhosphorIcon } from './utils/resolvePhosphorIcon';
 
-export { Text, Box, AnimateBox, Button, Icon, AdornedContent, Input, Select, SelectItem } from './components';
+export { Text, Box, AnimateBox, Button, Icon, AdornedContent, Input, Select, SelectItem, Switch } from './components';
 export type {
   TextProps,
   BoxProps,
@@ -72,4 +73,5 @@ export type {
   InputProps,
   SelectProps,
   SelectItemProps,
+  SwitchProps,
 } from './components';
