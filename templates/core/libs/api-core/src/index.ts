@@ -9,3 +9,6 @@ export const registerCoreRoutes = (app: Express): void => {
   app.use(apiUtilsCheckRouter);
   console.log('📋 Core routes registered: /health, /auth/*, /api/health, /api/test-error');
 };
+
+export { createCrudService } from './services/createCrudService';
+export type { CrudRepository, CrudService } from './services/createCrudService';

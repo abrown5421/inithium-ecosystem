@@ -1,5 +1,6 @@
-import { UserRepository, UserEntity, CreateUserInput } from '../../contracts/userRepository';
-import { UserModel, UserDocument } from './models/userModel';
+import type { Model } from 'mongoose';
+import { CreateUserInput, UserEntity, UserRepository } from '../../contracts/user.contract';
+import { UserDocument } from './models/userModel';
 
 const mapToUserEntity = (doc: UserDocument): UserEntity => ({
   id: doc._id.toString(),
@@ -10,17 +11,17 @@ const mapToUserEntity = (doc: UserDocument): UserEntity => ({
   createdAt: doc.createdAt,
 });
 
-export const userRepositoryMongo: UserRepository = {
+export const createMongoUserRepository = (model: Model<UserDocument>): UserRepository => ({
   findById: async (id: string): Promise<UserEntity | null> => {
-    const user = await UserModel.findById(id).exec();
+    const user = await model.findById(id).exec();
     return user ? mapToUserEntity(user) : null;
   },
   findByEmail: async (email: string): Promise<UserEntity | null> => {
-    const user = await UserModel.findOne({ email }).exec();
+    const user = await model.findOne({ email }).exec();
     return user ? mapToUserEntity(user) : null;
   },
   create: async (input: CreateUserInput): Promise<UserEntity> => {
-    const user = await UserModel.create({
+    const user = await model.create({
       email: input.email,
       firstName: input.firstName,
       lastName: input.lastName,
@@ -28,4 +29,4 @@ export const userRepositoryMongo: UserRepository = {
     });
     return mapToUserEntity(user);
   },
-};
+});

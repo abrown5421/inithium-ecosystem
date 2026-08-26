@@ -1,4 +1,4 @@
-import { UserRepository } from './userRepository';
+import { UserRepository } from './user.contract';
 
 export interface DbConfig {
   uri?: string;

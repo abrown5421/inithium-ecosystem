@@ -1,7 +1,10 @@
 import mongoose from 'mongoose';
 import { DbProvider, DbConfig } from '../../contracts/db-provider.contract';
-import { UserRepository } from '../../contracts/userRepository';
-import { userRepositoryMongo } from './userRepositoryMongo';
+import { UserRepository } from '../../contracts/user.contract';
+import { createMongoUserRepository } from './user.repository';
+import { UserModel } from './models/userModel';
+
+const userRepository = createMongoUserRepository(UserModel);
 
 export const mongoProvider: DbProvider = {
   name: 'MongoDB',
@@ -17,5 +20,5 @@ export const mongoProvider: DbProvider = {
   disconnect: async () => {
     await mongoose.disconnect();
   },
-  getUserRepository: (): UserRepository => userRepositoryMongo,
+  getUserRepository: (): UserRepository => userRepository,
 };
