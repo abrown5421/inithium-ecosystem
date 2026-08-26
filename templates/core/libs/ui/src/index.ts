@@ -62,7 +62,19 @@ export type { FieldColorClasses } from './utils/resolveFieldColorClasses';
 export { resolveContrastColor } from './utils/resolveContrastColor';
 export { resolvePhosphorIcon } from './utils/resolvePhosphorIcon';
 
-export { Text, Box, AnimateBox, Button, Icon, AdornedContent, Input, Select, SelectItem, Switch } from './components';
+export {
+  Text,
+  Box,
+  AnimateBox,
+  Button,
+  Icon,
+  AdornedContent,
+  Input,
+  Select,
+  SelectItem,
+  Switch,
+  Slider,
+} from './components';
 export type {
   TextProps,
   BoxProps,
@@ -74,4 +86,5 @@ export type {
   SelectProps,
   SelectItemProps,
   SwitchProps,
+  SliderProps,
 } from './components';
