@@ -1,0 +1,39 @@
+import type { Meta, StoryObj } from '@storybook/react';
+import { Avatar } from './Avatar';
+
+const meta: Meta<typeof Avatar> = {
+  title: 'Data Display/Avatar',
+  component: Avatar,
+  args: {
+    source: { variant: 'initials', name: 'Jane Doe' },
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof Avatar>;
+
+export const Default: Story = {};
+
+export const Square: Story = {
+  args: { styleConfig: { shape: 'square' } },
+};
+
+export const CustomColors: Story = {
+  args: { styleConfig: { bgColor: { color: 'accent', intensity: 600 }, fontColor: { color: 'accent-foreground' } } },
+};
+
+export const Large: Story = {
+  args: { size: 200 },
+};
+
+export const FromImage: Story = {
+  args: { source: { variant: 'image', url: 'https://i.pravatar.cc/200', alt: 'Jane Doe' } },
+};
+
+export const FromDicebear: Story = {
+  args: { source: { variant: 'dicebear', style: 'bottts', seed: 'jane-doe' } },
+};
+
+export const Clickable: Story = {
+  args: { onClick: () => alert('Avatar clicked') },
+};

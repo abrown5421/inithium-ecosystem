@@ -56,6 +56,17 @@ export { ALERT_SEVERITIES, ALERT_POSITIONS } from './tokens/alert';
 export type { DrawerSide } from './tokens/drawer';
 export { DRAWER_SIDES } from './tokens/drawer';
 
+export type {
+  AvatarShape,
+  AvatarVariant,
+  AvatarStyleConfig,
+  AvatarInitialsSource,
+  AvatarImageSource,
+  AvatarDicebearSource,
+  AvatarSource,
+} from './tokens/avatar';
+export { AVATAR_SHAPES, AVATAR_VARIANTS, DEFAULT_AVATAR_STYLE } from './tokens/avatar';
+
 export { resolveColorClass } from './theme/resolveColorClass';
 export { mergeClassNames } from './theme/mergeClassNames';
 export { resolveAnimationClasses } from './utils/resolveAnimationClasses';
@@ -71,6 +82,9 @@ export { resolveAlertSeverityClasses } from './utils/resolveAlertSeverityClasses
 export { resolveAlertAnimation, resolveExitDurationMs } from './utils/resolveAlertAnimation';
 export { resolveAnimationDurationMs } from './utils/resolveAnimationDurationMs';
 export { resolveDrawerAnimation } from './utils/resolveDrawerAnimation';
+export { resolveAvatarInitials } from './utils/resolveAvatarInitials';
+export { resolveAvatarShapeClasses } from './utils/resolveAvatarShapeClasses';
+export { resolveDicebearUrl } from './utils/resolveDicebearUrl';
 
 export { alert } from './alert/alert';
 export type { AlertOptions } from './alert/alert';
@@ -133,6 +147,8 @@ export {
   DialogContainer,
   Drawer,
   DrawerContainer,
+  Avatar,
+  Divider,
 } from './components';
 export type {
   TextProps,
@@ -153,4 +169,6 @@ export type {
   AlertProps,
   DialogProps,
   DrawerProps,
+  AvatarProps,
+  DividerProps,
 } from './components';

@@ -51,3 +51,9 @@ export { Drawer } from './Drawer/Drawer';
 export type { DrawerProps } from './Drawer/Drawer';
 
 export { DrawerContainer } from './DrawerContainer/DrawerContainer';
+
+export { Avatar } from './Avatar/Avatar';
+export type { AvatarProps } from './Avatar/Avatar';
+
+export { Divider } from './Divider/Divider';
+export type { DividerProps } from './Divider/Divider';
