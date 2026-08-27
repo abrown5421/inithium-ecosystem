@@ -191,6 +191,7 @@ export {
   resolveAvatarConfigProps,
   useNavigateWithTransition,
   ColorPicker,
+  AutoIncrementingList,
 } from './composites';
 export type {
   NavbarProps,
@@ -200,4 +201,5 @@ export type {
   PageComponentMap,
   AvatarConfigProps,
   ColorPickerProps,
+  AutoIncrementingListProps,
 } from './composites';

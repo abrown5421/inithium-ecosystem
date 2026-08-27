@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, ColorPicker, Text } from '@inithium/ui';
+import { AutoIncrementingList, Box, ColorPicker, Text } from '@inithium/ui';
 
 export const HomePage = () => {
   const [color, setColor] = useState('#006a8e');
@@ -20,6 +20,15 @@ export const HomePage = () => {
           helperText="Type/paste a hex code, or click the swatch to pick a theme or Tailwind color."
           value={color}
           onValueChange={setColor}
+        />
+      </Box>
+
+      <Box className="max-w-xs" padding={{ top: 12 }}>
+        <Text as="h2" className="mb-2 text-lg font-semibold">
+          AutoIncrementingList demo
+        </Text>
+        <AutoIncrementingList
+          renderItem={(index) => <ColorPicker label={`Color #${index + 1}`} defaultValue="#f5a42d" />}
         />
       </Box>
     </Box>
