@@ -4,6 +4,7 @@ import {
   Box,
   DialogContainer,
   DrawerContainer,
+  Footer,
   Navbar,
   PageShell,
   Text,
@@ -29,6 +30,8 @@ export function App() {
   const { data: page, isLoading } = useGetPageByRouteQuery({ route });
   const { data: primaryNavPages = [] } = useGetNavPagesQuery('primary-nav');
   const { data: profileNavPages = [] } = useGetNavPagesQuery('profile-nav');
+  const { data: primaryFooterPages = [] } = useGetNavPagesQuery('primary-footer');
+  const { data: secondaryFooterPages = [] } = useGetNavPagesQuery('secondary-footer');
   const { currentUser, logout } = useCurrentUser();
 
   return (
@@ -56,6 +59,12 @@ export function App() {
       ) : (
         <NotFoundPage />
       )}
+
+      <Footer
+        primaryFooterPages={primaryFooterPages}
+        secondaryFooterPages={secondaryFooterPages}
+        brandName="Inithium"
+      />
 
       <AlertContainer />
       <DialogContainer />

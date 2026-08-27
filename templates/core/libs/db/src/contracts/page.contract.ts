@@ -1,4 +1,4 @@
-export const NAV_LOCATIONS = ['primary-nav', 'profile-nav', 'primary-footer', 'secondary-footer', 'none'] as const;
+export const NAV_LOCATIONS = ['primary-nav', 'profile-nav', 'primary-footer', 'secondary-footer'] as const;
 export type NavLocation = (typeof NAV_LOCATIONS)[number];
 
 export const PAGE_LAYOUT_TEMPLATES = ['default', 'full-width', 'sidebar-left', 'sidebar-right'] as const;
@@ -28,7 +28,9 @@ export interface PageAccessConfig {
 }
 
 export interface PageNavigationConfig {
-  location: NavLocation;
+  // A page can be surfaced in more than one nav at once (e.g. Home in both `primary-nav` and
+  // `primary-footer`) - an empty array means the page appears in no nav.
+  locations: NavLocation[];
   label: string;
   order: number;
   icon?: string;

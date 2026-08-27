@@ -1,6 +1,9 @@
 export { Navbar } from './Navbar';
 export type { NavbarProps, NavbarLogo, NavbarUser } from './Navbar';
 
+export { Footer } from './Footer';
+export type { FooterProps } from './Footer';
+
 export { PageShell } from './PageShell';
 export type { PageShellProps, PageComponentMap } from './PageShell';
 

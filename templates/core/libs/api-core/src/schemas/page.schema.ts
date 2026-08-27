@@ -15,7 +15,7 @@ const pageAccessSchema = z.object({
 });
 
 const pageNavigationSchema = z.object({
-  location: z.enum(NAV_LOCATIONS),
+  locations: z.array(z.enum(NAV_LOCATIONS)),
   label: z.string().min(1),
   order: z.number().int(),
   icon: z.string().optional(),
