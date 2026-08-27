@@ -8,3 +8,6 @@ export { resolveAvatarConfigProps } from './resolveAvatarConfigProps';
 export type { AvatarConfigProps } from './resolveAvatarConfigProps';
 
 export { useNavigateWithTransition } from './useNavigateWithTransition';
+
+export { ColorPicker } from './ColorPicker';
+export type { ColorPickerProps } from './ColorPicker';

@@ -58,6 +58,28 @@
   --ui-surface-900: #1e293b;
   --ui-surface-950: #0f172a;
 
+  --ui-tertiary-100: #f2f3f5;
+  --ui-tertiary-200: #dce0e6;
+  --ui-tertiary-300: #c0c7d2;
+  --ui-tertiary-400: #9aa6b6;
+  --ui-tertiary-500: #64748b;
+  --ui-tertiary-600: #576579;
+  --ui-tertiary-700: #485464;
+  --ui-tertiary-800: #39424f;
+  --ui-tertiary-900: #2b323c;
+  --ui-tertiary-950: #191d23;
+
+  --ui-quaternary-100: #e8edf4;
+  --ui-quaternary-200: #c4d1e3;
+  --ui-quaternary-300: #94accd;
+  --ui-quaternary-400: #537aaf;
+  --ui-quaternary-500: #25374f;
+  --ui-quaternary-600: #203045;
+  --ui-quaternary-700: #1b2839;
+  --ui-quaternary-800: #151f2d;
+  --ui-quaternary-900: #101822;
+  --ui-quaternary-950: #090e14;
+
   --ui-primary-foreground-100: #0a0a0a;
   --ui-primary-foreground-200: #0a0a0a;
   --ui-primary-foreground-300: #0a0a0a;
@@ -101,6 +123,28 @@
   --ui-surface-foreground-800: #fafafa;
   --ui-surface-foreground-900: #fafafa;
   --ui-surface-foreground-950: #fafafa;
+
+  --ui-tertiary-foreground-100: #0a0a0a;
+  --ui-tertiary-foreground-200: #0a0a0a;
+  --ui-tertiary-foreground-300: #0a0a0a;
+  --ui-tertiary-foreground-400: #0a0a0a;
+  --ui-tertiary-foreground-500: #fafafa;
+  --ui-tertiary-foreground-600: #fafafa;
+  --ui-tertiary-foreground-700: #fafafa;
+  --ui-tertiary-foreground-800: #fafafa;
+  --ui-tertiary-foreground-900: #fafafa;
+  --ui-tertiary-foreground-950: #fafafa;
+
+  --ui-quaternary-foreground-100: #0a0a0a;
+  --ui-quaternary-foreground-200: #0a0a0a;
+  --ui-quaternary-foreground-300: #0a0a0a;
+  --ui-quaternary-foreground-400: #0a0a0a;
+  --ui-quaternary-foreground-500: #fafafa;
+  --ui-quaternary-foreground-600: #fafafa;
+  --ui-quaternary-foreground-700: #fafafa;
+  --ui-quaternary-foreground-800: #fafafa;
+  --ui-quaternary-foreground-900: #fafafa;
+  --ui-quaternary-foreground-950: #fafafa;
 }
 
 @theme {
@@ -148,6 +192,28 @@
   --color-surface-900: var(--ui-surface-900);
   --color-surface-950: var(--ui-surface-950);
 
+  --color-tertiary-100: var(--ui-tertiary-100);
+  --color-tertiary-200: var(--ui-tertiary-200);
+  --color-tertiary-300: var(--ui-tertiary-300);
+  --color-tertiary-400: var(--ui-tertiary-400);
+  --color-tertiary-500: var(--ui-tertiary-500);
+  --color-tertiary-600: var(--ui-tertiary-600);
+  --color-tertiary-700: var(--ui-tertiary-700);
+  --color-tertiary-800: var(--ui-tertiary-800);
+  --color-tertiary-900: var(--ui-tertiary-900);
+  --color-tertiary-950: var(--ui-tertiary-950);
+
+  --color-quaternary-100: var(--ui-quaternary-100);
+  --color-quaternary-200: var(--ui-quaternary-200);
+  --color-quaternary-300: var(--ui-quaternary-300);
+  --color-quaternary-400: var(--ui-quaternary-400);
+  --color-quaternary-500: var(--ui-quaternary-500);
+  --color-quaternary-600: var(--ui-quaternary-600);
+  --color-quaternary-700: var(--ui-quaternary-700);
+  --color-quaternary-800: var(--ui-quaternary-800);
+  --color-quaternary-900: var(--ui-quaternary-900);
+  --color-quaternary-950: var(--ui-quaternary-950);
+
   --color-primary-foreground-100: var(--ui-primary-foreground-100);
   --color-primary-foreground-200: var(--ui-primary-foreground-200);
   --color-primary-foreground-300: var(--ui-primary-foreground-300);
@@ -191,6 +257,28 @@
   --color-surface-foreground-800: var(--ui-surface-foreground-800);
   --color-surface-foreground-900: var(--ui-surface-foreground-900);
   --color-surface-foreground-950: var(--ui-surface-foreground-950);
+
+  --color-tertiary-foreground-100: var(--ui-tertiary-foreground-100);
+  --color-tertiary-foreground-200: var(--ui-tertiary-foreground-200);
+  --color-tertiary-foreground-300: var(--ui-tertiary-foreground-300);
+  --color-tertiary-foreground-400: var(--ui-tertiary-foreground-400);
+  --color-tertiary-foreground-500: var(--ui-tertiary-foreground-500);
+  --color-tertiary-foreground-600: var(--ui-tertiary-foreground-600);
+  --color-tertiary-foreground-700: var(--ui-tertiary-foreground-700);
+  --color-tertiary-foreground-800: var(--ui-tertiary-foreground-800);
+  --color-tertiary-foreground-900: var(--ui-tertiary-foreground-900);
+  --color-tertiary-foreground-950: var(--ui-tertiary-foreground-950);
+
+  --color-quaternary-foreground-100: var(--ui-quaternary-foreground-100);
+  --color-quaternary-foreground-200: var(--ui-quaternary-foreground-200);
+  --color-quaternary-foreground-300: var(--ui-quaternary-foreground-300);
+  --color-quaternary-foreground-400: var(--ui-quaternary-foreground-400);
+  --color-quaternary-foreground-500: var(--ui-quaternary-foreground-500);
+  --color-quaternary-foreground-600: var(--ui-quaternary-foreground-600);
+  --color-quaternary-foreground-700: var(--ui-quaternary-foreground-700);
+  --color-quaternary-foreground-800: var(--ui-quaternary-foreground-800);
+  --color-quaternary-foreground-900: var(--ui-quaternary-foreground-900);
+  --color-quaternary-foreground-950: var(--ui-quaternary-foreground-950);
 }
 
 /*
@@ -202,7 +290,7 @@
  * assembles the string. Raw Tailwind palette colors (e.g. "emerald") hit the same gap
  * and get the same treatment below.
  */
-@source inline("{text,bg,border,ring}-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground}-{100,200,300,400,500,600,700,800,900,950}{,/10,/20,/30,/40,/50,/60,/70,/80,/90}");
+@source inline("{text,bg,border,ring}-{primary,secondary,tertiary,quaternary,accent,surface,primary-foreground,secondary-foreground,tertiary-foreground,quaternary-foreground,accent-foreground,surface-foreground}-{100,200,300,400,500,600,700,800,900,950}{,/10,/20,/30,/40,/50,/60,/70,/80,/90}");
 
 
 /*
@@ -262,8 +350,8 @@
  * instead of the full 100-950 range, since the fixed (non-hover) base color already goes
  * through the general-purpose blocks above.
  */
-@source inline("hover:{text,border-b}-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-500");
-@source inline("hover:bg-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-100");
+@source inline("hover:{text,border-b}-{primary,secondary,tertiary,quaternary,accent,surface,primary-foreground,secondary-foreground,tertiary-foreground,quaternary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-500");
+@source inline("hover:bg-{primary,secondary,tertiary,quaternary,accent,surface,primary-foreground,secondary-foreground,tertiary-foreground,quaternary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-100");
 
 /*
  * Input/Select/Textarea build their focus ring color as "focus-visible:ring-{color}-{shade}"
@@ -272,7 +360,7 @@
  * needs its own safelist entry since Tailwind's JIT scanner keys candidates on the full
  * variant+utility string, not the bare utility.
  */
-@source inline("focus-visible:ring-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{100,200,300,400,500,600,700,800,900,950}{,/10,/20,/30,/40,/50,/60,/70,/80,/90}");
+@source inline("focus-visible:ring-{primary,secondary,tertiary,quaternary,accent,surface,primary-foreground,secondary-foreground,tertiary-foreground,quaternary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{100,200,300,400,500,600,700,800,900,950}{,/10,/20,/30,/40,/50,/60,/70,/80,/90}");
 
 /*
  * Switch's track and Checkbox/RadioGroup's checked fill build
@@ -280,10 +368,10 @@
  * runtime-interpolation gap as the blocks above, this time keyed off Radix's own
  * `data-state` attribute rather than a CSS pseudo-class.
  */
-@source inline("data-[state=checked]:bg-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{100,200,300,400,500,600,700,800,900,950}{,/10,/20,/30,/40,/50,/60,/70,/80,/90}");
+@source inline("data-[state=checked]:bg-{primary,secondary,tertiary,quaternary,accent,surface,primary-foreground,secondary-foreground,tertiary-foreground,quaternary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{100,200,300,400,500,600,700,800,900,950}{,/10,/20,/30,/40,/50,/60,/70,/80,/90}");
 
 /*
  * Checkbox's indeterminate fill needs the identical treatment as its checked fill above,
  * just keyed off Radix's "indeterminate" data-state instead of "checked".
  */
-@source inline("data-[state=indeterminate]:bg-{primary,secondary,accent,surface,primary-foreground,secondary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{100,200,300,400,500,600,700,800,900,950}{,/10,/20,/30,/40,/50,/60,/70,/80,/90}");
+@source inline("data-[state=indeterminate]:bg-{primary,secondary,tertiary,quaternary,accent,surface,primary-foreground,secondary-foreground,tertiary-foreground,quaternary-foreground,accent-foreground,surface-foreground,slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{100,200,300,400,500,600,700,800,900,950}{,/10,/20,/30,/40,/50,/60,/70,/80,/90}");

@@ -57,3 +57,6 @@ export type { AvatarProps } from './Avatar/Avatar';
 
 export { Divider } from './Divider/Divider';
 export type { DividerProps } from './Divider/Divider';
+
+export { Tabs, TabsList, TabsTrigger, TabsContent } from './Tabs/Tabs';
+export type { TabsProps, TabsListProps, TabsTriggerProps, TabsContentProps } from './Tabs/Tabs';

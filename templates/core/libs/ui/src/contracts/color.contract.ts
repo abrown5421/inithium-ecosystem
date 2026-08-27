@@ -7,10 +7,14 @@ export type ColorOpacity = (typeof COLOR_OPACITIES)[number];
 export const SEMANTIC_COLOR_TOKENS = [
   'primary',
   'secondary',
+  'tertiary',
+  'quaternary',
   'accent',
   'surface',
   'primary-foreground',
   'secondary-foreground',
+  'tertiary-foreground',
+  'quaternary-foreground',
   'accent-foreground',
   'surface-foreground',
 ] as const;
