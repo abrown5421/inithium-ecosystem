@@ -8,6 +8,7 @@ const mapToUserEntity = (doc: UserDocument): UserEntity => ({
   firstName: doc.firstName,
   lastName: doc.lastName,
   passwordHash: doc.passwordHash,
+  role: doc.role,
   createdAt: doc.createdAt,
 });
 
@@ -26,6 +27,7 @@ export const createMongoUserRepository = (model: Model<UserDocument>): UserRepos
       firstName: input.firstName,
       lastName: input.lastName,
       passwordHash: input.passwordHash,
+      role: input.role ?? 'user',
     });
     return mapToUserEntity(user);
   },

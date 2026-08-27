@@ -25,10 +25,10 @@ router.post('/auth/register', async (req: Request, res: Response): Promise<void>
 
     const passwordHash = await hashPassword(password);
     const user = await userRepository.create({ email, firstName, lastName, passwordHash });
-    const accessToken = signAccessToken({ sub: user.id, email: user.email });
+    const accessToken = signAccessToken({ sub: user.id, email: user.email, role: user.role });
 
     res.status(201).json({
-      user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName },
+      user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role },
       accessToken,
     });
   } catch (error) {
@@ -53,9 +53,9 @@ router.post('/auth/login', async (req: Request, res: Response): Promise<void> =>
       return;
     }
 
-    const accessToken = signAccessToken({ sub: user.id, email: user.email });
+    const accessToken = signAccessToken({ sub: user.id, email: user.email, role: user.role });
     res.status(200).json({
-      user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName },
+      user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role },
       accessToken,
     });
   } catch (error) {

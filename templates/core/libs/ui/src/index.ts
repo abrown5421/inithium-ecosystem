@@ -53,6 +53,9 @@ export type { FieldProps } from './tokens/field';
 export type { AlertSeverity, AlertPosition } from './tokens/alert';
 export { ALERT_SEVERITIES, ALERT_POSITIONS } from './tokens/alert';
 
+export type { DrawerSide } from './tokens/drawer';
+export { DRAWER_SIDES } from './tokens/drawer';
+
 export { resolveColorClass } from './theme/resolveColorClass';
 export { mergeClassNames } from './theme/mergeClassNames';
 export { resolveAnimationClasses } from './utils/resolveAnimationClasses';
@@ -67,6 +70,7 @@ export { resolvePhosphorIcon } from './utils/resolvePhosphorIcon';
 export { resolveAlertSeverityClasses } from './utils/resolveAlertSeverityClasses';
 export { resolveAlertAnimation, resolveExitDurationMs } from './utils/resolveAlertAnimation';
 export { resolveAnimationDurationMs } from './utils/resolveAnimationDurationMs';
+export { resolveDrawerAnimation } from './utils/resolveDrawerAnimation';
 
 export { alert } from './alert/alert';
 export type { AlertOptions } from './alert/alert';
@@ -94,6 +98,19 @@ export {
 } from './dialog/dialogStore';
 export type { DialogRecord, DialogContent, DialogRenderContext, ShowDialogOptions } from './dialog/dialogStore';
 
+export { drawer } from './drawer/drawer';
+export type { DrawerOptions } from './drawer/drawer';
+export { useDrawer } from './drawer/useDrawer';
+export {
+  subscribeToDrawers,
+  getDrawerRecords,
+  showDrawer,
+  requestDrawerClose,
+  removeDrawer,
+  closeAllDrawers,
+} from './drawer/drawerStore';
+export type { DrawerRecord, DrawerContent, DrawerRenderContext, ShowDrawerOptions } from './drawer/drawerStore';
+
 export {
   Text,
   Box,
@@ -114,6 +131,8 @@ export {
   AlertContainer,
   Dialog,
   DialogContainer,
+  Drawer,
+  DrawerContainer,
 } from './components';
 export type {
   TextProps,
@@ -133,4 +152,5 @@ export type {
   TextareaProps,
   AlertProps,
   DialogProps,
+  DrawerProps,
 } from './components';

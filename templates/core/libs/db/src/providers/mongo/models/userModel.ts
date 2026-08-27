@@ -5,6 +5,7 @@ export interface UserDocument extends Document {
   firstName: string;
   lastName?: string;
   passwordHash: string;
+  role: string;
   createdAt: Date;
 }
 
@@ -14,6 +15,7 @@ const userSchema = new Schema<UserDocument>(
     firstName: { type: String, required: true },
     lastName: { type: String, required: false },
     passwordHash: { type: String, required: true },
+    role: { type: String, required: true, default: 'user' },
   },
   { timestamps: true }
 );

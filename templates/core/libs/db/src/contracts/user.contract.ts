@@ -4,6 +4,7 @@ export interface UserEntity {
   firstName: string;
   lastName?: string;
   passwordHash: string;
+  role: string;
   createdAt: Date;
 }
 
@@ -12,6 +13,7 @@ export interface CreateUserInput {
   firstName: string;
   lastName?: string;
   passwordHash: string;
+  role?: string;
 }
 
 export interface UserRepository {
