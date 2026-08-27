@@ -9,8 +9,8 @@ export interface PageDocument extends Document {
   isPluginPage: boolean;
   pluginOrigin?: string;
   animation: { enter: string; exit: string; duration: number; delay: number };
-  backgroundColor: string;
-  foregroundColor: string;
+  backgroundColor: { color: string; intensity?: number; opacity?: number };
+  foregroundColor: { color: string; intensity?: number; opacity?: number };
   access: { isPublic: boolean; isAnonymousOnly: boolean; requiredRoles: string[] };
   navigation: { location: NavLocation; label: string; order: number; icon?: string };
   seo?: { metaTitle?: string; metaDescription?: string; ogImage?: string };
@@ -33,8 +33,16 @@ const pageSchema = new Schema<PageDocument>(
       duration: { type: Number, required: true, default: 300 },
       delay: { type: Number, required: true, default: 0 },
     },
-    backgroundColor: { type: String, required: true, default: 'surface' },
-    foregroundColor: { type: String, required: true, default: 'primary-foreground' },
+    backgroundColor: {
+      color: { type: String, required: true, default: 'surface' },
+      intensity: { type: Number, required: false, default: 100 },
+      opacity: { type: Number, required: false },
+    },
+    foregroundColor: {
+      color: { type: String, required: true, default: 'primary-foreground' },
+      intensity: { type: Number, required: false, default: 500 },
+      opacity: { type: Number, required: false },
+    },
     access: {
       isPublic: { type: Boolean, required: true, default: true },
       isAnonymousOnly: { type: Boolean, required: true, default: false },

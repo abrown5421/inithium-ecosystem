@@ -11,6 +11,16 @@ export interface PageAnimationConfig {
   delay: number;
 }
 
+// Deliberately not `@inithium/ui`'s ColorSpec - libs/db must stay ignorant of any frontend
+// presentation package. Shaped identically (color/intensity/opacity) so the API layer can pass
+// it straight through to a `@inithium/ui` Box/AnimateBox's bgColor (or a resolveColorClass call
+// for text color) without translation.
+export interface PageColorConfig {
+  color: string;
+  intensity?: number;
+  opacity?: number;
+}
+
 export interface PageAccessConfig {
   isPublic: boolean;
   isAnonymousOnly: boolean;
@@ -38,8 +48,8 @@ export interface PageEntity {
   isPluginPage: boolean;
   pluginOrigin?: string;
   animation: PageAnimationConfig;
-  backgroundColor: string;
-  foregroundColor: string;
+  backgroundColor: PageColorConfig;
+  foregroundColor: PageColorConfig;
   access: PageAccessConfig;
   navigation: PageNavigationConfig;
   seo?: PageSeoConfig;

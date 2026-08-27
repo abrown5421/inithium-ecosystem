@@ -4,3 +4,4 @@
 @import 'animate.css/animate.min.css';
 @source './app/app.tsx';
 @source '../../../libs/**/*';
+@source './src/pages/**/*';

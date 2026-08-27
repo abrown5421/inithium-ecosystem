@@ -50,6 +50,7 @@ export type {
   PageRepository,
   PageAccessConfig,
   PageAnimationConfig,
+  PageColorConfig,
   PageNavigationConfig,
   PageSeoConfig,
   NavLocation,

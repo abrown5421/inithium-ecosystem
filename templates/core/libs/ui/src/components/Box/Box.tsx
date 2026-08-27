@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode } from 'react';
+import type { CSSProperties, ElementType, ReactNode } from 'react';
 import { resolveColorClass } from '../../theme/resolveColorClass';
 import { mergeClassNames } from '../../theme/mergeClassNames';
 import { resolveFlexClasses } from '../../utils/resolveFlexClasses';
@@ -14,6 +14,10 @@ export interface BoxProps extends SpacingProps {
   readonly borderColor?: ColorSpec;
   readonly flex?: FlexSpec;
   readonly className?: string;
+  // Escape hatch for continuous/runtime-computed values (a calc() expression, a CSS custom
+  // property override, ...) that can't be expressed as a static Tailwind class — the same
+  // inline-style approach Divider/Avatar/Dialog already use for their own arbitrary values.
+  readonly style?: CSSProperties;
 }
 
 export const Box = ({
@@ -25,6 +29,7 @@ export const Box = ({
   margin,
   padding,
   className,
+  style,
 }: BoxProps) => {
   const classes = mergeClassNames(
     resolveColorClass('bg', bgColor),
@@ -37,5 +42,9 @@ export const Box = ({
     className,
   );
 
-  return <Component className={classes}>{children}</Component>;
+  return (
+    <Component className={classes} style={style}>
+      {children}
+    </Component>
+  );
 };

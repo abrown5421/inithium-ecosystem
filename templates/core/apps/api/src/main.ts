@@ -1,10 +1,14 @@
 import express from 'express';
+import cors from 'cors';
 import { connectDatabase } from '@inithium/db';
 import { getAuthProvider } from '@inithium/auth';
 import { registerCoreRoutes } from '@inithium/api-core';
 import { errorHandler } from '@inithium/api-utils';
 
 const app = express();
+// apps/web (Vite) runs on a different origin in dev - without this, the browser silently
+// blocks every request the SPA makes to this API.
+app.use(cors({ origin: process.env['WEB_ORIGIN'] || 'http://localhost:5173' }));
 app.use(express.json());
 
 const startServer = async () => {

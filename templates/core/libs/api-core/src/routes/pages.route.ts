@@ -101,8 +101,8 @@ router.post(
     const page = await createPage({
       ...parsed.data,
       isPluginPage: parsed.data.isPluginPage ?? false,
-      backgroundColor: parsed.data.backgroundColor ?? 'surface',
-      foregroundColor: parsed.data.foregroundColor ?? 'primary-foreground',
+      backgroundColor: parsed.data.backgroundColor ?? { color: 'surface', intensity: 100 },
+      foregroundColor: parsed.data.foregroundColor ?? { color: 'primary-foreground', intensity: 500 },
       isPublished: parsed.data.isPublished ?? false,
     });
     res.status(201).json(createSuccessResponse(page));

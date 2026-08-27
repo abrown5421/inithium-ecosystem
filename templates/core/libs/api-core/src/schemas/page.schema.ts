@@ -29,6 +29,12 @@ const pageSeoSchema = z
   })
   .optional();
 
+const pageColorSchema = z.object({
+  color: z.string().min(1),
+  intensity: z.number().int().optional(),
+  opacity: z.number().int().optional(),
+});
+
 // Fields that have a Mongoose-side `default` are `.optional()` here WITHOUT
 // `.default()`. If Zod applied its own default, `.partial()` below would
 // re-inject that default into every PATCH request that omits the field,
@@ -40,8 +46,8 @@ const pageShape = {
   isPluginPage: z.boolean().optional(),
   pluginOrigin: z.string().optional(),
   animation: pageAnimationSchema,
-  backgroundColor: z.string().optional(),
-  foregroundColor: z.string().optional(),
+  backgroundColor: pageColorSchema.optional(),
+  foregroundColor: pageColorSchema.optional(),
   access: pageAccessSchema,
   navigation: pageNavigationSchema,
   seo: pageSeoSchema,

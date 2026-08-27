@@ -28,7 +28,14 @@ router.post('/auth/register', async (req: Request, res: Response): Promise<void>
     const accessToken = signAccessToken({ sub: user.id, email: user.email, role: user.role });
 
     res.status(201).json({
-      user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role },
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        avatar: user.avatar,
+      },
       accessToken,
     });
   } catch (error) {
@@ -55,7 +62,14 @@ router.post('/auth/login', async (req: Request, res: Response): Promise<void> =>
 
     const accessToken = signAccessToken({ sub: user.id, email: user.email, role: user.role });
     res.status(200).json({
-      user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role },
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        avatar: user.avatar,
+      },
       accessToken,
     });
   } catch (error) {
@@ -64,8 +78,35 @@ router.post('/auth/login', async (req: Request, res: Response): Promise<void> =>
   }
 });
 
-router.get('/auth/me', requireAuth, (req: Request, res: Response): void => {
-  res.status(200).json({ user: req.user });
+// The JWT payload only carries {sub, email, role} - it can't carry the rest of the profile
+// without bloating every request's Authorization header, so "who am I" has to re-fetch the
+// full record rather than just echoing req.user.
+router.get('/auth/me', requireAuth, async (req: Request, res: Response): Promise<void> => {
+  if (!req.user) {
+    res.status(401).json({ error: 'Missing or invalid Authorization header' });
+    return;
+  }
+
+  try {
+    const user = await getUserRepository().findById(req.user.sub);
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+    res.status(200).json({
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        avatar: user.avatar,
+      },
+    });
+  } catch (error) {
+    console.error('❌ Fetching current user failed:', error);
+    res.status(500).json({ error: 'Failed to fetch current user' });
+  }
 });
 
 export default router;
