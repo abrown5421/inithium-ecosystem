@@ -56,6 +56,9 @@ export { ALERT_SEVERITIES, ALERT_POSITIONS } from './tokens/alert';
 export type { DrawerSide } from './tokens/drawer';
 export { DRAWER_SIDES } from './tokens/drawer';
 
+export type { ThemeSwatchColor, TailwindSwatchColor } from './tokens/colorPicker';
+export { THEME_SWATCH_COLORS, TAILWIND_SWATCH_COLORS } from './tokens/colorPicker';
+
 export type {
   AvatarShape,
   AvatarVariant,
@@ -85,6 +88,7 @@ export { resolveDrawerAnimation } from './utils/resolveDrawerAnimation';
 export { resolveAvatarInitials } from './utils/resolveAvatarInitials';
 export { resolveAvatarShapeClasses } from './utils/resolveAvatarShapeClasses';
 export { resolveDicebearUrl } from './utils/resolveDicebearUrl';
+export { resolveComputedColorHex } from './utils/resolveComputedColorHex';
 
 export { alert } from './alert/alert';
 export type { AlertOptions } from './alert/alert';
@@ -149,6 +153,10 @@ export {
   DrawerContainer,
   Avatar,
   Divider,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
 } from './components';
 export type {
   TextProps,
@@ -171,9 +179,19 @@ export type {
   DrawerProps,
   AvatarProps,
   DividerProps,
+  TabsProps,
+  TabsListProps,
+  TabsTriggerProps,
+  TabsContentProps,
 } from './components';
 
-export { Navbar, PageShell, resolveAvatarConfigProps, useNavigateWithTransition } from './composites';
+export {
+  Navbar,
+  PageShell,
+  resolveAvatarConfigProps,
+  useNavigateWithTransition,
+  ColorPicker,
+} from './composites';
 export type {
   NavbarProps,
   NavbarLogo,
@@ -181,4 +199,5 @@ export type {
   PageShellProps,
   PageComponentMap,
   AvatarConfigProps,
+  ColorPickerProps,
 } from './composites';
