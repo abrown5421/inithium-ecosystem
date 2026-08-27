@@ -46,3 +46,8 @@ export { Dialog, DEFAULT_DIALOG_ANIMATION } from './Dialog/Dialog';
 export type { DialogProps } from './Dialog/Dialog';
 
 export { DialogContainer } from './DialogContainer/DialogContainer';
+
+export { Drawer } from './Drawer/Drawer';
+export type { DrawerProps } from './Drawer/Drawer';
+
+export { DrawerContainer } from './DrawerContainer/DrawerContainer';

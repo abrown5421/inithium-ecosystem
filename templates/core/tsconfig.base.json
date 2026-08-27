@@ -18,6 +18,7 @@
       "@inithium/db": ["./libs/db/src/index.ts"],
       "@inithium/auth": ["./libs/auth/src/index.ts"],
       "@inithium/api-core": ["./libs/api-core/src/index.ts"],
+      "@inithium/api-client": ["./libs/api-client/src/index.ts"],
       "@inithium/api-utils": ["./libs/api-utils/src/index.ts"],
       "@inithium/ui": ["./libs/ui/src/index.ts"]
     }

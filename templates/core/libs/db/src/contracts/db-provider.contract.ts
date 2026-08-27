@@ -1,4 +1,5 @@
 import { UserRepository } from './user.contract';
+import { PageRepository } from './page.contract';
 
 export interface DbConfig {
   uri?: string;
@@ -11,4 +12,5 @@ export interface DbProvider {
   connect: (config: DbConfig) => Promise<void>;
   disconnect: () => Promise<void>;
   getUserRepository: () => UserRepository;
+  getPageRepository: () => PageRepository;
 }

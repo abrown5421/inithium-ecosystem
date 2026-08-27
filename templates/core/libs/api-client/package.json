@@ -1,12 +1,11 @@
 {
-  "name": "@inithium/api-core",
+  "name": "@inithium/api-client",
   "version": "0.0.1",
   "type": "module",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "dependencies": {
-    "express": "^5.1.0",
-    "zod": "^4.4.3",
-    "path-to-regexp": "^8.4.2"
+    "@reduxjs/toolkit": "^2.5.0",
+    "react-redux": "^9.2.0"
   }
 }

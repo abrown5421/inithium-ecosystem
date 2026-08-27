@@ -36,5 +36,31 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction): vo
   }
 };
 
+export const requireRole =
+  (...roles: string[]) =>
+  (req: Request, res: Response, next: NextFunction): void => {
+    if (!req.user) {
+      res.status(401).json({ error: 'Missing or invalid Authorization header' });
+      return;
+    }
+    if (!roles.includes(req.user.role)) {
+      res.status(403).json({ error: 'Insufficient role permissions' });
+      return;
+    }
+    next();
+  };
+
+export const optionalAuth = (req: Request, _res: Response, next: NextFunction): void => {
+  const header = req.headers.authorization;
+  if (header?.startsWith('Bearer ')) {
+    try {
+      req.user = verifyAccessToken(header.slice('Bearer '.length));
+    } catch {
+      // Invalid/expired token on an optional-auth route — treat the caller as anonymous.
+    }
+  }
+  next();
+};
+
 export type { AuthProvider, AuthTokenPayload } from './contracts/auth-provider.contract';
 export { jwtProvider } from './providers/jwt/jwt.provider';

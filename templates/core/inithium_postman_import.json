@@ -229,6 +229,90 @@
           }
         }
       ]
+    },
+    {
+      "name": "Pages",
+      "item": [
+        {
+          "name": "Resolve Page By Route",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pages/resolve?route=/blog/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pages", "resolve"],
+              "query": [{ "key": "route", "value": "/blog/:id" }]
+            }
+          }
+        },
+        {
+          "name": "Get Navigation Pages",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pages/navigation/primary-nav",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pages", "navigation", "primary-nav"]
+            }
+          }
+        },
+        {
+          "name": "Create Page",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// A freshly registered/logged-in user always has role 'user' (see Auth > Register) — role is never client-suppliable at signup, so this route's admin/editor guard should reject it.",
+                  "pm.test('Status code is 403 (default user lacks admin/editor role)', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"blog\",\n  \"title\": \"Blog\",\n  \"routePattern\": \"/blog/:id\",\n  \"isPluginPage\": true,\n  \"pluginOrigin\": \"blog-plugin\",\n  \"animation\": { \"enter\": \"animate__fadeIn\", \"exit\": \"animate__fadeOut\", \"duration\": 300, \"delay\": 0 },\n  \"backgroundColor\": \"surface\",\n  \"foregroundColor\": \"primary-foreground\",\n  \"access\": { \"isPublic\": true, \"isAnonymousOnly\": false, \"requiredRoles\": [] },\n  \"navigation\": { \"location\": \"primary-nav\", \"label\": \"Blog\", \"order\": 1 },\n  \"layoutTemplate\": \"default\",\n  \"isPublished\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pages",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pages"]
+            }
+          }
+        }
+      ]
     }
   ]
 }

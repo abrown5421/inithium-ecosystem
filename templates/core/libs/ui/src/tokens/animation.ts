@@ -7,6 +7,8 @@ export type EntranceAnim =
   | 'animate__zoomIn'
   | 'animate__slideInDown'
   | 'animate__slideInUp'
+  | 'animate__slideInLeft'
+  | 'animate__slideInRight'
   | 'animate__bounceIn';
 
 export type ExitAnim =
@@ -18,6 +20,8 @@ export type ExitAnim =
   | 'animate__zoomOut'
   | 'animate__slideOutDown'
   | 'animate__slideOutUp'
+  | 'animate__slideOutLeft'
+  | 'animate__slideOutRight'
   | 'animate__bounceOut';
 
 export type AnimDelay =

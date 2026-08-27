@@ -1,6 +1,7 @@
 export interface AuthTokenPayload {
   sub: string;
   email: string;
+  role: string;
 }
 
 export interface AuthProvider {
