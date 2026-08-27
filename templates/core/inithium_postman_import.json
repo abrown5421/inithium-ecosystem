@@ -302,7 +302,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"slug\": \"blog\",\n  \"title\": \"Blog\",\n  \"routePattern\": \"/blog/:id\",\n  \"isPluginPage\": true,\n  \"pluginOrigin\": \"blog-plugin\",\n  \"animation\": { \"enter\": \"animate__fadeIn\", \"exit\": \"animate__fadeOut\", \"duration\": 300, \"delay\": 0 },\n  \"backgroundColor\": \"surface\",\n  \"foregroundColor\": \"primary-foreground\",\n  \"access\": { \"isPublic\": true, \"isAnonymousOnly\": false, \"requiredRoles\": [] },\n  \"navigation\": { \"location\": \"primary-nav\", \"label\": \"Blog\", \"order\": 1 },\n  \"layoutTemplate\": \"default\",\n  \"isPublished\": true\n}",
+              "raw": "{\n  \"slug\": \"blog\",\n  \"title\": \"Blog\",\n  \"routePattern\": \"/blog/:id\",\n  \"isPluginPage\": true,\n  \"pluginOrigin\": \"blog-plugin\",\n  \"animation\": { \"enter\": \"animate__fadeIn\", \"exit\": \"animate__fadeOut\", \"duration\": 300, \"delay\": 0 },\n  \"backgroundColor\": { \"color\": \"surface\", \"intensity\": 100 },\n  \"foregroundColor\": { \"color\": \"primary-foreground\", \"intensity\": 500 },\n  \"access\": { \"isPublic\": true, \"isAnonymousOnly\": false, \"requiredRoles\": [] },\n  \"navigation\": { \"location\": \"primary-nav\", \"label\": \"Blog\", \"order\": 1 },\n  \"layoutTemplate\": \"default\",\n  \"isPublished\": true\n}",
               "options": { "raw": { "language": "json" } }
             },
             "url": {

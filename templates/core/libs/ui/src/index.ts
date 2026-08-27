@@ -172,3 +172,13 @@ export type {
   AvatarProps,
   DividerProps,
 } from './components';
+
+export { Navbar, PageShell, resolveAvatarConfigProps, useNavigateWithTransition } from './composites';
+export type {
+  NavbarProps,
+  NavbarLogo,
+  NavbarUser,
+  PageShellProps,
+  PageComponentMap,
+  AvatarConfigProps,
+} from './composites';
