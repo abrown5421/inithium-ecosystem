@@ -155,7 +155,7 @@ export const ColorPicker = ({
           color={color}
           autoComplete="off"
           spellCheck={false}
-          className="pr-11"
+          className="h-10 pr-11"
           aria-describedby={helperTextId}
         />
 
