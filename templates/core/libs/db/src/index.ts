@@ -32,6 +32,16 @@ export const updatePage = (id: string, input: UpdatePageInput) => getPageReposit
 
 export type { DbProvider, DbConfig } from './contracts/db-provider.contract';
 export type { UserRepository, UserEntity, CreateUserInput } from './contracts/user.contract';
+export { AVATAR_VARIANTS, AVATAR_SHAPES, DEFAULT_AVATAR_CONFIG } from './contracts/user.contract';
+export type {
+  AvatarVariant,
+  AvatarShape,
+  AvatarColor,
+  AvatarStyleConfig,
+  AvatarImageConfig,
+  AvatarDicebearConfig,
+  AvatarConfig,
+} from './contracts/user.contract';
 export { NAV_LOCATIONS, PAGE_LAYOUT_TEMPLATES } from './contracts/page.contract';
 export type {
   PageEntity,
