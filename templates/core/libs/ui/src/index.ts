@@ -50,6 +50,9 @@ export type { AdornmentProps } from './tokens/adornment';
 
 export type { FieldProps } from './tokens/field';
 
+export type { AlertSeverity, AlertPosition } from './tokens/alert';
+export { ALERT_SEVERITIES, ALERT_POSITIONS } from './tokens/alert';
+
 export { resolveColorClass } from './theme/resolveColorClass';
 export { mergeClassNames } from './theme/mergeClassNames';
 export { resolveAnimationClasses } from './utils/resolveAnimationClasses';
@@ -61,6 +64,21 @@ export { resolveFieldColorClasses } from './utils/resolveFieldColorClasses';
 export type { FieldColorClasses } from './utils/resolveFieldColorClasses';
 export { resolveContrastColor } from './utils/resolveContrastColor';
 export { resolvePhosphorIcon } from './utils/resolvePhosphorIcon';
+export { resolveAlertSeverityClasses } from './utils/resolveAlertSeverityClasses';
+export { resolveAlertAnimation, resolveExitDurationMs } from './utils/resolveAlertAnimation';
+
+export { alert } from './alert/alert';
+export type { AlertOptions } from './alert/alert';
+export { useAlert } from './alert/useAlert';
+export {
+  subscribeToAlerts,
+  getAlertRecords,
+  showAlert,
+  requestAlertClose,
+  removeAlert,
+  dismissAllAlerts,
+} from './alert/alertStore';
+export type { AlertRecord, ShowAlertOptions } from './alert/alertStore';
 
 export {
   Text,
@@ -78,6 +96,8 @@ export {
   RadioGroup,
   RadioGroupItem,
   Textarea,
+  Alert,
+  AlertContainer,
 } from './components';
 export type {
   TextProps,
@@ -95,4 +115,5 @@ export type {
   RadioGroupProps,
   RadioGroupItemProps,
   TextareaProps,
+  AlertProps,
 } from './components';

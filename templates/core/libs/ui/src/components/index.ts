@@ -36,3 +36,8 @@ export type { RadioGroupProps, RadioGroupItemProps } from './RadioGroup/RadioGro
 
 export { Textarea } from './Textarea/Textarea';
 export type { TextareaProps } from './Textarea/Textarea';
+
+export { Alert } from './Alert/Alert';
+export type { AlertProps } from './Alert/Alert';
+
+export { AlertContainer } from './AlertContainer/AlertContainer';
