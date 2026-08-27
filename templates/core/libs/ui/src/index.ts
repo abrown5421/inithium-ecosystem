@@ -187,6 +187,7 @@ export type {
 
 export {
   Navbar,
+  Footer,
   PageShell,
   resolveAvatarConfigProps,
   useNavigateWithTransition,
@@ -197,6 +198,7 @@ export type {
   NavbarProps,
   NavbarLogo,
   NavbarUser,
+  FooterProps,
   PageShellProps,
   PageComponentMap,
   AvatarConfigProps,

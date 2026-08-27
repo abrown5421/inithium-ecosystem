@@ -33,7 +33,9 @@ export const createMongoPageRepository = (model: Model<PageDocument>): PageRepos
     return page ? mapToPageEntity(page) : null;
   },
   findByNavLocation: async (location: NavLocation): Promise<PageEntity[]> => {
-    const pages = await model.find({ 'navigation.location': location }).sort({ 'navigation.order': 1 }).exec();
+    // Querying an array field with a scalar value matches any document whose array contains
+    // that value, so this also picks up pages that are in more than one nav location at once.
+    const pages = await model.find({ 'navigation.locations': location }).sort({ 'navigation.order': 1 }).exec();
     return pages.map(mapToPageEntity);
   },
   findPublished: async (): Promise<PageEntity[]> => {

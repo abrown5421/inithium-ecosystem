@@ -12,7 +12,7 @@ export interface PageDocument extends Document {
   backgroundColor: { color: string; intensity?: number; opacity?: number };
   foregroundColor: { color: string; intensity?: number; opacity?: number };
   access: { isPublic: boolean; isAnonymousOnly: boolean; requiredRoles: string[] };
-  navigation: { location: NavLocation; label: string; order: number; icon?: string };
+  navigation: { locations: NavLocation[]; label: string; order: number; icon?: string };
   seo?: { metaTitle?: string; metaDescription?: string; ogImage?: string };
   layoutTemplate: PageLayoutTemplate;
   isPublished: boolean;
@@ -49,7 +49,7 @@ const pageSchema = new Schema<PageDocument>(
       requiredRoles: { type: [String], required: true, default: [] },
     },
     navigation: {
-      location: { type: String, required: true, enum: NAV_LOCATIONS, index: true },
+      locations: { type: [String], required: true, enum: NAV_LOCATIONS, default: [], index: true },
       label: { type: String, required: true },
       order: { type: Number, required: true, default: 0 },
       icon: { type: String, required: false },
