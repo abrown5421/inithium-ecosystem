@@ -41,3 +41,8 @@ export { Alert } from './Alert/Alert';
 export type { AlertProps } from './Alert/Alert';
 
 export { AlertContainer } from './AlertContainer/AlertContainer';
+
+export { Dialog, DEFAULT_DIALOG_ANIMATION } from './Dialog/Dialog';
+export type { DialogProps } from './Dialog/Dialog';
+
+export { DialogContainer } from './DialogContainer/DialogContainer';

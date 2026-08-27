@@ -1,4 +1,5 @@
-import type { AnimationSpec, AnimSpeed } from '../tokens/animation';
+import { resolveAnimationDurationMs } from './resolveAnimationDurationMs';
+import type { AnimationSpec } from '../tokens/animation';
 import type { AlertPosition } from '../tokens/alert';
 
 // Top positions drop into place and float back up on exit; bottom positions rise into place
@@ -18,17 +19,6 @@ export const resolveAlertAnimation = (
   animation: AnimationSpec | undefined,
 ): AnimationSpec => animation ?? DEFAULT_ANIMATIONS[position];
 
-// animate.css's own duration per speed modifier class. resolveAnimationClasses defaults to
-// 'animate__fast' when a spec has no explicit speed - AlertContainer needs that same duration
-// in milliseconds to know how long to keep a closing alert mounted so its exit animation
-// actually gets to play before the record is removed from the store.
-const SPEED_MS: Record<AnimSpeed, number> = {
-  animate__slower: 3000,
-  animate__slow: 2000,
-  animate__fast: 800,
-  animate__faster: 500,
-};
-const DEFAULT_SPEED_MS = SPEED_MS.animate__fast;
-
-export const resolveExitDurationMs = (animation: AnimationSpec): number =>
-  animation.speed ? SPEED_MS[animation.speed] : DEFAULT_SPEED_MS;
+// Kept as an Alert-specific alias of the generic resolver (see resolveAnimationDurationMs.ts,
+// also used by DialogContainer) so existing imports of this name don't need to change.
+export const resolveExitDurationMs = resolveAnimationDurationMs;

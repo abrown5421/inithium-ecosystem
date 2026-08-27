@@ -66,6 +66,7 @@ export { resolveContrastColor } from './utils/resolveContrastColor';
 export { resolvePhosphorIcon } from './utils/resolvePhosphorIcon';
 export { resolveAlertSeverityClasses } from './utils/resolveAlertSeverityClasses';
 export { resolveAlertAnimation, resolveExitDurationMs } from './utils/resolveAlertAnimation';
+export { resolveAnimationDurationMs } from './utils/resolveAnimationDurationMs';
 
 export { alert } from './alert/alert';
 export type { AlertOptions } from './alert/alert';
@@ -79,6 +80,19 @@ export {
   dismissAllAlerts,
 } from './alert/alertStore';
 export type { AlertRecord, ShowAlertOptions } from './alert/alertStore';
+
+export { dialog } from './dialog/dialog';
+export type { DialogOptions, ConfirmDialogOptions } from './dialog/dialog';
+export { useDialog } from './dialog/useDialog';
+export {
+  subscribeToDialogs,
+  getDialogRecords,
+  showDialog,
+  requestDialogClose,
+  removeDialog,
+  closeAllDialogs,
+} from './dialog/dialogStore';
+export type { DialogRecord, DialogContent, DialogRenderContext, ShowDialogOptions } from './dialog/dialogStore';
 
 export {
   Text,
@@ -98,6 +112,8 @@ export {
   Textarea,
   Alert,
   AlertContainer,
+  Dialog,
+  DialogContainer,
 } from './components';
 export type {
   TextProps,
@@ -116,4 +132,5 @@ export type {
   RadioGroupItemProps,
   TextareaProps,
   AlertProps,
+  DialogProps,
 } from './components';
