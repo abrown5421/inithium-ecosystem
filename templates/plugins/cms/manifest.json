@@ -1,0 +1,40 @@
+{
+  "name": "cms",
+  "version": "1.0.0",
+  "description": "Role-gated, code-split admin CMS area embedded in apps/web at /cms",
+  "dependencies": {
+    "npm": {
+      "recharts": "^2.15.0"
+    },
+    "plugins": []
+  },
+  "injections": [
+    { "target": "libs/cms", "source": "src/cms" },
+    { "target": "apps/web/src/app/RootRouter.tsx", "source": "src/app/RootRouter.tsx" },
+    { "target": "apps/web/src/main.tsx", "source": "src/app/main.tsx" },
+    { "target": "tsconfig.base.json", "source": "src/tsconfig.base.json" },
+    { "target": "libs/db/src/contracts/pagination.contract.ts", "source": "src/db/contracts/pagination.contract.ts" },
+    { "target": "libs/db/src/contracts/user.contract.ts", "source": "src/db/contracts/user.contract.ts" },
+    { "target": "libs/db/src/contracts/page.contract.ts", "source": "src/db/contracts/page.contract.ts" },
+    { "target": "libs/db/src/providers/mongo/user.repository.ts", "source": "src/db/providers/mongo/user.repository.ts" },
+    { "target": "libs/db/src/providers/mongo/page.repository.ts", "source": "src/db/providers/mongo/page.repository.ts" },
+    { "target": "libs/db/src/utils/escapeRegExp.ts", "source": "src/db/utils/escapeRegExp.ts" },
+    { "target": "libs/db/src/index.ts", "source": "src/db/index.ts" },
+    { "target": "libs/api-core/src/schemas/users.schema.ts", "source": "src/api-core/schemas/users.schema.ts" },
+    { "target": "libs/api-core/src/routes/users.route.ts", "source": "src/api-core/routes/users.route.ts" },
+    { "target": "libs/api-core/src/routes/pages.route.ts", "source": "src/api-core/routes/pages.route.ts" },
+    { "target": "libs/api-core/src/index.ts", "source": "src/api-core/index.ts" },
+    { "target": "libs/api-client/src/endpoints/users.endpoints.ts", "source": "src/api-client/endpoints/users.endpoints.ts" },
+    { "target": "libs/api-client/src/endpoints/page.endpoints.ts", "source": "src/api-client/endpoints/page.endpoints.ts" },
+    { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.ts" },
+    { "target": "libs/ui/src/components/IconButton/IconButton.tsx", "source": "src/ui/components/IconButton/IconButton.tsx" },
+    { "target": "libs/ui/src/components/Select/Select.tsx", "source": "src/ui/components/Select/Select.tsx" },
+    { "target": "libs/ui/src/components/index.ts", "source": "src/ui/components/index.ts" },
+    { "target": "libs/ui/src/composites/Pagination.tsx", "source": "src/ui/composites/Pagination.tsx" },
+    { "target": "libs/ui/src/composites/SearchFilterBar.tsx", "source": "src/ui/composites/SearchFilterBar.tsx" },
+    { "target": "libs/ui/src/composites/ListRow.tsx", "source": "src/ui/composites/ListRow.tsx" },
+    { "target": "libs/ui/src/composites/useSelection.ts", "source": "src/ui/composites/useSelection.ts" },
+    { "target": "libs/ui/src/composites/index.ts", "source": "src/ui/composites/index.ts" },
+    { "target": "libs/ui/src/index.ts", "source": "src/ui/index.ts" }
+  ]
+}

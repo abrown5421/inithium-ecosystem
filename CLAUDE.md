@@ -129,13 +129,17 @@ Every plugin inside `templates/plugins/[plugin-name]/` must include a `manifest.
       "source": "web/endpoints"
     },
     {
-      "target": "libs/cms/src/modules/example-admin",
-      "source": "cms/example-admin",
+      "target": "libs/cms/src/modules/example-admin.module.tsx",
+      "source": "cms/example-admin.module.tsx",
       "requires": "cms"
     }
   ]
 }
 ```
+
+**Extending the CMS:** `@inithium/cms` (the `cms` plugin) discovers admin modules by scanning `libs/cms/src/modules/*.module.tsx` at build time (via Vite's `import.meta.glob`) — any plugin that wants an admin module drops in one uniquely-named file default-exporting a `{ id, navLabel, icon, order?, Component }` descriptor. No shared file ever needs editing to add a module, so this extension point has none of the multi-plugin file-collision risk that applies to a shared file target — that's why the example above targets a single file (`example-admin.module.tsx`), not a directory, and gates on `"requires": "cms"` so it's skipped (not an error) in a workspace that never installed the CMS.
+
+**Extending the CMS dashboard:** the same auto-discovery convention applies one level deeper, to the dashboard page's own widget slot system — `libs/cms/src/dashboard/widgets/*.widget.tsx`, default-exporting a `{ id, title?, order?, span?, Component }` descriptor (`DashboardWidget`). Any plugin that wants to surface something on the dashboard (a graph, a stat tile) drops in one uniquely-named `*.widget.tsx` file the same way an admin module does — no shared file edits, same `"requires": "cms"` gating. `span` (`1 | 2 | 3`, default `1`) is how many columns of the dashboard's responsive 3-column grid the widget occupies; the dashboard itself has zero knowledge of what any given widget renders.
 
 ### Plugin Dependency Resolution & the Install Lockfile
 A plugin can declare two distinct kinds of dependency on another plugin, resolved by the CLI's `add`/`remove` commands against a generated `.inithium/plugins.lock.json` file inside the **consumer** workspace (never hand-edited by plugin authors, never part of this repo's own tree):

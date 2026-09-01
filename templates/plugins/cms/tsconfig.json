@@ -1,0 +1,15 @@
+{
+  "extends": "../../core/tsconfig.base.json",
+  "compilerOptions": {
+    "composite": false,
+    "rootDir": "src",
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "@inithium/ui": ["../../core/dist/libs/ui/src/index.d.ts"],
+      "@inithium/api-client": ["../../core/dist/libs/api-client/src/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}
