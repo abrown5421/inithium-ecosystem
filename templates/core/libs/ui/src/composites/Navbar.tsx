@@ -4,6 +4,7 @@ import { Avatar, Box, Button, Divider, Icon, Text } from '../components';
 import { drawer } from '../drawer/drawer';
 import type { DrawerRenderContext } from '../drawer/drawerStore';
 import type { IconName } from '../tokens/icon';
+import type { PresenceStatus } from '../tokens/avatar';
 import { mergeClassNames } from '../theme/mergeClassNames';
 import { resolveAvatarConfigProps } from './resolveAvatarConfigProps';
 
@@ -16,6 +17,11 @@ export interface NavbarUser {
   readonly firstName: string;
   readonly lastName?: string;
   readonly avatar: AvatarConfig;
+  // Deliberately not routed through resolveAvatarConfigProps - that bridge is purely visual
+  // config, while presence is a live signal from an entirely separate layer
+  // (@inithium/realtime via @inithium/api-client). Optional so a host that hasn't wired presence
+  // yet keeps working unchanged.
+  readonly status?: PresenceStatus;
 }
 
 export interface NavbarProps {
@@ -205,6 +211,7 @@ export const Navbar = ({
                 [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' '),
               )}
               size={36}
+              status={currentUser.status}
               onClick={openAuthenticatedDrawer}
             />
           ) : (

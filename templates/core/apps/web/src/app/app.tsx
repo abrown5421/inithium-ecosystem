@@ -12,6 +12,7 @@ import {
 } from '@inithium/ui';
 import { useGetNavPagesQuery, useGetPageByRouteQuery } from '@inithium/api-client';
 import { useCurrentUser } from './useCurrentUser';
+import { RealtimeConnectionBoundary } from './RealtimeConnectionBoundary';
 import { pageComponents } from '../pages/pageComponents';
 import { NotFoundPage } from '../pages/NotFoundPage';
 
@@ -69,6 +70,7 @@ export function App() {
       <AlertContainer />
       <DialogContainer />
       <DrawerContainer />
+      <RealtimeConnectionBoundary />
     </Box>
   );
 }
