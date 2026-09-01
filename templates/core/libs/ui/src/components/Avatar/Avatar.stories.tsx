@@ -37,3 +37,19 @@ export const FromDicebear: Story = {
 export const Clickable: Story = {
   args: { onClick: () => alert('Avatar clicked') },
 };
+
+export const Online: Story = {
+  args: { status: 'online' },
+};
+
+export const Busy: Story = {
+  args: { status: 'busy' },
+};
+
+export const Away: Story = {
+  args: { status: 'away' },
+};
+
+export const OfflineStatus: Story = {
+  args: { status: 'offline' },
+};

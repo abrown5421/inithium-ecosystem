@@ -11,7 +11,8 @@
     { "key": "password", "value": "Password123!", "type": "string" },
     { "key": "firstName", "value": "Test", "type": "string" },
     { "key": "lastName", "value": "User", "type": "string" },
-    { "key": "accessToken", "value": "", "type": "string" }
+    { "key": "accessToken", "value": "", "type": "string" },
+    { "key": "userId", "value": "", "type": "string" }
   ],
   "item": [
     {
@@ -146,6 +147,7 @@
                   "if (pm.response.code === 201) {",
                   "  const json = pm.response.json();",
                   "  pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "  pm.collectionVariables.set('userId', json.user.id);",
                   "}"
                 ]
               }
@@ -405,6 +407,41 @@
               "raw": "{{baseUrl}}/api/pages",
               "host": ["{{baseUrl}}"],
               "path": ["api", "pages"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Presence",
+      "item": [
+        {
+          "name": "Get User Presence",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response has success: true and a status field', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data).to.have.property('status');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}/presence",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}", "presence"]
             }
           }
         }

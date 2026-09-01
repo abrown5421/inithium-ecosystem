@@ -44,3 +44,18 @@ export const DEFAULT_AVATAR_STYLE: Required<Pick<AvatarStyleConfig, 'bgColor' | 
   bgColor: { color: 'primary', intensity: 500 },
   shape: 'circle',
 };
+
+// Mirrors @inithium/realtime's PresenceStatus (contracts/presence.contract.ts) at the exact
+// same string-union shape - the same "duplicate the shape, not the import" choice this file
+// already makes for AvatarStyleConfig vs @inithium/db's own color shape: Avatar must stay
+// ignorant of any backend/transport package, so a caller wiring live presence into `status`
+// passes the string straight through with no translation layer.
+export const PRESENCE_STATUSES = ['online', 'busy', 'away', 'offline'] as const;
+export type PresenceStatus = (typeof PRESENCE_STATUSES)[number];
+
+export const PRESENCE_STATUS_COLOR: Record<PresenceStatus, ColorSpec> = {
+  online: { color: 'emerald', intensity: 500 },
+  busy: { color: 'red', intensity: 500 },
+  away: { color: 'amber', intensity: 500 },
+  offline: { color: 'surface', intensity: 400 },
+};

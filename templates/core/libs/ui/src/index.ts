@@ -67,8 +67,15 @@ export type {
   AvatarImageSource,
   AvatarDicebearSource,
   AvatarSource,
+  PresenceStatus,
 } from './tokens/avatar';
-export { AVATAR_SHAPES, AVATAR_VARIANTS, DEFAULT_AVATAR_STYLE } from './tokens/avatar';
+export {
+  AVATAR_SHAPES,
+  AVATAR_VARIANTS,
+  DEFAULT_AVATAR_STYLE,
+  PRESENCE_STATUSES,
+  PRESENCE_STATUS_COLOR,
+} from './tokens/avatar';
 
 export { resolveColorClass } from './theme/resolveColorClass';
 export { mergeClassNames } from './theme/mergeClassNames';
