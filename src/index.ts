@@ -29,6 +29,7 @@ program
   .description('Eject and remove an Inithium plugin from the current workspace')
   .option('-d, --dev', 'Use local plugins directory for testing')
   .option('--skip-install', 'Skip running package manager install')
+  .option('--force', 'Remove even if other installed plugins depend on this plugin')
   .action(removeCommand);
 
 program.parse(process.argv);
