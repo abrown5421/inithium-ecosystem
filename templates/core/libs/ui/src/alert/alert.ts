@@ -12,6 +12,7 @@ export const alert = {
   danger: (message: ReactNode, options?: AlertOptions) => showAlert(message, { ...options, severity: 'danger' }),
   warning: (message: ReactNode, options?: AlertOptions) => showAlert(message, { ...options, severity: 'warning' }),
   info: (message: ReactNode, options?: AlertOptions) => showAlert(message, { ...options, severity: 'info' }),
+  notification: (message: ReactNode, options?: AlertOptions) => showAlert(message, { ...options, severity: 'notification' }),
   dismiss: requestAlertClose,
   dismissAll: dismissAllAlerts,
 };

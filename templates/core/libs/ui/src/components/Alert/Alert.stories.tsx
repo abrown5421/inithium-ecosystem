@@ -31,6 +31,10 @@ export const Info: Story = {
   args: { severity: 'info', message: 'A new version is available.' },
 };
 
+export const Notification: Story = {
+  args: { severity: 'notification', message: 'You have a new notification.' },
+};
+
 export const NotCloseable: Story = {
   args: { severity: 'info', closeable: false, message: 'This alert has no close button.' },
 };

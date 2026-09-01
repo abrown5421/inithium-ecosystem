@@ -1,5 +1,6 @@
 import { UserRepository } from './user.contract';
 import { PageRepository } from './page.contract';
+import { NotificationRepository } from './notification.contract';
 
 export interface DbConfig {
   uri?: string;
@@ -13,4 +14,5 @@ export interface DbProvider {
   disconnect: () => Promise<void>;
   getUserRepository: () => UserRepository;
   getPageRepository: () => PageRepository;
+  getNotificationRepository: () => NotificationRepository;
 }

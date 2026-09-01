@@ -60,3 +60,5 @@ export type { DividerProps } from './Divider/Divider';
 
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './Tabs/Tabs';
 export type { TabsProps, TabsListProps, TabsTriggerProps, TabsContentProps } from './Tabs/Tabs';
+
+export { Loader } from './Loader/Loader'
