@@ -152,6 +152,7 @@ export {
   RadioGroup,
   RadioGroupItem,
   Textarea,
+  Loader,
   Alert,
   AlertContainer,
   Dialog,

@@ -17,3 +17,14 @@ export {
 } from './realtime/realtimeClientStore';
 export type { RealtimeConnectionStatus } from './realtime/realtimeClientStore';
 export type { PresenceStatus, PresenceRecord } from '@inithium/realtime';
+
+export {
+  notificationsApi,
+  useGetNotificationsQuery,
+  useGetUnreadNotificationCountQuery,
+  useMarkNotificationReadMutation,
+  useMarkAllNotificationsReadMutation,
+} from './endpoints/notifications.endpoints';
+export { useNotificationCenter } from './notifications/useNotificationCenter';
+export type { UseNotificationCenterOptions, UseNotificationCenterResult } from './notifications/useNotificationCenter';
+export type { NotificationEntity } from '@inithium/notifications';

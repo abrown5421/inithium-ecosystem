@@ -30,6 +30,16 @@ export const findPublishedPages = () => getPageRepository().findPublished();
 export const createPage = (input: CreatePageInput) => getPageRepository().create(input);
 export const updatePage = (id: string, input: UpdatePageInput) => getPageRepository().update(id, input);
 
+export const getNotificationRepository = () => activeProvider.getNotificationRepository();
+export const listNotificationsForUser = (userId: string, options?: { limit?: number }) =>
+  getNotificationRepository().listForUser(userId, options);
+export const countUnreadNotificationsForUser = (userId: string) =>
+  getNotificationRepository().countUnreadForUser(userId);
+export const markNotificationAsRead = (id: string, userId: string) =>
+  getNotificationRepository().markAsRead(id, userId);
+export const markAllNotificationsAsReadForUser = (userId: string) =>
+  getNotificationRepository().markAllAsReadForUser(userId);
+
 export type { DbProvider, DbConfig } from './contracts/db-provider.contract';
 export type { UserRepository, UserEntity, CreateUserInput } from './contracts/user.contract';
 export { AVATAR_VARIANTS, AVATAR_SHAPES, DEFAULT_AVATAR_CONFIG } from './contracts/user.contract';
@@ -56,4 +66,5 @@ export type {
   NavLocation,
   PageLayoutTemplate,
 } from './contracts/page.contract';
+export type { NotificationEntity, CreateNotificationInput, NotificationRepository } from './contracts/notification.contract';
 export { mongoProvider } from './providers/mongo/mongo.provider';

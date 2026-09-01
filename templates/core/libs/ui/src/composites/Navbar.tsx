@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import type { AvatarConfig, PageEntity } from '@inithium/db';
+import type { AvatarConfig, NotificationEntity, PageEntity } from '@inithium/db';
 import { Avatar, Box, Button, Divider, Icon, Text } from '../components';
 import { drawer } from '../drawer/drawer';
 import type { DrawerRenderContext } from '../drawer/drawerStore';
@@ -39,6 +39,13 @@ export interface NavbarProps {
   // so its `100vh - NavbarHeight` sizing actually lines up with this element's real height.
   readonly height?: number;
   readonly className?: string;
+  // Recent notifications (read + unread mixed, newest first) - the app host resolves these via
+  // @inithium/api-client's useNotificationCenter and passes the plain result down, the same
+  // layering already used for currentUser/primaryNavPages/profileNavPages.
+  readonly notifications?: NotificationEntity[];
+  readonly unreadNotificationCount?: number;
+  readonly onNotificationClick?: (notification: NotificationEntity) => void;
+  readonly onMarkAllNotificationsRead?: () => void;
 }
 
 const DEFAULT_HEIGHT = 64;
@@ -97,7 +104,7 @@ const AuthenticatedDrawerContent = ({
     <NavLinkStack pages={profileNavPages} onNavigate={close} />
     <Box className="mt-auto" padding={{ top: 16 }}>
       <Button
-        variant={{ kind: 'filled', color: 'primary' }}
+        variant={{ kind: 'filled', color: 'red' }}
         className="w-full"
         onClick={() => {
           onLogout?.();
@@ -141,6 +148,73 @@ const UnauthenticatedDrawerContent = ({
   </Box>
 );
 
+const NotificationPreviewItem = ({
+  notification,
+  onClick,
+}: {
+  notification: NotificationEntity;
+  onClick: () => void;
+}) => (
+  <Button
+    variant={{ kind: 'ghost', color: 'surface' }}
+    onClick={onClick}
+    className={mergeClassNames(
+      'h-auto w-full flex-col items-start gap-1 rounded-md p-3 text-left',
+      !notification.isRead && 'bg-surface-100',
+    )}
+  >
+    <Box flex={{ direction: 'row', align: 'center', gap: 8 }} className="w-full">
+      <Text as="span" className="font-medium">
+        {notification.title}
+      </Text>
+      {!notification.isRead ? (
+        <span aria-hidden="true" className="ml-auto h-2 w-2 shrink-0 rounded-full bg-primary-500" />
+      ) : null}
+    </Box>
+    {notification.body ? (
+      <Text as="p" className="text-sm text-surface-700">
+        {notification.body}
+      </Text>
+    ) : null}
+  </Button>
+);
+
+const NotificationCenterContent = ({
+  notifications,
+  onNotificationClick,
+  onMarkAllRead,
+  close,
+}: {
+  notifications: NotificationEntity[];
+  onNotificationClick?: (notification: NotificationEntity) => void;
+  onMarkAllRead?: () => void;
+  close: () => void;
+}) => (
+  <Box flex={{ direction: 'col', gap: 8 }} className="min-h-0 flex-1">
+    {onMarkAllRead ? (
+      <Button variant={{ kind: 'link', color: 'accent' }} className="self-end" onClick={onMarkAllRead}>
+        Mark all as read
+      </Button>
+    ) : null}
+    {notifications.length === 0 ? (
+      <Text as="p" className="text-surface-500">
+        You&apos;re all caught up.
+      </Text>
+    ) : (
+      notifications.map((notification) => (
+        <NotificationPreviewItem
+          key={notification.id}
+          notification={notification}
+          onClick={() => {
+            onNotificationClick?.(notification);
+            close();
+          }}
+        />
+      ))
+    )}
+  </Box>
+);
+
 // Assembles Box/Button/Avatar/Drawer/Divider/Icon primitives into the app's top navigation bar.
 // Purely presentational - the app host is responsible for fetching primaryNavPages/
 // profileNavPages (one `useGetNavPagesQuery` call per location) and resolving `currentUser`,
@@ -155,6 +229,10 @@ export const Navbar = ({
   title,
   height = DEFAULT_HEIGHT,
   className,
+  notifications = [],
+  unreadNotificationCount = 0,
+  onNotificationClick,
+  onMarkAllNotificationsRead,
 }: NavbarProps) => {
   const openAuthenticatedDrawer = () => {
     drawer.show(
@@ -176,6 +254,20 @@ export const Navbar = ({
         <UnauthenticatedDrawerContent primaryNavPages={primaryNavPages} onLogin={onLogin} close={close} />
       ),
       { side: 'right', title: 'Menu' },
+    );
+  };
+
+  const openNotificationsDrawer = () => {
+    drawer.show(
+      ({ close }: DrawerRenderContext) => (
+        <NotificationCenterContent
+          notifications={notifications}
+          onNotificationClick={onNotificationClick}
+          onMarkAllRead={onMarkAllNotificationsRead}
+          close={close}
+        />
+      ),
+      { side: 'right', title: 'Notifications' },
     );
   };
 
@@ -205,15 +297,35 @@ export const Navbar = ({
           </Box>
 
           {currentUser ? (
-            <Avatar
-              {...resolveAvatarConfigProps(
-                currentUser.avatar,
-                [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' '),
-              )}
-              size={36}
-              status={currentUser.status}
-              onClick={openAuthenticatedDrawer}
-            />
+            <>
+              {unreadNotificationCount > 0 ? (
+                <span className="relative inline-block">
+                  <Button
+                    variant={{ kind: 'ghost', color: 'surface' }}
+                    padding={{base: 0}}
+                    onClick={openNotificationsDrawer}
+                    aria-label={`Open notifications (${unreadNotificationCount} unread)`}
+                  >
+                    <Icon name="Bell" size={22} />
+                  </Button>
+                  <span
+                    aria-hidden="true"
+                    className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-medium leading-none text-white"
+                  >
+                    {unreadNotificationCount > 99 ? '99+' : unreadNotificationCount}
+                  </span>
+                </span>
+              ) : null}
+              <Avatar
+                {...resolveAvatarConfigProps(
+                  currentUser.avatar,
+                  [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' '),
+                )}
+                size={36}
+                status={currentUser.status}
+                onClick={openAuthenticatedDrawer}
+              />
+            </>
           ) : (
             <>
               <Button

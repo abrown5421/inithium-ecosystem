@@ -10,6 +10,7 @@ const SEVERITY_CLASSES: Record<AlertSeverity, string> = {
   danger: 'bg-red-100 border-red-500 text-red-500',
   warning: 'bg-yellow-100 border-yellow-500 text-yellow-500',
   info: 'bg-blue-100 border-blue-500 text-blue-500',
+  notification: 'bg-surface-200 border-surface-400 text-surface-900',
 };
 
 export const resolveAlertSeverityClasses = (severity: AlertSeverity): string => SEVERITY_CLASSES[severity];

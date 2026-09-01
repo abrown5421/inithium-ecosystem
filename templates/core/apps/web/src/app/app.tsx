@@ -7,10 +7,11 @@ import {
   Footer,
   Navbar,
   PageShell,
-  Text,
+  Loader,
+  alert,
   useNavigateWithTransition,
 } from '@inithium/ui';
-import { useGetNavPagesQuery, useGetPageByRouteQuery } from '@inithium/api-client';
+import { useGetNavPagesQuery, useGetPageByRouteQuery, useNotificationCenter } from '@inithium/api-client';
 import { useCurrentUser } from './useCurrentUser';
 import { RealtimeConnectionBoundary } from './RealtimeConnectionBoundary';
 import { pageComponents } from '../pages/pageComponents';
@@ -34,6 +35,15 @@ export function App() {
   const { data: primaryFooterPages = [] } = useGetNavPagesQuery('primary-footer');
   const { data: secondaryFooterPages = [] } = useGetNavPagesQuery('secondary-footer');
   const { currentUser, logout } = useCurrentUser();
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotificationCenter(currentUser?.id, {
+    onNotification: (notification) => {
+      alert.show(notification.title, {
+        position: 'bottom-right',
+        severity: 'notification',
+        animation: { entrance: 'animate__fadeInRight', exit: 'animate__fadeOutRight' },
+      });
+    },
+  });
 
   return (
     // The absolute top-level container: a near-black backdrop so the (mostly slate-100/surface)
@@ -45,6 +55,13 @@ export function App() {
         primaryNavPages={primaryNavPages}
         profileNavPages={profileNavPages}
         currentUser={currentUser}
+        notifications={notifications}
+        unreadNotificationCount={unreadCount}
+        onNotificationClick={(notification) => {
+          markAsRead(notification.id);
+          if (notification.actionUrl) navigate(notification.actionUrl);
+        }}
+        onMarkAllNotificationsRead={markAllAsRead}
         onLogin={() => navigate('/login')}
         onLogout={logout}
         title="Inithium"
@@ -52,8 +69,8 @@ export function App() {
       />
 
       {isLoading ? (
-        <Box padding={{ base: 32 }}>
-          <Text as="p">Loading…</Text>
+        <Box padding={{ base: 16 }} bgColor={{color: 'surface', intensity: 100}} style={{minHeight: 'calc(100vh - 64px)'}} flex={{justify: 'center', align: 'center'}}>
+          <Loader variant="spinner" color={{color: 'primary', intensity: 500}} />
         </Box>
       ) : page ? (
         <PageShell page={page} components={pageComponents} navbarHeight={NAVBAR_HEIGHT} fallback={<NotFoundPage />} />
