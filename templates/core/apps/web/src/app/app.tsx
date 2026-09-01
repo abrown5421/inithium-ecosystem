@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   AlertContainer,
@@ -11,8 +12,13 @@ import {
   alert,
   useNavigateWithTransition,
 } from '@inithium/ui';
-import { useGetNavPagesQuery, useGetPageByRouteQuery, useNotificationCenter } from '@inithium/api-client';
-import { useCurrentUser } from './useCurrentUser';
+import {
+  useGetNavPagesQuery,
+  useGetPageByRouteQuery,
+  useNotificationCenter,
+  useRealtimeConnectionStatus,
+} from '@inithium/api-client';
+import { useCurrentUser, useAuthToken } from './useCurrentUser';
 import { RealtimeConnectionBoundary } from './RealtimeConnectionBoundary';
 import { pageComponents } from '../pages/pageComponents';
 import { NotFoundPage } from '../pages/NotFoundPage';
@@ -29,12 +35,14 @@ export function App() {
   const route = `${location.pathname}${location.search}`;
   const navigate = useNavigateWithTransition();
 
-  const { data: page, isLoading } = useGetPageByRouteQuery({ route });
-  const { data: primaryNavPages = [] } = useGetNavPagesQuery('primary-nav');
-  const { data: profileNavPages = [] } = useGetNavPagesQuery('profile-nav');
-  const { data: primaryFooterPages = [] } = useGetNavPagesQuery('primary-footer');
-  const { data: secondaryFooterPages = [] } = useGetNavPagesQuery('secondary-footer');
-  const { currentUser, logout } = useCurrentUser();
+  const { data: page, isLoading: isPageLoading } = useGetPageByRouteQuery({ route });
+  const { data: primaryNavPages = [], isLoading: isPrimaryNavLoading } = useGetNavPagesQuery('primary-nav');
+  const { data: profileNavPages = [], isLoading: isProfileNavLoading } = useGetNavPagesQuery('profile-nav');
+  const { data: primaryFooterPages = [], isLoading: isPrimaryFooterLoading } = useGetNavPagesQuery('primary-footer');
+  const { data: secondaryFooterPages = [], isLoading: isSecondaryFooterLoading } = useGetNavPagesQuery('secondary-footer');
+  const { currentUser, isResolving: isAuthResolving, logout } = useCurrentUser();
+  const token = useAuthToken();
+  const realtimeStatus = useRealtimeConnectionStatus();
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotificationCenter(currentUser?.id, {
     onNotification: (notification) => {
       alert.show(notification.title, {
@@ -45,44 +53,77 @@ export function App() {
     },
   });
 
+  // Gates the very first render of the real shell on everything it depends on: auth resolving
+  // (so the Navbar never flashes logged-out right before a stored token resolves into a real
+  // session), the realtime socket finishing its first connection attempt (open OR closed - not
+  // "still connecting", but not blocking forever through an outage's reconnect loop either), and
+  // the nav/footer/page data the shell itself renders. Latched via the effect below so a later
+  // reconnect or route change never brings the full-screen loader back once the app has actually
+  // started - this is a one-time bootstrap gate, not a persistent loading state.
+  const isBootstrapDataReady =
+    !isAuthResolving &&
+    (!token || realtimeStatus === 'open' || realtimeStatus === 'closed') &&
+    !isPageLoading &&
+    !isPrimaryNavLoading &&
+    !isProfileNavLoading &&
+    !isPrimaryFooterLoading &&
+    !isSecondaryFooterLoading;
+
+  const [hasBootstrapped, setHasBootstrapped] = useState(false);
+  useEffect(() => {
+    if (isBootstrapDataReady) setHasBootstrapped(true);
+  }, [isBootstrapDataReady]);
+
   return (
     // The absolute top-level container: a near-black backdrop so the (mostly slate-100/surface)
     // pages have real contrast to fade or slide against — without this, a page fading toward
     // transparent (or sliding out) reveals nothing but a plain white gap instead of a visible
     // transition.
     <Box bgColor={{ color: 'surface', intensity: 950 }} className="min-h-screen w-full">
-      <Navbar
-        primaryNavPages={primaryNavPages}
-        profileNavPages={profileNavPages}
-        currentUser={currentUser}
-        notifications={notifications}
-        unreadNotificationCount={unreadCount}
-        onNotificationClick={(notification) => {
-          markAsRead(notification.id);
-          if (notification.actionUrl) navigate(notification.actionUrl);
-        }}
-        onMarkAllNotificationsRead={markAllAsRead}
-        onLogin={() => navigate('/login')}
-        onLogout={logout}
-        title="Inithium"
-        height={NAVBAR_HEIGHT}
-      />
+      {hasBootstrapped ? (
+        <>
+          <Navbar
+            primaryNavPages={primaryNavPages}
+            profileNavPages={profileNavPages}
+            currentUser={currentUser}
+            notifications={notifications}
+            unreadNotificationCount={unreadCount}
+            onNotificationClick={(notification) => {
+              markAsRead(notification.id);
+              if (notification.actionUrl) navigate(notification.actionUrl);
+            }}
+            onMarkAllNotificationsRead={markAllAsRead}
+            onLogin={() => navigate('/login')}
+            onLogout={logout}
+            title="Inithium"
+            height={NAVBAR_HEIGHT}
+          />
 
-      {isLoading ? (
-        <Box padding={{ base: 16 }} bgColor={{color: 'surface', intensity: 100}} style={{minHeight: 'calc(100vh - 64px)'}} flex={{justify: 'center', align: 'center'}}>
-          <Loader variant="spinner" color={{color: 'primary', intensity: 500}} />
-        </Box>
-      ) : page ? (
-        <PageShell page={page} components={pageComponents} navbarHeight={NAVBAR_HEIGHT} fallback={<NotFoundPage />} />
+          {isPageLoading ? (
+            <Box padding={{ base: 16 }} bgColor={{ color: 'surface', intensity: 100 }} style={{ minHeight: 'calc(100vh - 64px)' }} flex={{ justify: 'center', align: 'center' }}>
+              <Loader variant="spinner" color={{ color: 'primary', intensity: 500 }} />
+            </Box>
+          ) : page ? (
+            <PageShell page={page} components={pageComponents} navbarHeight={NAVBAR_HEIGHT} fallback={<NotFoundPage />} />
+          ) : (
+            <NotFoundPage />
+          )}
+
+          <Footer
+            primaryFooterPages={primaryFooterPages}
+            secondaryFooterPages={secondaryFooterPages}
+            brandName="Inithium"
+          />
+        </>
       ) : (
-        <NotFoundPage />
+        <Box
+          bgColor={{ color: 'surface', intensity: 100 }}
+          className="min-h-screen w-full"
+          flex={{ justify: 'center', align: 'center' }}
+        >
+          <Loader variant="spinner" size="3rem" color={{ color: 'primary', intensity: 600 }} label="Loading Inithium..." />
+        </Box>
       )}
-
-      <Footer
-        primaryFooterPages={primaryFooterPages}
-        secondaryFooterPages={secondaryFooterPages}
-        brandName="Inithium"
-      />
 
       <AlertContainer />
       <DialogContainer />
