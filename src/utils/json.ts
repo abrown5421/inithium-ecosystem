@@ -12,6 +12,7 @@ export interface PluginManifest {
   injections?: Array<{
     target: string;
     source: string;
+    requires?: string;
   }>;
 }
 

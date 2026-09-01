@@ -39,7 +39,7 @@ Inithium is an a la carte, modular full-stack monorepo scaffolding ecosystem. It
 inithium/
 ├── bin/                       # Executable Node CLI entrypoint (npx inithium)
 ├── src/                       # CLI engine logic (Commander, degit, file manipulators)
-│   ├── commands/              # 'init' and 'add' command handlers
+│   ├── commands/              # 'init', 'add', and 'remove' command handlers
 │   └── utils/                 # File manipulators, package.json mergers, git helpers
 ├── templates/
 │   ├── core/                  # Clean Nx Monorepo Starter Template (@inithium/source)
@@ -60,6 +60,8 @@ inithium/
 ├── package.json               # Root CLI package ("name": "@inithium/cli")
 └── tsconfig.json              # Root TypeScript config for CLI engine
 ```
+
+> Note: `.inithium/plugins.lock.json` is **not** part of this repo's tree. It is generated at runtime by `add`/`remove` inside a *consumer* workspace (the project scaffolded via `inithium init`) to track which plugins are installed there. See section 4 for its role in dependency resolution.
 
 ---
 
@@ -125,10 +127,21 @@ Every plugin inside `templates/plugins/[plugin-name]/` must include a `manifest.
     {
       "target": "libs/api-client/src/endpoints",
       "source": "web/endpoints"
+    },
+    {
+      "target": "libs/cms/src/modules/example-admin",
+      "source": "cms/example-admin",
+      "requires": "cms"
     }
   ]
 }
 ```
+
+### Plugin Dependency Resolution & the Install Lockfile
+A plugin can declare two distinct kinds of dependency on another plugin, resolved by the CLI's `add`/`remove` commands against a generated `.inithium/plugins.lock.json` file inside the **consumer** workspace (never hand-edited by plugin authors, never part of this repo's own tree):
+
+- **Hard dependency (`dependencies.plugins: string[]`):** The entire plugin requires another plugin to already be installed. `inithium add` aborts immediately, before touching any files, if a declared hard dependency is missing — it does not auto-install the dependency. `inithium remove` refuses to remove a plugin that other installed plugins hard-depend on unless `--force` is passed (which prints a warning about the now-broken dependents rather than repairing them).
+- **Soft/per-injection dependency (`injections[].requires: string`):** A single injection block only copies if the named plugin is already installed. This is not an error if absent — it is the mechanism for a plugin to ship an always-on core feature alongside an optional module that only makes sense when another plugin (e.g. a CMS) is present. A deferred block is applied retroactively the moment its required plugin is later added, and reverted back to deferred if that required plugin is later removed — `remove` always sweeps and reverts dependents' gated blocks, regardless of `--force`, since this relationship never blocks removal.
 
 ### Thin App Orchestrator Pattern (Backend Example)
 `apps/api/src/main.ts` simply imports infrastructure from `@inithium/*` workspace packages and starts the server:
