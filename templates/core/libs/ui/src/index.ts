@@ -56,6 +56,9 @@ export { ALERT_SEVERITIES, ALERT_POSITIONS } from './tokens/alert';
 export type { DrawerSide } from './tokens/drawer';
 export { DRAWER_SIDES } from './tokens/drawer';
 
+export type { LoaderVariant } from './tokens/loader';
+export { LOADER_VARIANTS } from './tokens/loader';
+
 export type { ThemeSwatchColor, TailwindSwatchColor } from './tokens/colorPicker';
 export { THEME_SWATCH_COLORS, TAILWIND_SWATCH_COLORS } from './tokens/colorPicker';
 
@@ -182,6 +185,7 @@ export type {
   RadioGroupProps,
   RadioGroupItemProps,
   TextareaProps,
+  LoaderProps,
   AlertProps,
   DialogProps,
   DrawerProps,

@@ -16,6 +16,7 @@ export {
   setPresenceStatus,
 } from './realtime/realtimeClientStore';
 export type { RealtimeConnectionStatus } from './realtime/realtimeClientStore';
+export { useRealtimeConnectionStatus } from './realtime/useRealtimeConnectionStatus';
 export type { PresenceStatus, PresenceRecord } from '@inithium/realtime';
 
 export {
