@@ -197,7 +197,7 @@ const NotificationCenterContent = ({
       </Button>
     ) : null}
     {notifications.length === 0 ? (
-      <Text as="p" className="text-surface-500">
+      <Text as="p" className="text-surface-1000">
         You&apos;re all caught up.
       </Text>
     ) : (

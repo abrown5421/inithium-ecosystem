@@ -52,6 +52,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",
-    "react-router-dom": "6.30.3"
+    "react-router-dom": "6.30.3",
+    "recharts": "^2.15.0"
   }
 }

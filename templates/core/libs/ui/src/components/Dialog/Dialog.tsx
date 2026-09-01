@@ -73,7 +73,7 @@ export const Dialog = ({
           type="button"
           onClick={() => onClose?.()}
           aria-label="Close"
-          className="absolute right-3 top-3 rounded p-1 text-surface-500 transition-colors hover:text-surface-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+          className="absolute right-3 top-3 rounded p-1 text-surface-1000 transition-colors hover:text-surface-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
         >
           <Icon as="span" name="X" size={18} />
         </button>
