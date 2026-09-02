@@ -100,6 +100,8 @@ export { resolveAvatarInitials } from './utils/resolveAvatarInitials';
 export { resolveAvatarShapeClasses } from './utils/resolveAvatarShapeClasses';
 export { resolveDicebearUrl } from './utils/resolveDicebearUrl';
 export { resolveComputedColorHex } from './utils/resolveComputedColorHex';
+export { createSeededRandom } from './utils/createSeededRandom';
+export { resolveStringHash } from './utils/resolveStringHash';
 
 export { alert } from './alert/alert';
 export type { AlertOptions } from './alert/alert';
