@@ -3,7 +3,7 @@
   "plugins": {
     "cms": {
       "version": "1.0.0",
-      "installedAt": "2026-09-01T20:34:23.237Z",
+      "installedAt": "2026-09-02T13:40:40.275Z",
       "dependencies": [],
       "npmDependencies": {
         "recharts": "^2.15.0"
@@ -22,8 +22,20 @@
           "status": "applied"
         },
         {
+          "target": "apps/web/src/app/app.tsx",
+          "source": "src/app/app.tsx",
+          "requires": null,
+          "status": "applied"
+        },
+        {
           "target": "apps/web/src/main.tsx",
           "source": "src/app/main.tsx",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "apps/web/src/pages/HomePage.tsx",
+          "source": "src/pages/HomePage.tsx",
           "requires": null,
           "status": "applied"
         },
@@ -52,6 +64,24 @@
           "status": "applied"
         },
         {
+          "target": "libs/db/src/contracts/settings.contract.ts",
+          "source": "src/db/contracts/settings.contract.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/db/src/contracts/db-provider.contract.ts",
+          "source": "src/db/contracts/db-provider.contract.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/db/src/schemas/settings.schema.ts",
+          "source": "src/db/schemas/settings.schema.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
           "target": "libs/db/src/providers/mongo/user.repository.ts",
           "source": "src/db/providers/mongo/user.repository.ts",
           "requires": null,
@@ -60,6 +90,18 @@
         {
           "target": "libs/db/src/providers/mongo/page.repository.ts",
           "source": "src/db/providers/mongo/page.repository.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/db/src/providers/mongo/settings.repository.ts",
+          "source": "src/db/providers/mongo/settings.repository.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/db/src/providers/mongo/mongo.provider.ts",
+          "source": "src/db/providers/mongo/mongo.provider.ts",
           "requires": null,
           "status": "applied"
         },
@@ -82,6 +124,12 @@
           "status": "applied"
         },
         {
+          "target": "libs/api-core/src/schemas/settings.schema.ts",
+          "source": "src/api-core/schemas/settings.schema.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
           "target": "libs/api-core/src/routes/users.route.ts",
           "source": "src/api-core/routes/users.route.ts",
           "requires": null,
@@ -90,6 +138,12 @@
         {
           "target": "libs/api-core/src/routes/pages.route.ts",
           "source": "src/api-core/routes/pages.route.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/api-core/src/routes/settings.route.ts",
+          "source": "src/api-core/routes/settings.route.ts",
           "requires": null,
           "status": "applied"
         },
@@ -108,6 +162,18 @@
         {
           "target": "libs/api-client/src/endpoints/page.endpoints.ts",
           "source": "src/api-client/endpoints/page.endpoints.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/api-client/src/endpoints/settings.endpoints.ts",
+          "source": "src/api-client/endpoints/settings.endpoints.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/api-client/src/baseApi.ts",
+          "source": "src/api-client/baseApi.ts",
           "requires": null,
           "status": "applied"
         },

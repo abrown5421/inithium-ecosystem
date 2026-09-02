@@ -54,3 +54,13 @@ export type {
   UpdateUserInput,
   UserRegistrationCount,
 } from './endpoints/users.endpoints';
+
+export {
+  settingsApi,
+  useListSettingsQuery,
+  useUpsertSettingMutation,
+  useGetPublicSettingQuery,
+  useAppName,
+  SETTING_TYPES,
+} from './endpoints/settings.endpoints';
+export type { SettingType, SettingEntity, UpsertSettingInput } from './endpoints/settings.endpoints';
