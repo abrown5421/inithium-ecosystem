@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Box, Button, Input, Text } from '@inithium/ui';
-import { useLoginMutation } from '@inithium/api-client';
+import { useAppName, useLoginMutation } from '@inithium/api-client';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -29,6 +29,7 @@ const validate = (email: string, password: string): FieldErrors => {
 // Query hook) and hands the resulting token back up via onLoginSuccess instead of touching
 // authStore itself, keeping libs/cms free of any app-level import.
 export const CmsLoginPage = ({ onLoginSuccess }: CmsLoginPageProps) => {
+  const appName = useAppName();
   const [login, { isLoading }] = useLoginMutation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -60,7 +61,7 @@ export const CmsLoginPage = ({ onLoginSuccess }: CmsLoginPageProps) => {
       padding={{ base: 32 }}
     >
       <Text as="h1" className="text-2xl font-bold text-surface-100">
-        Inithium CMS
+        {appName} CMS
       </Text>
 
       <Box

@@ -1,6 +1,7 @@
 import { DbProvider, DbConfig } from './contracts/db-provider.contract';
 import { CreatePageInput, FindManyPagesOptions, NavLocation, UpdatePageInput } from './contracts/page.contract';
 import { CreateUserInput, FindManyUsersOptions, UpdateUserInput } from './contracts/user.contract';
+import { UpsertSettingInput } from './contracts/settings.contract';
 import { activeProvider as defaultProvider } from './providers/active-provider';
 
 let activeProvider: DbProvider = defaultProvider;
@@ -47,6 +48,13 @@ export const markNotificationAsRead = (id: string, userId: string) =>
 export const markAllNotificationsAsReadForUser = (userId: string) =>
   getNotificationRepository().markAllAsReadForUser(userId);
 
+export const getSettingsRepository = () => activeProvider.getSettingRepository();
+export const listSettings = () => getSettingsRepository().findAll();
+// Returns null when nothing has been saved for this key yet - callers fall back to their own
+// default, the same merge logic the CMS Settings module itself uses against its definitions.
+export const getSetting = (key: string) => getSettingsRepository().findByKey(key);
+export const upsertSetting = (input: UpsertSettingInput) => getSettingsRepository().upsert(input);
+
 export type { DbProvider, DbConfig } from './contracts/db-provider.contract';
 export type { PaginatedResult } from './contracts/pagination.contract';
 export type {
@@ -85,4 +93,6 @@ export type {
   FindManyPagesOptions,
 } from './contracts/page.contract';
 export type { NotificationEntity, CreateNotificationInput, NotificationRepository } from './contracts/notification.contract';
+export { SETTING_TYPES } from './contracts/settings.contract';
+export type { SettingType, SettingEntity, UpsertSettingInput, SettingsRepository } from './contracts/settings.contract';
 export { mongoProvider } from './providers/mongo/mongo.provider';

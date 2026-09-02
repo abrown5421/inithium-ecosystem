@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, Navigate, Route, Routes } from 'react-router-dom';
 import { Box, Button, Icon, IconButton, Text } from '@inithium/ui';
+import { useAppName } from '@inithium/api-client';
 import type { AuthUser } from '@inithium/api-client';
 import { cmsModules } from './modules/registry';
 import { ModuleRenderer } from './ModuleRenderer';
@@ -17,6 +18,7 @@ const COLLAPSED_WIDTH = 'w-16';
 // via a manual pathname check rather than a parent <Route path="/cms/*">, so these <Routes>
 // match against the full current pathname, not a stripped-down remainder.
 export const CmsShell = ({ currentUser, onLogout }: CmsShellProps) => {
+  const appName = useAppName();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const firstModuleId = cmsModules[0]?.id;
 
@@ -35,7 +37,7 @@ export const CmsShell = ({ currentUser, onLogout }: CmsShellProps) => {
         >
           {isCollapsed ? null : (
             <Text as="h2" className="text-lg font-bold text-surface-100 whitespace-nowrap">
-              Inithium CMS
+              {appName} CMS
             </Text>
           )}
           <IconButton
