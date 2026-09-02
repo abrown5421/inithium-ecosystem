@@ -27,7 +27,7 @@ export const CmsShell = ({ currentUser, onLogout }: CmsShellProps) => {
       <Box
         as="nav"
         flex={{ direction: 'col', gap: 4 }}
-        bgColor={{ color: 'surface', intensity: 900 }}
+        bgColor={{ color: 'primary', intensity: 600 }}
         padding={{ base: 16 }}
         className={`${isCollapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH} shrink-0 overflow-hidden transition-all duration-200`}
       >
