@@ -238,6 +238,199 @@
           "status": "applied"
         }
       ]
+    },
+    "blog": {
+      "version": "1.0.0",
+      "installedAt": "2026-09-02T18:51:31.825Z",
+      "dependencies": [],
+      "npmDependencies": {
+        "@tiptap/react": "^3.0.0",
+        "@tiptap/pm": "^3.0.0",
+        "@tiptap/starter-kit": "^3.0.0",
+        "dompurify": "^3.2.0"
+      },
+      "injections": [
+        {
+          "target": "libs/db/src/contracts/blog.contract.ts",
+          "source": "src/db/contracts/blog.contract.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/db/src/contracts/db-provider.contract.ts",
+          "source": "src/db/contracts/db-provider.contract.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/db/src/schemas/blog-post.schema.ts",
+          "source": "src/db/schemas/blog-post.schema.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/db/src/providers/mongo/blog-post.repository.ts",
+          "source": "src/db/providers/mongo/blog-post.repository.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/db/src/providers/mongo/mongo.provider.ts",
+          "source": "src/db/providers/mongo/mongo.provider.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/db/src/utils/generateExcerptFromHtml.ts",
+          "source": "src/db/utils/generateExcerptFromHtml.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/db/src/index.ts",
+          "source": "src/db/index.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/db/src/page-seeds/blog.page-seed.ts",
+          "source": "src/db/page-seeds/blog.page-seed.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/db/src/page-seeds/blog-post.page-seed.ts",
+          "source": "src/db/page-seeds/blog-post.page-seed.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/db/src/page-seeds/registry.ts",
+          "source": "src/db/page-seeds/registry.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/api-core/src/schemas/blog.schema.ts",
+          "source": "src/api-core/schemas/blog.schema.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/api-core/src/routes/blog.route.ts",
+          "source": "src/api-core/routes/blog.route.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/api-core/src/index.ts",
+          "source": "src/api-core/index.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/api-client/src/endpoints/blog.endpoints.ts",
+          "source": "src/api-client/endpoints/blog.endpoints.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/api-client/src/baseApi.ts",
+          "source": "src/api-client/baseApi.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/api-client/src/index.ts",
+          "source": "src/api-client/index.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/ui/src/components/Card/Card.tsx",
+          "source": "src/ui/components/Card/Card.tsx",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/ui/src/components/Pill/Pill.tsx",
+          "source": "src/ui/components/Pill/Pill.tsx",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/ui/src/components/index.ts",
+          "source": "src/ui/components/index.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/ui/src/index.ts",
+          "source": "src/ui/index.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "apps/web/src/pages/blogBannerConfig.ts",
+          "source": "src/pages/blogBannerConfig.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "apps/web/src/pages/BlogIndexPage.tsx",
+          "source": "src/pages/BlogIndexPage.tsx",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "apps/web/src/pages/BlogPostPage.tsx",
+          "source": "src/pages/BlogPostPage.tsx",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "apps/web/src/pages/pageComponents.ts",
+          "source": "src/pages/pageComponents.ts",
+          "requires": null,
+          "status": "applied"
+        },
+        {
+          "target": "libs/cms/package.json",
+          "source": "src/cms/package.json",
+          "requires": "cms",
+          "status": "applied"
+        },
+        {
+          "target": "libs/cms/src/settings/definitions/blog-comments-enabled.setting.ts",
+          "source": "src/cms/settings/definitions/blog-comments-enabled.setting.ts",
+          "requires": "cms",
+          "status": "applied"
+        },
+        {
+          "target": "libs/cms/src/modules/blog-admin.module.tsx",
+          "source": "src/cms/modules/blog-admin.module.tsx",
+          "requires": "cms",
+          "status": "applied"
+        },
+        {
+          "target": "libs/cms/src/modules/blog/BlogAdminModule.tsx",
+          "source": "src/cms/modules/blog/BlogAdminModule.tsx",
+          "requires": "cms",
+          "status": "applied"
+        },
+        {
+          "target": "libs/cms/src/modules/blog/BlogPostEditDialog.tsx",
+          "source": "src/cms/modules/blog/BlogPostEditDialog.tsx",
+          "requires": "cms",
+          "status": "applied"
+        },
+        {
+          "target": "libs/cms/src/modules/blog/BlogCommentsPanel.tsx",
+          "source": "src/cms/modules/blog/BlogCommentsPanel.tsx",
+          "requires": "cms",
+          "status": "applied"
+        }
+      ]
     }
   }
 }
