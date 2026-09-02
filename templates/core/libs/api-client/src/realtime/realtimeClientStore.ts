@@ -32,6 +32,23 @@ const resolveSocketUrl = (token: string): string => {
   return url.toString();
 };
 
+// A WebSocket's own .close() only *initiates* the closing handshake - it does not stop
+// onmessage from firing for anything already in flight, and the handshake itself is
+// asynchronous. Without clearing handlers first, a socket being replaced (a reconnect, a
+// logout-then-login, or - in dev only - React StrictMode's mount->cleanup->mount briefly
+// opening a second connection) can still deliver a message via its stale onmessage after the
+// "current" socket has already moved on to a new one, double-invoking every channel listener for
+// that one event. Nulling every handler before closing makes a discarded socket permanently
+// inert, regardless of how long its actual network-level teardown takes.
+const teardownSocket = (ws: WebSocket | null): void => {
+  if (!ws) return;
+  ws.onopen = null;
+  ws.onmessage = null;
+  ws.onclose = null;
+  ws.onerror = null;
+  ws.close();
+};
+
 const send = (message: RealtimeClientMessage): void => {
   if (socket?.readyState === WebSocket.OPEN) {
     socket.send(JSON.stringify(message));
@@ -100,7 +117,8 @@ export const connectRealtimeClient = (token: string): void => {
     clearTimeout(reconnectTimer);
     reconnectTimer = null;
   }
-  socket?.close();
+  teardownSocket(socket);
+  socket = null;
   open();
 };
 
@@ -110,7 +128,7 @@ export const disconnectRealtimeClient = (): void => {
     clearTimeout(reconnectTimer);
     reconnectTimer = null;
   }
-  socket?.close();
+  teardownSocket(socket);
   socket = null;
   status = 'idle';
   emitStatus();
