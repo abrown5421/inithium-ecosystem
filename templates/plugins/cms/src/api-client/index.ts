@@ -62,6 +62,7 @@ export {
   useUpsertSettingMutation,
   useGetPublicSettingQuery,
   useAppName,
+  useShowPersistentNotificationCenter,
   SETTING_TYPES,
 } from './endpoints/settings.endpoints';
 export type { SettingType, SettingEntity, UpsertSettingInput } from './endpoints/settings.endpoints';

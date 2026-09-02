@@ -33,6 +33,7 @@ export {
   useGetUnreadNotificationCountQuery,
   useMarkNotificationReadMutation,
   useMarkAllNotificationsReadMutation,
+  useDeleteNotificationMutation,
 } from './endpoints/notifications.endpoints';
 export { useNotificationCenter } from './notifications/useNotificationCenter';
 export type { UseNotificationCenterOptions, UseNotificationCenterResult } from './notifications/useNotificationCenter';
@@ -62,6 +63,7 @@ export {
   useUpsertSettingMutation,
   useGetPublicSettingQuery,
   useAppName,
+  useShowPersistentNotificationCenter,
   SETTING_TYPES,
 } from './endpoints/settings.endpoints';
 export type { SettingType, SettingEntity, UpsertSettingInput } from './endpoints/settings.endpoints';

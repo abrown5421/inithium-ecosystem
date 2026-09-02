@@ -54,6 +54,8 @@ export const markNotificationAsRead = (id: string, userId: string) =>
   getNotificationRepository().markAsRead(id, userId);
 export const markAllNotificationsAsReadForUser = (userId: string) =>
   getNotificationRepository().markAllAsReadForUser(userId);
+export const deleteNotificationForUser = (id: string, userId: string) =>
+  getNotificationRepository().deleteForUser(id, userId);
 
 export const getSettingsRepository = () => activeProvider.getSettingRepository();
 export const listSettings = () => getSettingsRepository().findAll();

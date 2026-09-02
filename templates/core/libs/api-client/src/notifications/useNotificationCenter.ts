@@ -5,6 +5,7 @@ import {
   useGetUnreadNotificationCountQuery,
   useMarkNotificationReadMutation,
   useMarkAllNotificationsReadMutation,
+  useDeleteNotificationMutation,
 } from '../endpoints/notifications.endpoints';
 import {
   getNotifications,
@@ -13,6 +14,7 @@ import {
   hydrateUnreadCount,
   markLocalNotificationRead,
   markAllLocalNotificationsRead,
+  removeLocalNotification,
   subscribeToNotifications,
   subscribeToNewNotifications,
 } from './notificationStore';
@@ -34,6 +36,7 @@ export interface UseNotificationCenterResult {
   readonly unreadCount: number;
   readonly markAsRead: (id: string) => void;
   readonly markAllAsRead: () => void;
+  readonly removeNotification: (id: string) => void;
 }
 
 export const useNotificationCenter = (
@@ -44,6 +47,7 @@ export const useNotificationCenter = (
   const { data: countData } = useGetUnreadNotificationCountQuery(undefined, { skip: !userId });
   const [markReadMutation] = useMarkNotificationReadMutation();
   const [markAllReadMutation] = useMarkAllNotificationsReadMutation();
+  const [deleteNotificationMutation] = useDeleteNotificationMutation();
 
   useEffect(() => {
     if (userId && listData) hydrateNotifications(userId, listData);
@@ -91,5 +95,14 @@ export const useNotificationCenter = (
     void markAllReadMutation();
   }, [userId, markAllReadMutation]);
 
-  return { notifications, unreadCount, markAsRead, markAllAsRead };
+  const removeNotification = useCallback(
+    (id: string) => {
+      if (!userId) return;
+      removeLocalNotification(userId, id);
+      void deleteNotificationMutation(id);
+    },
+    [userId, deleteNotificationMutation],
+  );
+
+  return { notifications, unreadCount, markAsRead, markAllAsRead, removeNotification };
 };

@@ -7,6 +7,7 @@ import type { IconName } from '../tokens/icon';
 import type { PresenceStatus } from '../tokens/avatar';
 import { mergeClassNames } from '../theme/mergeClassNames';
 import { resolveAvatarConfigProps } from './resolveAvatarConfigProps';
+import { NotificationCenter } from './NotificationCenter';
 
 export interface NavbarLogo {
   readonly src: string;
@@ -46,6 +47,10 @@ export interface NavbarProps {
   readonly unreadNotificationCount?: number;
   readonly onNotificationClick?: (notification: NotificationEntity) => void;
   readonly onMarkAllNotificationsRead?: () => void;
+  readonly onNotificationDelete?: (id: string) => void;
+  // Backed by the CMS's "Persistent Notification Center" global setting - when true the bell
+  // stays visible even with zero unread notifications instead of disappearing entirely.
+  readonly showPersistentNotificationCenter?: boolean;
 }
 
 const DEFAULT_HEIGHT = 64;
@@ -148,74 +153,8 @@ const UnauthenticatedDrawerContent = ({
   </Box>
 );
 
-const NotificationPreviewItem = ({
-  notification,
-  onClick,
-}: {
-  notification: NotificationEntity;
-  onClick: () => void;
-}) => (
-  <Button
-    variant={{ kind: 'ghost', color: 'surface' }}
-    onClick={onClick}
-    className={mergeClassNames(
-      'h-auto w-full flex-col items-start gap-1 rounded-md p-3 text-left',
-      !notification.isRead && 'bg-surface-100',
-    )}
-  >
-    <Box flex={{ direction: 'row', align: 'center', gap: 8 }} className="w-full">
-      <Text as="span" className="font-medium">
-        {notification.title}
-      </Text>
-      {!notification.isRead ? (
-        <span aria-hidden="true" className="ml-auto h-2 w-2 shrink-0 rounded-full bg-primary-500" />
-      ) : null}
-    </Box>
-    {notification.body ? (
-      <Text as="p" className="text-sm text-surface-700">
-        {notification.body}
-      </Text>
-    ) : null}
-  </Button>
-);
-
-const NotificationCenterContent = ({
-  notifications,
-  onNotificationClick,
-  onMarkAllRead,
-  close,
-}: {
-  notifications: NotificationEntity[];
-  onNotificationClick?: (notification: NotificationEntity) => void;
-  onMarkAllRead?: () => void;
-  close: () => void;
-}) => (
-  <Box flex={{ direction: 'col', gap: 8 }} className="min-h-0 flex-1">
-    {onMarkAllRead ? (
-      <Button variant={{ kind: 'link', color: 'accent' }} className="self-end" onClick={onMarkAllRead}>
-        Mark all as read
-      </Button>
-    ) : null}
-    {notifications.length === 0 ? (
-      <Text as="p" className="text-surface-1000">
-        You&apos;re all caught up.
-      </Text>
-    ) : (
-      notifications.map((notification) => (
-        <NotificationPreviewItem
-          key={notification.id}
-          notification={notification}
-          onClick={() => {
-            onNotificationClick?.(notification);
-            close();
-          }}
-        />
-      ))
-    )}
-  </Box>
-);
-
-// Assembles Box/Button/Avatar/Drawer/Divider/Icon primitives into the app's top navigation bar.
+// Assembles Box/Button/Avatar/Drawer/Divider/Icon/NotificationCenter primitives into the app's
+// top navigation bar.
 // Purely presentational - the app host is responsible for fetching primaryNavPages/
 // profileNavPages (one `useGetNavPagesQuery` call per location) and resolving `currentUser`,
 // and passes them in as plain props.
@@ -233,6 +172,8 @@ export const Navbar = ({
   unreadNotificationCount = 0,
   onNotificationClick,
   onMarkAllNotificationsRead,
+  onNotificationDelete,
+  showPersistentNotificationCenter = false,
 }: NavbarProps) => {
   const openAuthenticatedDrawer = () => {
     drawer.show(
@@ -254,20 +195,6 @@ export const Navbar = ({
         <UnauthenticatedDrawerContent primaryNavPages={primaryNavPages} onLogin={onLogin} close={close} />
       ),
       { side: 'right', title: 'Menu' },
-    );
-  };
-
-  const openNotificationsDrawer = () => {
-    drawer.show(
-      ({ close }: DrawerRenderContext) => (
-        <NotificationCenterContent
-          notifications={notifications}
-          onNotificationClick={onNotificationClick}
-          onMarkAllRead={onMarkAllNotificationsRead}
-          close={close}
-        />
-      ),
-      { side: 'right', title: 'Notifications' },
     );
   };
 
@@ -298,24 +225,14 @@ export const Navbar = ({
 
           {currentUser ? (
             <>
-              {unreadNotificationCount > 0 ? (
-                <span className="relative inline-block">
-                  <Button
-                    variant={{ kind: 'ghost', color: 'surface' }}
-                    padding={{base: 0}}
-                    onClick={openNotificationsDrawer}
-                    aria-label={`Open notifications (${unreadNotificationCount} unread)`}
-                  >
-                    <Icon name="Bell" size={22} />
-                  </Button>
-                  <span
-                    aria-hidden="true"
-                    className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-medium leading-none text-white"
-                  >
-                    {unreadNotificationCount > 99 ? '99+' : unreadNotificationCount}
-                  </span>
-                </span>
-              ) : null}
+              <NotificationCenter
+                notifications={notifications}
+                unreadCount={unreadNotificationCount}
+                showPersistent={showPersistentNotificationCenter}
+                onNotificationClick={onNotificationClick}
+                onMarkAllRead={onMarkAllNotificationsRead}
+                onDelete={onNotificationDelete}
+              />
               <Avatar
                 {...resolveAvatarConfigProps(
                   currentUser.avatar,

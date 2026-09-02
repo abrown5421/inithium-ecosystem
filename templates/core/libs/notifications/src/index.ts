@@ -21,5 +21,6 @@ export {
   countUnreadNotificationsForUser,
   markNotificationAsRead,
   markAllNotificationsAsReadForUser,
+  deleteNotificationForUser,
 } from '@inithium/db';
 export type { NotificationEntity, CreateNotificationInput } from '@inithium/db';

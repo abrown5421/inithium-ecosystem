@@ -7,6 +7,7 @@ import {
   countUnreadNotificationsForUser,
   markNotificationAsRead,
   markAllNotificationsAsReadForUser,
+  deleteNotificationForUser,
 } from '@inithium/db';
 
 const router: RouterType = Router();
@@ -55,6 +56,23 @@ router.patch(
   asyncHandler(async (req: Request, res: Response) => {
     const count = await markAllNotificationsAsReadForUser(req.user!.sub);
     res.status(200).json(createSuccessResponse({ count }));
+  })
+);
+
+router.delete(
+  '/api/notifications/:id',
+  requireAuth,
+  asyncHandler(async (req: Request, res: Response) => {
+    const rawId = req.params.id;
+    const id = Array.isArray(rawId) ? rawId[0] : rawId;
+    if (!id) {
+      throw ValidationError('Notification id is required');
+    }
+    const deleted = await deleteNotificationForUser(id, req.user!.sub);
+    if (!deleted) {
+      throw NotFoundError('Notification not found');
+    }
+    res.status(204).send();
   })
 );
 

@@ -85,6 +85,21 @@ export const markAllLocalNotificationsRead = (userId: string): void => {
   emit(userId);
 };
 
+export const removeLocalNotification = (userId: string, id: string): void => {
+  const list = notificationsByUser.get(userId);
+  if (!list) return;
+  const target = list.find((notification) => notification.id === id);
+  if (!target) return;
+  notificationsByUser.set(
+    userId,
+    list.filter((notification) => notification.id !== id),
+  );
+  if (!target.isRead) {
+    unreadCountByUser.set(userId, Math.max(0, (unreadCountByUser.get(userId) ?? 0) - 1));
+  }
+  emit(userId);
+};
+
 export const subscribeToNotifications = (userId: string, listener: Listener): (() => void) => {
   ensureSubscribed(userId);
   const existing = listenersByUser.get(userId);
