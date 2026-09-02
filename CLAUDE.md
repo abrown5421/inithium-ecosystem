@@ -184,7 +184,51 @@ export const { useGetFeatureDataQuery } = featureApi;
 ```
 
 ---
-## 5. API Documentation & Testing Guidelines
+
+## 5. Theming & Semantic Color Tokens
+
+`@inithium/ui` ships a two-layer theme (`libs/ui/src/theme/theme.css`): a brand layer of `--ui-*` CSS custom properties, and a `@theme` block that registers each one into Tailwind v4's `--color-*` namespace. This makes every semantic token behave exactly like a built-in Tailwind color (`bg-primary-500`, `text-primary-foreground-500`, `border-surface-950/40`, ...). A consuming app rebrands the whole system by redefining the `--ui-*` variables — never by editing component code.
+
+### The 11 semantic base colors
+The palette's "base" is the 500-intensity, 100%-opacity shade of each token. There are 11:
+
+- **5 raw brand colors** — `primary`, `secondary`, `accent`, `tertiary`, `quaternary`. These are direct branding colors meant to impart style, not to encode a priority order.
+  - `primary` is the workhorse: buttons and other primary actions/CTAs.
+  - `accent` is meant to be starkly contrasting and reserved for interaction affordances — hover states, highlights, focus rings — not general decoration.
+  - `secondary`, `tertiary`, and `quaternary` are supplementary branding colors used minimally throughout the UI, at the developer's discretion. They are not a "2nd/3rd/4th most important action" hierarchy.
+- **5 foreground colors** — `primary-foreground`, `secondary-foreground`, `accent-foreground`, `tertiary-foreground`, `quaternary-foreground`. Each is the immediate, opposite-contrast partner of its matching raw color, guaranteeing legible text/icons/borders on top of that raw color at the same intensity (e.g. `bg-primary-500` pairs with `text-primary-foreground-500`). Never pair a raw brand color with an arbitrary or mismatched foreground token.
+- **1 surface color** — `surface`. This is the big differentiator from the other 10. `surface` has no branding intent and, unlike the 5 raw colors, is not paired with a dedicated foreground for contrast. Instead, `surface` leans on its own sliding intensity scale (`100` → `950`) to separate layers: a page background at `surface-100` next to a card at `surface-950` reads as a strong contrast; a navbar at `surface-200` sits just above the page; a sidebar at `surface-500` can be made to really pop. Pick surface contrast by moving along the surface scale, not by reaching for a brand color as a background fill.
+  - *Technical exception:* `theme.css` and `color.contract.ts` also define a `surface-foreground` variant, used in exactly one place today (`Select.tsx`) where text sits directly on a surface fill. Treat this as a narrow escape hatch, not the standard pattern — default to surface-on-surface intensity contrast first.
+
+### Intensity and opacity are parameters, not new colors
+Components never hardcode a shade. They accept a `ColorSpec` (`libs/ui/src/contracts/color.contract.ts`):
+
+```typescript
+export interface ColorSpec {
+  readonly color: string;        // a semantic token ('primary', 'surface', ...) or raw Tailwind color
+  readonly intensity?: ColorIntensity; // 100 | 200 | ... | 950
+  readonly opacity?: ColorOpacity;     // 10 | 20 | ... | 90
+}
+```
+
+A component prop passes a `ColorSpec` — color, intensity, optional opacity — and `resolveColorClass` (`libs/ui/src/theme/resolveColorClass.ts`) resolves it into a real Tailwind class **per utility, per component**:
+
+```typescript
+resolveColorClass('bg', { color: 'primary', intensity: 500 });        // "bg-primary-500"
+resolveColorClass('text', { color: 'primary-foreground', intensity: 500 }); // "text-primary-foreground-500"
+resolveColorClass('border', { color: 'surface', intensity: 950, opacity: 40 }); // "border-surface-950/40"
+```
+
+This is why a component like `Button` takes separate `bgColor`, `textColor`, and `borderColor` `ColorSpec` props and resolves each independently — the same semantic token can (and often should) be dialed to a different intensity/opacity for each utility on the same element. Opacity is a modifier layered on top of a token (overlays, disabled states, subtle dividers) — it is never a substitute for choosing the right base token.
+
+### Rules of thumb
+- Never hardcode a hex value or reach for Tailwind's built-in palette (`bg-blue-500`, `text-red-600`, etc.) for anything that represents brand identity, a container background, or text-on-background contrast. Always resolve through a semantic token via `ColorSpec`/`resolveColorClass`.
+- Use `primary` for primary actions; use `accent` sparingly and only for stark-contrast interaction states; use `secondary`/`tertiary`/`quaternary` minimally and discretionarily for brand texture.
+- Pair a raw brand color with its matching `-foreground` token at the same intensity for anything drawn on top of it.
+- For page/panel/container backgrounds, use `surface` and build contrast by moving along its intensity scale, not by mixing in a brand color as a fill.
+
+---
+## 6. API Documentation & Testing Guidelines
 
 ### Core API Route Modifications
 When adding, modifying, or removing routes in the **Core API ONLY**:
@@ -198,7 +242,7 @@ When adding, modifying, or removing routes in the **Core API ONLY**:
 
 ---
 
-## 6. Developer & AI Assistant Workflow Instructions
+## 7. Developer & AI Assistant Workflow Instructions
 
 ### Application Verification
 Server restarts, builds, and browser testing are handled **manually by the developer**. AI agents must **not** attempt to run dev servers or execute browser automation steps.
