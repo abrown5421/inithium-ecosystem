@@ -77,6 +77,9 @@ export interface FindManyPagesOptions {
 
 export interface PageRepository {
   findByRoutePattern: (routePattern: string) => Promise<PageEntity | null>;
+  // Slug is the one field the CMS's own Pages module treats as immutable (see
+  // PageEditDialog's "not editable here" note) - the natural idempotency key for seeding.
+  findBySlug: (slug: string) => Promise<PageEntity | null>;
   findByNavLocation: (location: NavLocation) => Promise<PageEntity[]>;
   findPublished: () => Promise<PageEntity[]>;
   findMany: (options: FindManyPagesOptions) => Promise<PaginatedResult<PageEntity>>;
