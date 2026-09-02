@@ -31,6 +31,7 @@ export const getUserRegistrationsByDay = () => getUserRepository().countRegistra
 export const getPageRepository = () => activeProvider.getPageRepository();
 export const findPageByRoutePattern = (routePattern: string) =>
   getPageRepository().findByRoutePattern(routePattern);
+export const findPageBySlug = (slug: string) => getPageRepository().findBySlug(slug);
 export const findPagesByNavLocation = (location: NavLocation) =>
   getPageRepository().findByNavLocation(location);
 export const findPublishedPages = () => getPageRepository().findPublished();
@@ -95,4 +96,5 @@ export type {
 export type { NotificationEntity, CreateNotificationInput, NotificationRepository } from './contracts/notification.contract';
 export { SETTING_TYPES } from './contracts/settings.contract';
 export type { SettingType, SettingEntity, UpsertSettingInput, SettingsRepository } from './contracts/settings.contract';
+export { ensureSeededPages } from './page-seeds/ensureSeededPages';
 export { mongoProvider } from './providers/mongo/mongo.provider';

@@ -35,10 +35,21 @@ export const createMongoPageRepository = (model: Model<PageDocument>): PageRepos
     const page = await model.findOne({ routePattern }).exec();
     return page ? mapToPageEntity(page) : null;
   },
+  findBySlug: async (slug: string): Promise<PageEntity | null> => {
+    const page = await model.findOne({ slug }).exec();
+    return page ? mapToPageEntity(page) : null;
+  },
   findByNavLocation: async (location: NavLocation): Promise<PageEntity[]> => {
     // Querying an array field with a scalar value matches any document whose array contains
     // that value, so this also picks up pages that are in more than one nav location at once.
-    const pages = await model.find({ 'navigation.locations': location }).sort({ 'navigation.order': 1 }).exec();
+    // isPublished:true here is what makes the Navbar (desktop bar + mobile slideout, which both
+    // render whatever this same query returns - see Navbar.tsx) and Footer (primary + secondary)
+    // stop showing a link the moment a page is unpublished, with no filtering logic duplicated
+    // in any of those four render sites - they're all just consumers of this one query.
+    const pages = await model
+      .find({ 'navigation.locations': location, isPublished: true })
+      .sort({ 'navigation.order': 1 })
+      .exec();
     return pages.map(mapToPageEntity);
   },
   findPublished: async (): Promise<PageEntity[]> => {

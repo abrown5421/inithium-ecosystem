@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { connectDatabase } from '@inithium/db';
+import { connectDatabase, ensureSeededPages } from '@inithium/db';
 import { getAuthProvider } from '@inithium/auth';
 import { registerCoreRoutes } from '@inithium/api-core';
 import { errorHandler } from '@inithium/api-utils';
@@ -19,6 +19,11 @@ const startServer = async () => {
       credentials: JSON.parse(process.env['FIREBASE_SERVICE_ACCOUNT_KEY'] || '{}'),
     });
     await connectRealtime();
+    // Idempotent - creates only the pages missing by slug, never touches an existing (possibly
+    // admin-edited) one. Runs on every boot, which is what makes a plugin's newly seeded pages
+    // reach a deployed instance the same way any other code change does: git push -> redeploy ->
+    // this runs again against the persistent database.
+    await ensureSeededPages();
 
     getAuthProvider().assertConfigured?.();
     registerCoreRoutes(app);
