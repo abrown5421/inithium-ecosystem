@@ -213,6 +213,7 @@ export type {
 
 export {
   Navbar,
+  NotificationCenter,
   Footer,
   PageShell,
   resolveAvatarConfigProps,
@@ -228,6 +229,7 @@ export type {
   NavbarProps,
   NavbarLogo,
   NavbarUser,
+  NotificationCenterProps,
   FooterProps,
   PageShellProps,
   PageComponentMap,

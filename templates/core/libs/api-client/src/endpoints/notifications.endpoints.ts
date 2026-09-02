@@ -26,6 +26,10 @@ export const notificationsApi = baseApi.injectEndpoints({
       transformResponse: (response: ApiResponse<{ count: number }>) => response.data,
       invalidatesTags: ['Notification'],
     }),
+    deleteNotification: builder.mutation<void, string>({
+      query: (id) => ({ url: `/api/notifications/${id}`, method: 'DELETE' }),
+      invalidatesTags: ['Notification'],
+    }),
   }),
 });
 
@@ -34,4 +38,5 @@ export const {
   useGetUnreadNotificationCountQuery,
   useMarkNotificationReadMutation,
   useMarkAllNotificationsReadMutation,
+  useDeleteNotificationMutation,
 } = notificationsApi;

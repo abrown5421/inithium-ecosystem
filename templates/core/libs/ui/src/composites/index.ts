@@ -1,6 +1,9 @@
 export { Navbar } from './Navbar';
 export type { NavbarProps, NavbarLogo, NavbarUser } from './Navbar';
 
+export { NotificationCenter } from './NotificationCenter';
+export type { NotificationCenterProps } from './NotificationCenter';
+
 export { Footer } from './Footer';
 export type { FooterProps } from './Footer';
 

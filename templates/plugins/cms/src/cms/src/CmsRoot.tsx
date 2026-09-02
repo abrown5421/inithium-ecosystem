@@ -3,6 +3,7 @@ import { AlertContainer, Box, DialogContainer, DrawerContainer, Loader } from '@
 import type { AuthUser } from '@inithium/api-client';
 import { CmsLoginPage } from './CmsLoginPage';
 import { CmsShell } from './CmsShell';
+import { CmsRealtimeBoundary } from './CmsRealtimeBoundary';
 
 const ADMIN_ROLE = 'admin';
 
@@ -11,12 +12,15 @@ export interface CmsRootProps {
   readonly isResolving: boolean;
   readonly onLoginSuccess: (token: string) => void;
   readonly onLogout: () => void;
+  // The raw access token, passed alongside currentUser so CmsRealtimeBoundary can open a live
+  // socket for the notification center - currentUser alone doesn't carry it.
+  readonly token: string | null;
 }
 
 // Everything currentUser-related here arrives as props, never via a hook call - libs/cms has no
 // knowledge of authStore/useCurrentUser, the same layering @inithium/ui's Navbar already uses
 // for currentUser/onLogin/onLogout.
-export const CmsRoot = ({ currentUser, isResolving, onLoginSuccess, onLogout }: CmsRootProps) => {
+export const CmsRoot = ({ currentUser, isResolving, onLoginSuccess, onLogout, token }: CmsRootProps) => {
   // alert/dialog/drawer are module-level singleton stores, not React context - calling
   // dialog.show()/alert.show()/drawer.show() always succeeds silently regardless of what's
   // mounted, but nothing actually renders without one of these *Container components present
@@ -50,6 +54,7 @@ export const CmsRoot = ({ currentUser, isResolving, onLoginSuccess, onLogout }: 
       <AlertContainer />
       <DialogContainer />
       <DrawerContainer />
+      <CmsRealtimeBoundary token={token} />
     </>
   );
 };

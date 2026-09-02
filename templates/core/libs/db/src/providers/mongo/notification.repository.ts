@@ -38,4 +38,8 @@ export const createMongoNotificationRepository = (model: Model<NotificationDocum
     const result = await model.updateMany({ userId, isRead: false }, { $set: { isRead: true } }).exec();
     return result.modifiedCount;
   },
+  deleteForUser: async (id: string, userId: string): Promise<boolean> => {
+    const result = await model.deleteOne({ _id: id, userId }).exec();
+    return result.deletedCount > 0;
+  },
 });

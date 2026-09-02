@@ -3,7 +3,7 @@
   "plugins": {
     "cms": {
       "version": "1.0.0",
-      "installedAt": "2026-09-02T13:40:40.275Z",
+      "installedAt": "2026-09-02T20:34:38.780Z",
       "dependencies": [],
       "npmDependencies": {
         "recharts": "^2.15.0"
@@ -241,7 +241,7 @@
     },
     "blog": {
       "version": "1.0.0",
-      "installedAt": "2026-09-02T18:51:31.825Z",
+      "installedAt": "2026-09-02T20:34:32.168Z",
       "dependencies": [],
       "npmDependencies": {
         "@tiptap/react": "^3.0.0",

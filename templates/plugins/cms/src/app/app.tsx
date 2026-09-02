@@ -18,6 +18,7 @@ import {
   useGetPageByRouteQuery,
   useNotificationCenter,
   useRealtimeConnectionStatus,
+  useShowPersistentNotificationCenter,
 } from '@inithium/api-client';
 import { useCurrentUser, useAuthToken } from './useCurrentUser';
 import { RealtimeConnectionBoundary } from './RealtimeConnectionBoundary';
@@ -47,7 +48,8 @@ export function App() {
   // Backed by the CMS plugin's app.name setting when installed (falls back to "Inithium"
   // otherwise or before anything's ever been saved) - see @inithium/api-client's useAppName.
   const appName = useAppName();
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotificationCenter(currentUser?.id, {
+  const showPersistentNotificationCenter = useShowPersistentNotificationCenter();
+  const { notifications, unreadCount, markAsRead, markAllAsRead, removeNotification } = useNotificationCenter(currentUser?.id, {
     onNotification: (notification) => {
       alert.show(notification.title, {
         position: 'bottom-right',
@@ -96,11 +98,13 @@ export function App() {
             currentUser={currentUser}
             notifications={notifications}
             unreadNotificationCount={unreadCount}
+            showPersistentNotificationCenter={showPersistentNotificationCenter}
             onNotificationClick={(notification) => {
               markAsRead(notification.id);
               if (notification.actionUrl) navigate(notification.actionUrl);
             }}
             onMarkAllNotificationsRead={markAllAsRead}
+            onNotificationDelete={removeNotification}
             onLogin={() => navigate('/login')}
             onLogout={logout}
             title={appName}

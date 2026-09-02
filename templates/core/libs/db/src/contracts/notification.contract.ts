@@ -32,4 +32,7 @@ export interface NotificationRepository {
   // notification needs that Page (admin-managed, not user-owned) never had to enforce.
   markAsRead: (id: string, userId: string) => Promise<NotificationEntity | null>;
   markAllAsReadForUser: (userId: string) => Promise<number>;
+  // Scoped by userId in the query itself, matching markAsRead's own ownership guarantee - a
+  // caller can never delete another user's notification by guessing an id.
+  deleteForUser: (id: string, userId: string) => Promise<boolean>;
 }

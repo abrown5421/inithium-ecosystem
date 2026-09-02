@@ -66,3 +66,12 @@ export const useAppName = (): string => {
   const { data } = useGetPublicSettingQuery(APP_NAME_KEY);
   return data && data.type === 'string' ? data.value : DEFAULT_APP_NAME;
 };
+
+const SHOW_PERSISTENT_NOTIFICATION_CENTER_KEY = 'notifications.showPersistentCenter';
+
+// Same "public setting with a fallback" shape as useAppName - read by both the public Navbar and
+// the CMS's own navbar so the bell's always-visible behavior stays in sync across both.
+export const useShowPersistentNotificationCenter = (): boolean => {
+  const { data } = useGetPublicSettingQuery(SHOW_PERSISTENT_NOTIFICATION_CENTER_KEY);
+  return data?.type === 'boolean' ? data.value : false;
+};
