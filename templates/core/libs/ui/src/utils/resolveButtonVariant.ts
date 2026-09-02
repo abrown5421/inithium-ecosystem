@@ -11,7 +11,7 @@ export interface ButtonVariantDefaults {
 }
 
 const DEFAULT_INTENSITY = 500;
-const NEUTRAL_TEXT_COLOR: ColorSpec = { color: 'slate', intensity: 100 };
+const NEUTRAL_TEXT_COLOR: ColorSpec = { color: 'slate', intensity: 500 };
 
 const STANDARD_PADDING: SpacingProp = { top: 5, right: 15, bottom: 5, left: 15 };
 const LINK_PADDING: SpacingProp = { top: 4, bottom: 4 };
