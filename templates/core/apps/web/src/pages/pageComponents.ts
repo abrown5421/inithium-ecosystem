@@ -4,21 +4,23 @@ import { DocsPage } from './DocsPage';
 import { LoginPage } from './LoginPage';
 import { SignupPage } from './SignupPage';
 import { PrivacyPolicyPage } from './PrivacyPolicyPage';
+import { ProfilePage } from './ProfilePage';
 import { BlogIndexPage } from './BlogIndexPage';
 import { BlogPostPage } from './BlogPostPage';
 
-// Keyed by Page.slug — matching the records seeded via the Postman collection's "Pages"
-// folder (or created directly against POST /api/pages): home ("/"), docs ("/docs"),
-// login ("/login"), signup ("/signup"), privacy-policy ("/privacy-policy"). The blog plugin
-// adds "blog" ("/blog") and "blog-post" ("/blog/:id") - like every other entry here, the
-// actual Page record for each must still be created via the CMS Pages module (no seed
-// mechanism exists in this codebase to do that automatically).
+// Keyed by Page.slug, matching libs/db/src/page-seeds/registry.ts's own seeded records: home
+// ("/"), docs ("/docs"), login ("/login"), signup ("/signup"), privacy-policy
+// ("/privacy-policy"), profile ("/profile/:id"). The blog plugin adds "blog" ("/blog") and
+// "blog-post" ("/blog/:id") - every entry here has a corresponding page-seed reconciled by
+// ensureSeededPages() at API boot, and must still be added here by hand alongside its seed
+// (no mechanism auto-derives this map from the seed registry).
 export const pageComponents: PageComponentMap = {
   home: HomePage,
   docs: DocsPage,
   login: LoginPage,
   signup: SignupPage,
   'privacy-policy': PrivacyPolicyPage,
+  profile: ProfilePage,
   blog: BlogIndexPage,
   'blog-post': BlogPostPage,
 };

@@ -8,6 +8,7 @@ import notificationsRouter from './routes/notifications.route';
 import usersRouter from './routes/users.route';
 import settingsRouter from './routes/settings.route';
 import blogRouter from './routes/blog.route';
+import profileRouter from './routes/profile.route';
 
 export const registerCoreRoutes = (app: Express): void => {
   app.use(healthRouter);
@@ -19,8 +20,9 @@ export const registerCoreRoutes = (app: Express): void => {
   app.use(usersRouter);
   app.use(settingsRouter);
   app.use(blogRouter);
+  app.use(profileRouter);
   console.log(
-    '📋 Core routes registered: /health, /auth/*, /api/health, /api/test-error, /api/pages/*, /api/users/:id/presence, /api/notifications*, /api/users*, /api/settings*, /api/blog*'
+    '📋 Core routes registered: /health, /auth/*, /api/health, /api/test-error, /api/pages/*, /api/users/:id/presence, /api/notifications*, /api/users*, /api/settings*, /api/blog*, /api/profile*'
   );
 };
 

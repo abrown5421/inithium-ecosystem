@@ -4,6 +4,7 @@ import docsPageSeed from './docs.page-seed';
 import loginPageSeed from './login.page-seed';
 import signupPageSeed from './signup.page-seed';
 import privacyPolicyPageSeed from './privacy-policy.page-seed';
+import profilePageSeed from './profile.page-seed';
 import blogPageSeed from './blog.page-seed';
 import blogPostPageSeed from './blog-post.page-seed';
 
@@ -24,6 +25,7 @@ export const pageSeeds: CreatePageInput[] = [
   loginPageSeed,
   signupPageSeed,
   privacyPolicyPageSeed,
+  profilePageSeed,
   blogPageSeed,
   blogPostPageSeed,
 ];

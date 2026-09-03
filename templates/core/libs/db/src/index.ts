@@ -96,9 +96,9 @@ export type {
   AvatarShape,
   AvatarColor,
   AvatarStyleConfig,
-  AvatarImageConfig,
   AvatarDicebearConfig,
   AvatarConfig,
+  UserProfileBannerConfig,
 } from './contracts/user.contract';
 export { NAV_LOCATIONS, PAGE_LAYOUT_TEMPLATES } from './contracts/page.contract';
 export type {

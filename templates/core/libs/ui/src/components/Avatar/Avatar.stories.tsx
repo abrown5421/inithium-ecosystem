@@ -27,7 +27,7 @@ export const Large: Story = {
 };
 
 export const FromImage: Story = {
-  args: { source: { variant: 'image', url: 'https://i.pravatar.cc/200', alt: 'Jane Doe' } },
+  args: { imageUrl: 'https://i.pravatar.cc/200', imageAlt: 'Jane Doe' },
 };
 
 export const FromDicebear: Story = {

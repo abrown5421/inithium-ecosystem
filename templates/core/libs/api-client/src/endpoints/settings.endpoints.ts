@@ -75,3 +75,14 @@ export const useShowPersistentNotificationCenter = (): boolean => {
   const { data } = useGetPublicSettingQuery(SHOW_PERSISTENT_NOTIFICATION_CENTER_KEY);
   return data?.type === 'boolean' ? data.value : false;
 };
+
+const PROFILE_ENABLED_KEY = 'profile.enabled';
+
+// Defaults true (on by default, opt out) - mirrors blog.commentsEnabled's fallback more than
+// notifications.showPersistentCenter's, since this gates a core user-facing page rather than a
+// cosmetic enhancement. Must stay in sync with profile.route.ts's own isProfileEnabled() fallback
+// and the setting's own `default` in libs/cms/src/settings/definitions/profile-enabled.setting.ts.
+export const useIsProfileEnabled = (): boolean => {
+  const { data } = useGetPublicSettingQuery(PROFILE_ENABLED_KEY);
+  return data?.type === 'boolean' ? data.value : true;
+};

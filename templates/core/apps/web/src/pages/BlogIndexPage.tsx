@@ -11,6 +11,7 @@ import {
   Select,
   SelectItem,
   Text,
+  useElementSize,
   useNavigateWithTransition,
 } from '@inithium/ui';
 import { useListBlogAuthorsQuery, useListBlogCategoriesQuery, useListBlogPostsQuery } from '@inithium/api-client';
@@ -38,13 +39,20 @@ interface BlogPostCardProps {
 // otherwise re-run for all 12 cards on every parent re-render.
 const BlogPostCard = ({ post, onClick }: BlogPostCardProps) => {
   const bannerConfig = useMemo(() => generateBlogBannerConfig(post.id), [post.id]);
+  // Banner generates its mesh against a fixed reference width whenever it isn't told a real
+  // pixel width, then stretches that mesh to fill however wide it actually renders - fine near
+  // that reference width, but visibly over/under-densifies the triangles at the extremes (a
+  // ~300px card grid cell chief among them - see Banner.tsx's own comment and its documented
+  // useElementSize pattern). Measuring this card's own wrapper keeps every card's mesh
+  // proportional regardless of the grid's current column count.
+  const { ref: bannerSizeRef, size: bannerSize } = useElementSize();
 
   return (
     <Card
       onClick={onClick}
       media={
-        <div className="relative">
-          <Banner imageUrl={post.image} trianglifyConfig={bannerConfig} height={CARD_BANNER_HEIGHT} />
+        <div ref={bannerSizeRef} className="relative">
+          <Banner imageUrl={post.image} trianglifyConfig={bannerConfig} width={bannerSize?.width} height={CARD_BANNER_HEIGHT} />
           <Pill className="absolute right-3 top-3">{post.category}</Pill>
         </div>
       }

@@ -1,6 +1,6 @@
 import type { PaginatedResult } from './pagination.contract';
 
-export const AVATAR_VARIANTS = ['initials', 'image', 'dicebear'] as const;
+export const AVATAR_VARIANTS = ['initials', 'dicebear'] as const;
 export type AvatarVariant = (typeof AVATAR_VARIANTS)[number];
 
 export const AVATAR_SHAPES = ['circle', 'square'] as const;
@@ -21,12 +21,6 @@ export interface AvatarStyleConfig {
   shape: AvatarShape;
 }
 
-export interface AvatarImageConfig {
-  url: string;
-}
-
-// Not wired up to a picker/upload flow yet - only enough shape for a future customization
-// feature to populate (see AvatarDicebearSource in @inithium/ui's tokens/avatar.ts).
 export interface AvatarDicebearConfig {
   style: string;
   seed: string;
@@ -36,8 +30,12 @@ export interface AvatarDicebearConfig {
 export interface AvatarConfig {
   variant: AvatarVariant;
   style: AvatarStyleConfig;
-  image?: AvatarImageConfig;
   dicebear?: AvatarDicebearConfig;
+  // Takes precedence over `variant`/`style`/`dicebear` entirely when set - an uploaded/external
+  // profile picture always wins over whatever initials or dicebear config is also stored,
+  // mirroring UserProfileBannerConfig's own imageUrl override below and Banner's existing
+  // imageUrl-over-trianglifyConfig precedence at the @inithium/ui layer.
+  imageUrl?: string;
 }
 
 export const DEFAULT_AVATAR_CONFIG: AvatarConfig = {
@@ -48,6 +46,20 @@ export const DEFAULT_AVATAR_CONFIG: AvatarConfig = {
   },
 };
 
+// Deliberately not `@inithium/ui`'s BannerTrianglifyConfig - libs/db must stay ignorant of any
+// frontend presentation package (see the same rule on AvatarColor above). Shaped identically so
+// the API layer can pass it straight through to a `@inithium/ui` Banner's trianglifyConfig
+// without translation.
+export interface UserProfileBannerConfig {
+  cellSize: number;
+  variance: number;
+  xColors: string[];
+  yColors: string[];
+  // Takes precedence over the generated trianglify mesh entirely when set - see the identical
+  // override on AvatarConfig above.
+  imageUrl?: string;
+}
+
 export interface UserEntity {
   id: string;
   email: string;
@@ -56,6 +68,7 @@ export interface UserEntity {
   passwordHash: string;
   role: string;
   avatar: AvatarConfig;
+  profileBanner?: UserProfileBannerConfig;
   createdAt: Date;
 }
 
@@ -66,6 +79,7 @@ export interface CreateUserInput {
   passwordHash: string;
   role?: string;
   avatar?: AvatarConfig;
+  profileBanner?: UserProfileBannerConfig;
 }
 
 export interface UpdateUserInput {
@@ -75,6 +89,7 @@ export interface UpdateUserInput {
   passwordHash?: string;
   role?: string;
   avatar?: AvatarConfig;
+  profileBanner?: UserProfileBannerConfig;
 }
 
 export type UserSearchField = 'firstName' | 'lastName' | 'email';

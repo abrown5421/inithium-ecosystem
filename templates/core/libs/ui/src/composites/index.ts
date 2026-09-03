@@ -15,8 +15,14 @@ export type { AvatarConfigProps } from './resolveAvatarConfigProps';
 
 export { useNavigateWithTransition } from './useNavigateWithTransition';
 
+export { useElementSize } from './useElementSize';
+export type { ElementSize, UseElementSizeResult } from './useElementSize';
+
 export { ColorPicker } from './ColorPicker';
 export type { ColorPickerProps } from './ColorPicker';
+
+export { ColorSpecPicker } from './ColorSpecPicker';
+export type { ColorSpecPickerProps } from './ColorSpecPicker';
 
 export { AutoIncrementingList } from './AutoIncrementingList';
 export type { AutoIncrementingListProps } from './AutoIncrementingList';
@@ -32,3 +38,12 @@ export type { ListRowProps } from './ListRow';
 
 export { useSelection } from './useSelection';
 export type { UseSelectionResult } from './useSelection';
+
+export { ChangePasswordDialog } from './ChangePasswordDialog';
+export type { ChangePasswordDialogProps } from './ChangePasswordDialog';
+
+export { AvatarEditDialog } from './AvatarEditDialog';
+export type { AvatarEditDialogProps } from './AvatarEditDialog';
+
+export { BannerEditDialog } from './BannerEditDialog';
+export type { BannerEditDialogProps } from './BannerEditDialog';

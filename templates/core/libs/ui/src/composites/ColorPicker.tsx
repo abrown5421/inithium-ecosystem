@@ -1,9 +1,10 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { Box, Input, Slider, Tabs, TabsContent, TabsList, TabsTrigger } from '../components';
 import { FieldShell } from '../components/FieldShell/FieldShell';
 import { mergeClassNames } from '../theme/mergeClassNames';
 import { resolveColorClass } from '../theme/resolveColorClass';
 import { resolveComputedColorHex } from '../utils/resolveComputedColorHex';
+import { useElementSize } from './useElementSize';
 import { COLOR_INTENSITIES } from '../contracts/color.contract';
 import { THEME_SWATCH_COLORS, TAILWIND_SWATCH_COLORS } from '../tokens/colorPicker';
 import type { ColorIntensity, ColorSpec } from '../contracts/color.contract';
@@ -24,6 +25,13 @@ const HEX_PATTERN = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 const DEFAULT_INTENSITY_INDEX = COLOR_INTENSITIES.indexOf(500);
 const NEUTRAL_SWATCH_COLOR: ColorSpec = { color: 'surface', intensity: 200 };
 const SWATCH_BORDER_COLOR: ColorSpec = { color: 'surface', intensity: 300 };
+// The swatch panel below needs real room for a legible 6-column grid + tabs regardless of how
+// narrow its trigger happens to be (e.g. one cell of an AutoIncrementingList column) - matching
+// the trigger's own width via a plain CSS `w-full` only works reliably when that width is
+// already generous, so the panel's real width is measured instead (see useElementSize) and
+// widened up to this floor rather than trusted to inherit correctly through an arbitrary
+// flex/absolute-positioning ancestor chain.
+const MIN_PANEL_WIDTH = 260;
 
 const SwatchGrid = ({
   colors,
@@ -95,6 +103,21 @@ export const ColorPicker = ({
   const [tailwindIntensityIndex, setTailwindIntensityIndex] = useState(DEFAULT_INTENSITY_INDEX);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const { ref: sizeRef, size } = useElementSize();
+  const panelWidth = Math.max(size?.width ?? MIN_PANEL_WIDTH, MIN_PANEL_WIDTH);
+  // A *stable* merged ref, not a fresh inline function each render - sizeRef's own attach
+  // handler calls setSize (see useElementSize.ts), and an inline `ref={(node) => {...}}` is a
+  // new function identity every render, which makes React detach+reattach the ref (and so
+  // re-fire that setState) on every single render, an infinite "Maximum update depth exceeded"
+  // loop. useCallback keeps this one identity for the component's lifetime since sizeRef itself
+  // is already stable (useElementSize memoizes it with never-changing deps).
+  const mergedContainerRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      containerRef.current = node;
+      sizeRef(node);
+    },
+    [sizeRef],
+  );
 
   // Closes on outside pointerdown/Escape rather than input blur, since blur would fire (and
   // close the panel) the moment a user clicks a swatch or drags a slider thumb inside it.
@@ -141,7 +164,7 @@ export const ColorPicker = ({
       htmlFor={inputId}
       className={className}
     >
-      <div ref={containerRef} className="relative w-full">
+      <div ref={mergedContainerRef} className="relative w-full">
         <Input
           id={inputId}
           name={name}
@@ -180,7 +203,8 @@ export const ColorPicker = ({
             bgColor={{ color: 'surface', intensity: 100 }}
             borderColor={SWATCH_BORDER_COLOR}
             padding={{ base: 12 }}
-            className="absolute left-0 top-full z-50 mt-1 w-full rounded-md border shadow-lg"
+            style={{ width: `${panelWidth}px` }}
+            className="absolute left-0 top-full z-50 mt-1 rounded-md border shadow-lg"
           >
             <Tabs defaultValue="theme">
               <TabsList>
