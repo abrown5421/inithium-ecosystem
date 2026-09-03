@@ -10,6 +10,7 @@ import {
 } from '../../contracts/user.contract';
 import type { PaginatedResult } from '../../contracts/pagination.contract';
 import { escapeRegExp } from '../../utils/escapeRegExp';
+import { generateDefaultProfileBannerConfig } from '../../utils/generateDefaultProfileBannerConfig';
 import { UserDocument } from './models/userModel';
 
 const mapToUserEntity = (doc: UserDocument): UserEntity => ({
@@ -20,6 +21,7 @@ const mapToUserEntity = (doc: UserDocument): UserEntity => ({
   passwordHash: doc.passwordHash,
   role: doc.role,
   avatar: doc.avatar,
+  profileBanner: doc.profileBanner,
   createdAt: doc.createdAt,
 });
 
@@ -55,6 +57,10 @@ export const createMongoUserRepository = (model: Model<UserDocument>): UserRepos
       passwordHash: input.passwordHash,
       role: input.role ?? 'user',
       avatar: input.avatar ?? DEFAULT_AVATAR_CONFIG,
+      // Every new user gets an immediate, customizable baseline banner rather than waiting on
+      // the frontend's lazy per-render fallback (see apps/web/src/pages/profileBannerConfig.ts) -
+      // same "backfill a sensible default at creation time" precedent as avatar above.
+      profileBanner: input.profileBanner ?? generateDefaultProfileBannerConfig(),
     });
     return mapToUserEntity(user);
   },
@@ -66,6 +72,7 @@ export const createMongoUserRepository = (model: Model<UserDocument>): UserRepos
     if (input.passwordHash !== undefined) updateDoc['passwordHash'] = input.passwordHash;
     if (input.role !== undefined) updateDoc['role'] = input.role;
     if (input.avatar !== undefined) updateDoc['avatar'] = input.avatar;
+    if (input.profileBanner !== undefined) updateDoc['profileBanner'] = input.profileBanner;
 
     const user = await model.findByIdAndUpdate(id, { $set: updateDoc }, { new: true }).exec();
     return user ? mapToUserEntity(user) : null;

@@ -64,9 +64,19 @@ export {
   useGetPublicSettingQuery,
   useAppName,
   useShowPersistentNotificationCenter,
+  useIsProfileEnabled,
   SETTING_TYPES,
 } from './endpoints/settings.endpoints';
 export type { SettingType, SettingEntity, UpsertSettingInput } from './endpoints/settings.endpoints';
+
+export {
+  profileApi,
+  useGetProfileQuery,
+  useUpdateMyProfileMutation,
+  useVerifyCurrentPasswordMutation,
+  useChangePasswordMutation,
+} from './endpoints/profile.endpoints';
+export type { ProfileDto, UpdateMyProfileInput, ChangePasswordInput } from './endpoints/profile.endpoints';
 
 export {
   blogApi,

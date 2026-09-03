@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { AVATAR_SHAPES, AVATAR_VARIANTS, DEFAULT_AVATAR_CONFIG } from '../../../contracts/user.contract';
-import type { AvatarConfig } from '../../../contracts/user.contract';
+import type { AvatarConfig, UserProfileBannerConfig } from '../../../contracts/user.contract';
 
 export interface UserDocument extends Document {
   email: string;
@@ -9,6 +9,7 @@ export interface UserDocument extends Document {
   passwordHash: string;
   role: string;
   avatar: AvatarConfig;
+  profileBanner?: UserProfileBannerConfig;
   createdAt: Date;
 }
 
@@ -34,14 +35,28 @@ const userSchema = new Schema<UserDocument>(
         },
         shape: { type: String, required: true, enum: AVATAR_SHAPES, default: DEFAULT_AVATAR_CONFIG.style.shape },
       },
-      image: {
-        url: { type: String, required: false },
-      },
       dicebear: {
         style: { type: String, required: false },
         seed: { type: String, required: false },
         options: { type: Schema.Types.Mixed, required: false },
       },
+      // Takes precedence over variant/style/dicebear entirely when set - see the identical
+      // override on profileBanner below and the contract's own comment.
+      imageUrl: { type: String, required: false },
+    },
+    // Backfilled with a random on-brand default at creation time (see user.repository.ts's
+    // create() / generateDefaultProfileBannerConfig) rather than left absent - still `required:
+    // false` since ProfilePage falls back to a client-generated mesh for any legacy user created
+    // before this field existed (see apps/web/src/pages/profileBannerConfig.ts).
+    profileBanner: {
+      type: {
+        cellSize: { type: Number, required: true },
+        variance: { type: Number, required: true },
+        xColors: { type: [String], required: true },
+        yColors: { type: [String], required: true },
+        imageUrl: { type: String, required: false },
+      },
+      required: false,
     },
   },
   { timestamps: true }

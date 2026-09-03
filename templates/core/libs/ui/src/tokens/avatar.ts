@@ -3,8 +3,53 @@ import type { ColorSpec } from '../contracts/color.contract';
 export const AVATAR_SHAPES = ['circle', 'square'] as const;
 export type AvatarShape = (typeof AVATAR_SHAPES)[number];
 
-export const AVATAR_VARIANTS = ['initials', 'image', 'dicebear'] as const;
+export const AVATAR_VARIANTS = ['initials', 'dicebear'] as const;
 export type AvatarVariant = (typeof AVATAR_VARIANTS)[number];
+
+// The full DiceBear 9.x style catalog (https://api.dicebear.com/9.x) minus its own "initials"
+// style - that style would read as a confusing duplicate of this package's own 'initials'
+// AvatarVariant (a completely different, non-DiceBear rendering path) sitting right next to it
+// in the same picker. Order here is the display order AvatarEditDialog renders these in.
+export const DICEBEAR_STYLES = [
+  'adventurer',
+  'adventurer-neutral',
+  'avataaars',
+  'avataaars-neutral',
+  'big-ears',
+  'big-ears-neutral',
+  'big-smile',
+  'bottts',
+  'bottts-neutral',
+  'croodles',
+  'croodles-neutral',
+  'dylan',
+  'fun-emoji',
+  'glass',
+  'icons',
+  'identicon',
+  'lorelei',
+  'lorelei-neutral',
+  'micah',
+  'miniavs',
+  'notionists',
+  'notionists-neutral',
+  'open-peeps',
+  'personas',
+  'pixel-art',
+  'pixel-art-neutral',
+  'rings',
+  'shapes',
+  'thumbs',
+] as const;
+export type DicebearStyle = (typeof DICEBEAR_STYLES)[number];
+
+// "big-ears-neutral" -> "Big Ears Neutral" - used to label each style's picker button without a
+// hand-maintained name map that could drift from the slug list above.
+export const humanizeDicebearStyle = (style: string): string =>
+  style
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 
 // bgColor/fontColor reuse ColorSpec (see contracts/color.contract.ts) rather than raw strings,
 // the same semantic-token-or-palette-color contract every other colorable prop in this package
@@ -20,16 +65,9 @@ export interface AvatarInitialsSource {
   readonly name: string;
 }
 
-export interface AvatarImageSource {
-  readonly variant: 'image';
-  readonly url: string;
-  readonly alt?: string;
-}
-
-// Not wired up to a DiceBear picker/customization flow yet - that's a future feature. This
-// shape only needs to be enough for Avatar to render whatever a future picker eventually
-// hands it: a DiceBear style slug, a seed, and that style's own optional query params
-// (backgroundColor, radius, ...) passed straight through.
+// Wired up to the DiceBear picker in AvatarEditDialog - style is one of DICEBEAR_STYLES, seed is
+// whatever string the picker's arrow-cycling history landed on, and options passes that style's
+// own optional query params (backgroundColor, radius, ...) straight through.
 export interface AvatarDicebearSource {
   readonly variant: 'dicebear';
   readonly style: string;
@@ -38,7 +76,7 @@ export interface AvatarDicebearSource {
   readonly alt?: string;
 }
 
-export type AvatarSource = AvatarInitialsSource | AvatarImageSource | AvatarDicebearSource;
+export type AvatarSource = AvatarInitialsSource | AvatarDicebearSource;
 
 export const DEFAULT_AVATAR_STYLE: Required<Pick<AvatarStyleConfig, 'bgColor' | 'shape'>> = {
   bgColor: { color: 'primary', intensity: 500 },

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import DOMPurify from 'dompurify';
-import { Banner, Box, Button, Divider, Loader, Pill, Text, Textarea } from '@inithium/ui';
+import { Banner, Box, Button, Divider, Loader, Pill, Text, Textarea, useElementSize } from '@inithium/ui';
 import {
   useAddBlogCommentMutation,
   useGetBlogPostQuery,
@@ -32,6 +32,13 @@ export const BlogPostPage = () => {
   // known via usePageParams before the post itself loads) so the seed - and therefore the
   // rendered mesh - never changes once the banner actually appears.
   const bannerConfig = useMemo(() => generateBlogBannerConfig(post?.id ?? id ?? 'blog-post'), [post?.id, id]);
+  // Banner generates its mesh against a fixed reference width whenever it isn't told a real
+  // pixel width, then stretches that mesh to fill however wide it actually renders - fine near
+  // that reference width, but visibly over/under-densifies the triangles at the extremes (see
+  // Banner.tsx's own comment and its documented useElementSize pattern). This hero banner spans
+  // the full page width, which varies a lot across viewports, so it measures its own wrapper and
+  // feeds the real width back in to keep the mesh undistorted everywhere.
+  const { ref: bannerSizeRef, size: bannerSize } = useElementSize();
 
   if (isLoading) {
     return (
@@ -53,8 +60,8 @@ export const BlogPostPage = () => {
 
   return (
     <Box flex={{ direction: 'col' }}>
-      <div className="relative">
-        <Banner imageUrl={post.image} trianglifyConfig={bannerConfig} />
+      <div ref={bannerSizeRef} className="relative">
+        <Banner imageUrl={post.image} trianglifyConfig={bannerConfig} width={bannerSize?.width} />
         <Pill className="absolute right-3 top-3">{post.category}</Pill>
       </div>
 

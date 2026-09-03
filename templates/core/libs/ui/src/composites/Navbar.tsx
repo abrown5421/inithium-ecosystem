@@ -15,6 +15,10 @@ export interface NavbarLogo {
 }
 
 export interface NavbarUser {
+  // Needed so the drawer's "Profile" link can point at `/profile/${id}` - it can't come from a
+  // profile-nav Page record the way every other drawer link does, since a page's own href can't
+  // embed "whoever happens to be looking at it right now".
+  readonly id: string;
   readonly firstName: string;
   readonly lastName?: string;
   readonly avatar: AvatarConfig;
@@ -51,6 +55,14 @@ export interface NavbarProps {
   // Backed by the CMS's "Persistent Notification Center" global setting - when true the bell
   // stays visible even with zero unread notifications instead of disappearing entirely.
   readonly showPersistentNotificationCenter?: boolean;
+  // Backed by the "Enable User Profiles" global setting. Governs which item the authenticated
+  // drawer shows in the profile-link slot: "Profile" (linking to `/profile/:id`) when true, or a
+  // "Change Password" shortcut (via onChangePasswordClick) when false - profiles being disabled
+  // must never strand a user with no way to change their own password. Defaults true so a host
+  // that hasn't wired this prop through yet keeps showing "Profile", matching the setting's own
+  // default-enabled fallback.
+  readonly profileEnabled?: boolean;
+  readonly onChangePasswordClick?: () => void;
 }
 
 const DEFAULT_HEIGHT = 64;
@@ -81,14 +93,53 @@ const NavLinkStack = ({ pages, onNavigate }: { pages: PageEntity[]; onNavigate: 
   </Box>
 );
 
+// Mirrors NavLink's own visual treatment (same Button variant/textColor) so the hardcoded
+// Profile/Change Password item reads as just another nav link, not a visually distinct
+// one-off - even though, unlike every other drawer link, its target/behavior isn't sourced from
+// a Page record (see NavbarUser.id's own comment for why "Profile" can't be one).
+const ProfileDrawerLink = ({
+  currentUser,
+  profileEnabled,
+  onChangePasswordClick,
+  onNavigate,
+}: {
+  currentUser: NavbarUser;
+  profileEnabled: boolean;
+  onChangePasswordClick?: () => void;
+  onNavigate: () => void;
+}) =>
+  profileEnabled ? (
+    <Button asChild variant={{ kind: 'link', color: 'accent' }} textColor={{ color: 'surface', intensity: 950 }} onClick={onNavigate}>
+      <Link to={`/profile/${currentUser.id}`}>Profile</Link>
+    </Button>
+  ) : (
+    <Button
+      variant={{ kind: 'link', color: 'accent' }}
+      textColor={{ color: 'surface', intensity: 950 }}
+      className="justify-start"
+      onClick={() => {
+        onNavigate();
+        onChangePasswordClick?.();
+      }}
+    >
+      Change Password
+    </Button>
+  );
+
 const AuthenticatedDrawerContent = ({
   primaryNavPages,
   profileNavPages,
+  currentUser,
+  profileEnabled,
+  onChangePasswordClick,
   onLogout,
   close,
 }: {
   primaryNavPages: PageEntity[];
   profileNavPages: PageEntity[];
+  currentUser: NavbarUser;
+  profileEnabled: boolean;
+  onChangePasswordClick?: () => void;
   onLogout?: () => void;
   close: () => void;
 }) => (
@@ -105,6 +156,14 @@ const AuthenticatedDrawerContent = ({
     <Box className="lg:hidden" flex={{ direction: 'col', gap: 16 }}>
       <NavLinkStack pages={primaryNavPages} onNavigate={close} />
       <Divider />
+    </Box>
+    <Box flex={{ direction: 'col', align: 'start', gap: 4 }}>
+      <ProfileDrawerLink
+        currentUser={currentUser}
+        profileEnabled={profileEnabled}
+        onChangePasswordClick={onChangePasswordClick}
+        onNavigate={close}
+      />
     </Box>
     <NavLinkStack pages={profileNavPages} onNavigate={close} />
     <Box className="mt-auto" padding={{ top: 16 }}>
@@ -174,13 +233,19 @@ export const Navbar = ({
   onMarkAllNotificationsRead,
   onNotificationDelete,
   showPersistentNotificationCenter = false,
+  profileEnabled = true,
+  onChangePasswordClick,
 }: NavbarProps) => {
   const openAuthenticatedDrawer = () => {
+    if (!currentUser) return;
     drawer.show(
       ({ close }: DrawerRenderContext) => (
         <AuthenticatedDrawerContent
           primaryNavPages={primaryNavPages}
           profileNavPages={profileNavPages}
+          currentUser={currentUser}
+          profileEnabled={profileEnabled}
+          onChangePasswordClick={onChangePasswordClick}
           onLogout={onLogout}
           close={close}
         />

@@ -16,6 +16,7 @@ import {
   useAppName,
   useGetNavPagesQuery,
   useGetPageByRouteQuery,
+  useIsProfileEnabled,
   useNotificationCenter,
   useRealtimeConnectionStatus,
   useShowPersistentNotificationCenter,
@@ -24,6 +25,7 @@ import { useCurrentUser, useAuthToken } from './useCurrentUser';
 import { RealtimeConnectionBoundary } from './RealtimeConnectionBoundary';
 import { pageComponents } from '../pages/pageComponents';
 import { NotFoundPage } from '../pages/NotFoundPage';
+import { useOpenChangePasswordDialog } from '../pages/profile/openChangePasswordDialog';
 
 // Kept in one place and passed to both Navbar (`height`) and PageShell (`navbarHeight`) so the
 // two composites' sizing always stays in sync.
@@ -49,6 +51,8 @@ export function App() {
   // otherwise or before anything's ever been saved) - see @inithium/api-client's useAppName.
   const appName = useAppName();
   const showPersistentNotificationCenter = useShowPersistentNotificationCenter();
+  const profileEnabled = useIsProfileEnabled();
+  const openChangePasswordDialog = useOpenChangePasswordDialog();
   const { notifications, unreadCount, markAsRead, markAllAsRead, removeNotification } = useNotificationCenter(currentUser?.id, {
     onNotification: (notification) => {
       alert.show(notification.title, {
@@ -99,6 +103,8 @@ export function App() {
             notifications={notifications}
             unreadNotificationCount={unreadCount}
             showPersistentNotificationCenter={showPersistentNotificationCenter}
+            profileEnabled={profileEnabled}
+            onChangePasswordClick={openChangePasswordDialog}
             onNotificationClick={(notification) => {
               markAsRead(notification.id);
               if (notification.actionUrl) navigate(notification.actionUrl);
