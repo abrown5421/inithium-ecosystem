@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { alert, Box, Button, Input, Text, useNavigateWithTransition } from '@inithium/ui';
+import { alert, Box, Button, Input, PasswordInput, Text, useNavigateWithTransition } from '@inithium/ui';
 import { useRegisterMutation } from '@inithium/api-client';
 import { authStore } from '../app/authStore';
 
@@ -9,6 +9,7 @@ interface FieldErrors {
   firstName?: string;
   email?: string;
   password?: string;
+  confirmPassword?: string;
 }
 
 const showSubmissionErrorAlert = () => {
@@ -18,7 +19,7 @@ const showSubmissionErrorAlert = () => {
   });
 };
 
-const validate = (firstName: string, email: string, password: string): FieldErrors => {
+const validate = (firstName: string, email: string, password: string, confirmPassword: string): FieldErrors => {
   const errors: FieldErrors = {};
   if (!firstName.trim()) {
     errors.firstName = 'First name is required.';
@@ -28,6 +29,9 @@ const validate = (firstName: string, email: string, password: string): FieldErro
   }
   if (!password) {
     errors.password = 'Password is required.';
+  }
+  if (password && confirmPassword !== password) {
+    errors.confirmPassword = 'Passwords do not match.';
   }
   return errors;
 };
@@ -39,10 +43,11 @@ export const SignupPage = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
   const handleSubmit = async () => {
-    const validationErrors = validate(firstName, email, password);
+    const validationErrors = validate(firstName, email, password, confirmPassword);
     if (Object.keys(validationErrors).length > 0) {
       setFieldErrors(validationErrors);
       showSubmissionErrorAlert();
@@ -74,7 +79,7 @@ export const SignupPage = () => {
         flex={{ direction: 'col', gap: 36, align: 'stretch' }}
         bgColor={{ color: 'slate', intensity: 100 }}
         padding={{ base: 32 }}
-        className="min-h-[25vh] w-9/10 md:w-1/2 lg:w-1/3 rounded"
+        className="min-h-[25vh] w-[95%] md:w-2/3 lg:w-1/3 rounded"
       >
         <Input
           label="First name"
@@ -94,14 +99,21 @@ export const SignupPage = () => {
           error={Boolean(fieldErrors.email)}
           helperText={fieldErrors.email}
         />
-        <Input
+        <PasswordInput
           label="Password"
-          type="password"
           required
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           error={Boolean(fieldErrors.password)}
           helperText={fieldErrors.password}
+        />
+        <PasswordInput
+          label="Confirm password"
+          required
+          value={confirmPassword}
+          onChange={(event) => setConfirmPassword(event.target.value)}
+          error={Boolean(fieldErrors.confirmPassword)}
+          helperText={fieldErrors.confirmPassword}
         />
         <Button onClick={handleSubmit} variant={{ kind: 'filled', color: 'primary' }} disabled={isLoading}>
           {isLoading ? 'Creating account…' : 'Create account'}

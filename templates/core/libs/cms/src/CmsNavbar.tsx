@@ -25,6 +25,7 @@ const CmsAccountDrawerContent = ({
     <Box className="mt-auto" padding={{ top: 16 }}>
       <Button
         variant={{ kind: 'filled', color: 'red' }}
+        textColor={{color: 'slate', intensity: 100}}
         className="w-full"
         onClick={() => {
           onLogout();
