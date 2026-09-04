@@ -63,11 +63,12 @@ export const CmsNavbar = ({ currentUser, onLogout }: CmsNavbarProps) => {
       as="header"
       flex={{ direction: 'row', justify: 'between', align: 'center' }}
       bgColor={{ color: 'surface', intensity: 100 }}
+      borderColor={{ color: 'surface', intensity: 300 }}
       padding={{ left: 24, right: 24 }}
-      className="h-16 w-full shrink-0"
+      className="h-16 w-full shrink-0 border-b"
     >
       <Link to="/cms" className="flex shrink-0 items-center gap-2">
-        <Text as="span" className="text-lg font-semibold">
+        <Text as="span" className="text-lg font-semibold text-surface-950">
           {appName}
         </Text>
       </Link>

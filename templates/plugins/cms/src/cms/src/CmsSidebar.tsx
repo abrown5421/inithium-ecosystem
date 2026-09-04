@@ -17,7 +17,7 @@ export const CmsSidebar = ({ isCollapsed, onToggleCollapsed }: CmsSidebarProps) 
   <Box
     as="nav"
     flex={{ direction: 'col', gap: 4 }}
-    bgColor={{ color: 'primary', intensity: 600 }}
+    bgColor={{ color: 'surface', intensity: 200 }}
     padding={{ base: 16 }}
     className={`${isCollapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH} shrink-0 overflow-hidden transition-all duration-200`}
   >

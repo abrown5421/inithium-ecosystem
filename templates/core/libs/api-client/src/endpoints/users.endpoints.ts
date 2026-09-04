@@ -11,6 +11,7 @@ export interface AdminUser {
   lastName?: string;
   role: string;
   avatar: AvatarConfig;
+  darkMode: boolean;
   createdAt: string;
 }
 

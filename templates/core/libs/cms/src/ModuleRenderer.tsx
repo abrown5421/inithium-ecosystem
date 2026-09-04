@@ -9,7 +9,7 @@ export const ModuleRenderer = () => {
   if (!cmsModule) {
     return (
       <Box padding={{ base: 24 }}>
-        <Text as="h1" className="text-xl font-bold">
+        <Text as="h1" className="text-xl font-bold text-surface-950">
           Module not found
         </Text>
         <Text as="p" className="text-surface-600">

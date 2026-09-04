@@ -69,6 +69,7 @@ export interface UserEntity {
   role: string;
   avatar: AvatarConfig;
   profileBanner?: UserProfileBannerConfig;
+  darkMode: boolean;
   createdAt: Date;
 }
 
@@ -80,6 +81,7 @@ export interface CreateUserInput {
   role?: string;
   avatar?: AvatarConfig;
   profileBanner?: UserProfileBannerConfig;
+  darkMode?: boolean;
 }
 
 export interface UpdateUserInput {
@@ -90,6 +92,7 @@ export interface UpdateUserInput {
   role?: string;
   avatar?: AvatarConfig;
   profileBanner?: UserProfileBannerConfig;
+  darkMode?: boolean;
 }
 
 export type UserSearchField = 'firstName' | 'lastName' | 'email';

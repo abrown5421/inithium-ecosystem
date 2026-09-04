@@ -17,7 +17,7 @@ export const CmsSidebar = ({ isCollapsed, onToggleCollapsed }: CmsSidebarProps) 
   <Box
     as="nav"
     flex={{ direction: 'col', gap: 4 }}
-    bgColor={{ color: 'primary', intensity: 600 }}
+    bgColor={{ color: 'surface', intensity: 200 }}
     padding={{ base: 16 }}
     className={`${isCollapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH} shrink-0 overflow-hidden transition-all duration-200`}
   >
@@ -27,8 +27,8 @@ export const CmsSidebar = ({ isCollapsed, onToggleCollapsed }: CmsSidebarProps) 
           key={cmsModule.id}
           asChild
           variant={{ kind: 'ghost', color: 'surface' }}
-          textColor={{ color: 'surface', intensity: 100 }}
-          className={isCollapsed ? 'justify-center' : 'justify-start'}
+          textColor={{ color: 'surface', intensity: 950 }}
+          className={`hover:text-accent-500 ${isCollapsed ? 'justify-center' : 'justify-start'}`}
           aria-label={cmsModule.navLabel}
         >
           <Link to={`/cms/${cmsModule.id}`} className="flex flex-row items-center gap-2">
@@ -41,8 +41,8 @@ export const CmsSidebar = ({ isCollapsed, onToggleCollapsed }: CmsSidebarProps) 
 
     <Button
       variant={{ kind: 'ghost', color: 'surface' }}
-      textColor={{ color: 'surface', intensity: 100 }}
-      className={`flex flex-row items-center gap-2 ${isCollapsed ? 'justify-center' : 'justify-start'}`}
+      textColor={{ color: 'surface', intensity: 950 }}
+      className={`flex flex-row items-center gap-2 hover:text-accent-500 ${isCollapsed ? 'justify-center' : 'justify-start'}`}
       aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       onClick={onToggleCollapsed}
     >

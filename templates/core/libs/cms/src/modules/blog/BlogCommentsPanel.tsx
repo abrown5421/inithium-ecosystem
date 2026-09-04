@@ -60,21 +60,21 @@ const CommentRow = ({ postId, comment }: CommentRowProps) => {
       }
     >
       <Box flex={{ direction: 'row', justify: 'between' }}>
-        <Text as="span" className="font-medium">
+        <Text as="span" className="font-medium text-surface-950">
           {comment.userName}
         </Text>
         <Text as="span" className="text-xs text-surface-600">
           {new Date(comment.createdAt).toLocaleDateString()}
         </Text>
       </Box>
-      <Text as="p" className="text-sm">
+      <Text as="p" className="text-sm text-surface-950">
         {comment.comment}
       </Text>
 
       {comment.reply ? (
         <Box padding={{ left: 16, top: 4 }} className="border-l-2 border-surface-300">
           <Text className="text-xs font-semibold text-surface-600">Your reply</Text>
-          <Text as="p" className="text-sm">
+          <Text as="p" className="text-sm text-surface-950">
             {comment.reply}
           </Text>
         </Box>
@@ -125,7 +125,7 @@ export const BlogCommentsPanel = ({ postId }: BlogCommentsPanelProps) => {
 
   return (
     <Box flex={{ direction: 'col', gap: 16 }}>
-      <Text as="h2" className="text-lg font-semibold">
+      <Text as="h2" className="text-lg font-semibold text-surface-950">
         Comments on "{post.title}"
       </Text>
 

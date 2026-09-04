@@ -147,6 +147,50 @@
   --ui-quaternary-foreground-950: #fafafa;
 }
 
+/*
+ * Dark mode override. `surface` is the only scale that inverts here - it's the layering/
+ * background token (see CLAUDE.md section 5), so it's the one thing that actually needs to flip
+ * between "light backgrounds, dark text" and "dark backgrounds, light text". The 5 raw brand
+ * colors (primary/secondary/accent/tertiary/quaternary) and their own -foreground partners carry
+ * brand identity, not layering intent, so they stay fixed in both modes - a button styled
+ * bg-primary-500/text-primary-foreground-500 looks the same whether the page around it is light
+ * or dark.
+ *
+ * Every surface/surface-foreground shade below is the light-mode scale's mirror image around its
+ * midpoint (100<->950, 200<->900, 300<->800, 400<->700, 500<->600), so any component already
+ * built against the bg-surface and text-surface-foreground utilities repaints correctly with
+ * zero component-level changes - see resolveColorClass.ts, which only ever emits the class name,
+ * never a color value itself.
+ *
+ * Toggled by stamping data-theme="dark" on the document root - see apps/web/src/app/RootRouter.tsx,
+ * which is the one place mounted on every route (public site and /cms alike) and so the one
+ * place that resolves the effective dark-mode boolean (the appearance.darkModeEnabled admin
+ * setting gating the signed-in user's own UserEntity.darkMode preference) and applies it here.
+ */
+:root[data-theme='dark'] {
+  --ui-surface-100: #0f172a;
+  --ui-surface-200: #1e293b;
+  --ui-surface-300: #334155;
+  --ui-surface-400: #475569;
+  --ui-surface-500: #64748b;
+  --ui-surface-600: #94a3b8;
+  --ui-surface-700: #cbd5e1;
+  --ui-surface-800: #e2e8f0;
+  --ui-surface-900: #f1f5f9;
+  --ui-surface-950: #f8fafc;
+
+  --ui-surface-foreground-100: #fafafa;
+  --ui-surface-foreground-200: #fafafa;
+  --ui-surface-foreground-300: #fafafa;
+  --ui-surface-foreground-400: #fafafa;
+  --ui-surface-foreground-500: #fafafa;
+  --ui-surface-foreground-600: #0a0a0a;
+  --ui-surface-foreground-700: #0a0a0a;
+  --ui-surface-foreground-800: #0a0a0a;
+  --ui-surface-foreground-900: #0a0a0a;
+  --ui-surface-foreground-950: #0a0a0a;
+}
+
 @theme {
   --color-primary-100: var(--ui-primary-100);
   --color-primary-200: var(--ui-primary-200);

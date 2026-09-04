@@ -10,6 +10,7 @@ export interface UserDocument extends Document {
   role: string;
   avatar: AvatarConfig;
   profileBanner?: UserProfileBannerConfig;
+  darkMode: boolean;
   createdAt: Date;
 }
 
@@ -20,6 +21,7 @@ const userSchema = new Schema<UserDocument>(
     lastName: { type: String, required: false },
     passwordHash: { type: String, required: true },
     role: { type: String, required: true, default: 'user' },
+    darkMode: { type: Boolean, required: true, default: false },
     avatar: {
       variant: { type: String, required: true, enum: AVATAR_VARIANTS, default: DEFAULT_AVATAR_CONFIG.variant },
       style: {

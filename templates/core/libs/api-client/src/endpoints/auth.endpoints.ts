@@ -11,6 +11,7 @@ export interface AuthUser {
   lastName?: string;
   role: string;
   avatar: AvatarConfig;
+  darkMode: boolean;
 }
 
 export interface LoginCredentials {

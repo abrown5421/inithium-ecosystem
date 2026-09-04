@@ -910,6 +910,33 @@
           }
         },
         {
+          "name": "Toggle Dark Mode",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 (feature enabled) or 403 (feature disabled)', () => {",
+                  "  pm.expect([200, 403]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/profile/me/dark-mode/toggle",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "profile", "me", "dark-mode", "toggle"]
+            }
+          }
+        },
+        {
           "name": "Verify Current Password",
           "event": [
             {

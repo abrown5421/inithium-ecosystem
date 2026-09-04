@@ -35,7 +35,7 @@ export const SettingsModule = () => {
 
   return (
     <Box padding={{ base: 24 }} flex={{ direction: 'col', gap: 24 }}>
-      <Text as="h1" className="text-2xl font-bold">
+      <Text as="h1" className="text-2xl font-bold text-surface-950">
         Settings
       </Text>
 

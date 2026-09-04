@@ -35,6 +35,7 @@ router.post('/auth/register', async (req: Request, res: Response): Promise<void>
         lastName: user.lastName,
         role: user.role,
         avatar: user.avatar,
+        darkMode: user.darkMode,
       },
       accessToken,
     });
@@ -69,6 +70,7 @@ router.post('/auth/login', async (req: Request, res: Response): Promise<void> =>
         lastName: user.lastName,
         role: user.role,
         avatar: user.avatar,
+        darkMode: user.darkMode,
       },
       accessToken,
     });
@@ -101,6 +103,7 @@ router.get('/auth/me', requireAuth, async (req: Request, res: Response): Promise
         lastName: user.lastName,
         role: user.role,
         avatar: user.avatar,
+        darkMode: user.darkMode,
       },
     });
   } catch (error) {
