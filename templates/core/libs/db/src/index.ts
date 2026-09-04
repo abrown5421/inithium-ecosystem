@@ -8,7 +8,7 @@ import {
   FindManyBlogPostsOptions,
   UpdateBlogPostInput,
 } from './contracts/blog.contract';
-import { CreateAssetInput } from './contracts/asset.contract';
+import { CreateAssetInput, ListAssetsForUserOptions } from './contracts/asset.contract';
 import { activeProvider as defaultProvider } from './providers/active-provider';
 
 let activeProvider: DbProvider = defaultProvider;
@@ -84,6 +84,8 @@ export const getAssetRepository = () => activeProvider.getAssetRepository();
 export const createAsset = (input: CreateAssetInput) => getAssetRepository().create(input);
 export const getAssetById = (id: string) => getAssetRepository().findById(id);
 export const deleteAsset = (id: string) => getAssetRepository().delete(id);
+export const listAssetsForUser = (userId: string, options?: ListAssetsForUserOptions) =>
+  getAssetRepository().listForUser(userId, options);
 
 export type { DbProvider, DbConfig } from './contracts/db-provider.contract';
 export type { PaginatedResult } from './contracts/pagination.contract';
@@ -135,7 +137,7 @@ export type {
   FindManyBlogPostsOptions,
   BlogRepository,
 } from './contracts/blog.contract';
-export type { AssetEntity, CreateAssetInput, AssetRepository } from './contracts/asset.contract';
+export type { AssetEntity, CreateAssetInput, AssetRepository, ListAssetsForUserOptions } from './contracts/asset.contract';
 export { generateExcerptFromHtml } from './utils/generateExcerptFromHtml';
 export { ensureSeededPages } from './page-seeds/ensureSeededPages';
 export { mongoProvider } from './providers/mongo/mongo.provider';

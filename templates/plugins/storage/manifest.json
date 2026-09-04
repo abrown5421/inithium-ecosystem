@@ -33,6 +33,7 @@
 
     { "target": "libs/api-client/src/endpoints/storage.endpoints.ts", "source": "src/api-client/endpoints/storage.endpoints.ts" },
     { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.ts" },
+    { "target": "libs/api-client/src/baseApi.ts", "source": "src/api-client/baseApi.ts" },
 
     { "target": "libs/ui/src/composites/MediaField.tsx", "source": "src/ui/composites/MediaField.tsx" },
     { "target": "libs/ui/src/composites/AvatarEditDialog.tsx", "source": "src/ui/composites/AvatarEditDialog.tsx" },
@@ -41,6 +42,8 @@
     { "target": "libs/ui/src/index.ts", "source": "src/ui/index.ts" },
     { "target": "libs/ui/tsconfig.lib.json", "source": "src/ui/tsconfig.lib.json" },
 
-    { "target": "tsconfig.base.json", "source": "src/tsconfig.base.json" }
+    { "target": "tsconfig.base.json", "source": "src/tsconfig.base.json" },
+
+    { "target": "apps/web/src/pages/profile/tabs/assets.tab.tsx", "source": "src/pages/profile/tabs/assets.tab.tsx" }
   ]
 }

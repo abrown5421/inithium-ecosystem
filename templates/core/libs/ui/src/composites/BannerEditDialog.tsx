@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { UserProfileBannerConfig } from '@inithium/db';
 import { useUploadAssetMutation } from '@inithium/api-client';
 import { AutoIncrementingList } from './AutoIncrementingList';
 import { ColorPicker } from './ColorPicker';
 import { MediaField } from './MediaField';
+import type { MediaFieldHandle } from './MediaField';
 import { useElementSize } from './useElementSize';
 import { Banner, Box, Button, Slider, Text } from '../components';
 import { alert } from '../alert/alert';
@@ -83,6 +84,7 @@ export const BannerEditDialog = ({ initialBanner, onSave, onClose }: BannerEditD
   // previously-uploaded/URL banner lands back on that tab instead of always resetting to Customize.
   const [mode, setMode] = useState(initialBanner.imageUrl ? 'url' : 'customize');
   const [isSaving, setIsSaving] = useState(false);
+  const mediaFieldRef = useRef<MediaFieldHandle>(null);
   // Banner defaults to generating its mesh against a fixed reference width (DEFAULT_MESH_WIDTH)
   // whenever it isn't given a real pixel width, then stretches that mesh to fill however wide it
   // actually renders - fine when the real width is close to that reference, but visibly
@@ -104,12 +106,19 @@ export const BannerEditDialog = ({ initialBanner, onSave, onClose }: BannerEditD
   const handleSave = async () => {
     setIsSaving(true);
     try {
+      // Resolves a still-pending crop (a file was selected/dragged into position but never
+      // separately "confirmed") into a real upload right here, rather than requiring a distinct
+      // confirm-then-save two-step flow a user could click Save ahead of. Returns null when
+      // there's nothing pending - see MediaFieldHandle's own comment on why this result must be
+      // used directly instead of re-reading `imageUrl` afterward (a stale-closure trap).
+      const uploaded = await mediaFieldRef.current?.resolvePendingUpload();
+      const finalImageUrl = uploaded?.url ?? imageUrl;
       const banner: UserProfileBannerConfig = {
         cellSize,
         variance,
         xColors,
         yColors,
-        ...(mode !== 'customize' ? { imageUrl } : {}),
+        ...(mode !== 'customize' ? { imageUrl: finalImageUrl } : {}),
       };
       await onSave(banner);
       onClose();
@@ -181,10 +190,11 @@ export const BannerEditDialog = ({ initialBanner, onSave, onClose }: BannerEditD
       </div>
 
       <MediaField
+        ref={mediaFieldRef}
         label="Banner Image"
         value={imageUrl}
         onValueChange={setImageUrl}
-        onUpload={async (file) => await uploadAsset({ file }).unwrap()}
+        onUpload={async (file) => await uploadAsset({ file, purpose: 'banner' }).unwrap()}
         maxSizeBytes={MAX_UPLOAD_SIZE_BYTES}
         aspectRatio={BANNER_ASPECT_RATIO}
         mode={mode}

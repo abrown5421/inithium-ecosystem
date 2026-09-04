@@ -467,13 +467,15 @@
         { "target": "libs/api-core/src/index.ts", "source": "src/api-core/index.ts", "requires": null, "status": "applied" },
         { "target": "libs/api-client/src/endpoints/storage.endpoints.ts", "source": "src/api-client/endpoints/storage.endpoints.ts", "requires": null, "status": "applied" },
         { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.ts", "requires": null, "status": "applied" },
+        { "target": "libs/api-client/src/baseApi.ts", "source": "src/api-client/baseApi.ts", "requires": null, "status": "applied" },
         { "target": "libs/ui/src/composites/MediaField.tsx", "source": "src/ui/composites/MediaField.tsx", "requires": null, "status": "applied" },
         { "target": "libs/ui/src/composites/AvatarEditDialog.tsx", "source": "src/ui/composites/AvatarEditDialog.tsx", "requires": null, "status": "applied" },
         { "target": "libs/ui/src/composites/BannerEditDialog.tsx", "source": "src/ui/composites/BannerEditDialog.tsx", "requires": null, "status": "applied" },
         { "target": "libs/ui/src/composites/index.ts", "source": "src/ui/composites/index.ts", "requires": null, "status": "applied" },
         { "target": "libs/ui/src/index.ts", "source": "src/ui/index.ts", "requires": null, "status": "applied" },
         { "target": "libs/ui/tsconfig.lib.json", "source": "src/ui/tsconfig.lib.json", "requires": null, "status": "applied" },
-        { "target": "tsconfig.base.json", "source": "src/tsconfig.base.json", "requires": null, "status": "applied" }
+        { "target": "tsconfig.base.json", "source": "src/tsconfig.base.json", "requires": null, "status": "applied" },
+        { "target": "apps/web/src/pages/profile/tabs/assets.tab.tsx", "source": "src/pages/profile/tabs/assets.tab.tsx", "requires": null, "status": "applied" }
       ]
     }
   }

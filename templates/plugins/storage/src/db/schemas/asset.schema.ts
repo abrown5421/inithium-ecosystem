@@ -8,6 +8,7 @@ export interface AssetDocument extends Document {
   mimeType: string;
   sizeBytes: number;
   uploadedBy: string;
+  purpose: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,6 +24,7 @@ const assetSchema = new Schema<AssetDocument>(
     mimeType: { type: String, required: true },
     sizeBytes: { type: Number, required: true },
     uploadedBy: { type: String, required: true, index: true },
+    purpose: { type: String, required: true, index: true },
   },
   { timestamps: true }
 );

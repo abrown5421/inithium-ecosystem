@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, Button, Input, Text } from '@inithium/ui';
 import { useUpdateMyProfileMutation } from '@inithium/api-client';
 import { useOpenChangePasswordDialog } from '../openChangePasswordDialog';
-import type { ProfileSectionDescriptor, ProfileSectionProps } from './registry';
+import type { ProfileTabDescriptor, ProfileTabProps } from './registry';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -11,10 +11,11 @@ interface FieldErrors {
   email?: string;
 }
 
-// Core's own right-column content, added through the exact same registry every plugin section
-// uses. Renders nothing for anyone but the profile's own owner - viewing another user's profile
-// never even mounts the form.
-const AccountSettingsSection = ({ profile, isOwnProfile }: ProfileSectionProps) => {
+// Core's own tab, added through the exact same registry every plugin tab uses. visibility:
+// 'owned' on the descriptor below already keeps this out of the tab list entirely for anyone but
+// the profile's own owner, so - unlike the old always-mounted right-column section this replaced
+// - there's no need for this component to guard against rendering for a non-owner itself.
+const AccountSettingsTab = ({ profile }: ProfileTabProps) => {
   const [updateMyProfile, { isLoading }] = useUpdateMyProfileMutation();
   const openChangePasswordDialog = useOpenChangePasswordDialog();
 
@@ -24,8 +25,6 @@ const AccountSettingsSection = ({ profile, isOwnProfile }: ProfileSectionProps) 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [submitError, setSubmitError] = useState<string | undefined>(undefined);
   const [savedAt, setSavedAt] = useState<number | undefined>(undefined);
-
-  if (!isOwnProfile) return null;
 
   const validate = (): FieldErrors => {
     const errors: FieldErrors = {};
@@ -53,9 +52,6 @@ const AccountSettingsSection = ({ profile, isOwnProfile }: ProfileSectionProps) 
 
   return (
     <Box flex={{ direction: 'col', gap: 16 }}>
-      <Text as="h2" className="text-xl font-semibold">
-        Account Settings
-      </Text>
       <Input
         label="First Name"
         required
@@ -96,11 +92,12 @@ const AccountSettingsSection = ({ profile, isOwnProfile }: ProfileSectionProps) 
   );
 };
 
-const accountSettingsSection: ProfileSectionDescriptor = {
+const accountSettingsTab: ProfileTabDescriptor = {
   id: 'account-settings',
-  column: 'right',
+  label: 'Account Settings',
   order: 0,
-  Component: AccountSettingsSection,
+  visibility: 'owned',
+  Component: AccountSettingsTab,
 };
 
-export default accountSettingsSection;
+export default accountSettingsTab;

@@ -9,6 +9,11 @@ import {
   DEFAULT_BANNER_HEIGHT,
   Icon,
   Loader,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  Text,
   dialog,
   resolveAvatarConfigProps,
   useElementSize,
@@ -21,6 +26,7 @@ import { useCurrentUser } from '../app/useCurrentUser';
 import { NotFoundPage } from './NotFoundPage';
 import { generateProfileBannerConfig } from './profileBannerConfig';
 import { profileSections } from './profile/sections/registry';
+import { profileTabs } from './profile/tabs/registry';
 
 const AVATAR_SIZE = 128;
 const COLUMN_INSET = 32;
@@ -70,8 +76,10 @@ export const ProfilePage = () => {
     return <NotFoundPage />;
   }
 
-  const leftSections = profileSections.filter((section) => section.column === 'left');
-  const rightSections = profileSections.filter((section) => section.column === 'right');
+  // 'owned' tabs (Account Settings, ...) never even enter the list for a viewer who isn't the
+  // profile's own owner - see registry.ts's own comment on why that's a visibility filter here
+  // rather than each tab's Component guarding itself.
+  const visibleTabs = profileTabs.filter((tab) => tab.visibility === 'all' || isOwnProfile);
   const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ');
 
   const initialBannerConfig: UserProfileBannerConfig =
@@ -165,14 +173,36 @@ export const ProfilePage = () => {
           padding={{ base: COLUMN_INSET, top: 64 }}
           className="w-full lg:w-1/4 lg:shadow-[4px_0_10px_-4px_rgba(0,0,0,0.15)]"
         >
-          {leftSections.map((section) => (
+          {profileSections.map((section) => (
             <section.Component key={section.id} profile={profile} isOwnProfile={isOwnProfile} />
           ))}
         </Box>
-        <Box flex={{ direction: 'col', gap: 24 }} padding={{ base: COLUMN_INSET, top: 64 }} className="w-full lg:w-3/4">
-          {rightSections.map((section) => (
-            <section.Component key={section.id} profile={profile} isOwnProfile={isOwnProfile} />
-          ))}
+        <Box flex={{ direction: 'col' }} padding={{ base: COLUMN_INSET, top: 64 }} className="w-full lg:w-3/4">
+          {visibleTabs.length > 0 ? (
+            // flex-1 on both Tabs (a flex item of this column) and the active TabsContent (a
+            // flex item of Tabs' own flex-col) is what actually delivers "min height of the
+            // remaining screen, but free to grow past it": this column is already stretched to
+            // the row's real height (see the row's own lg:flex-1 comment above), so the active
+            // panel grows to fill whatever's left after the tab strip's own height, pushing the
+            // page's own min-height out to the viewport's bottom edge - and past it, undisturbed,
+            // the moment a tab's actual content is taller than that.
+            <Tabs defaultValue={visibleTabs[0]!.id} className="flex flex-1 flex-col">
+              <TabsList>
+                {visibleTabs.map((tab) => (
+                  <TabsTrigger key={tab.id} value={tab.id}>
+                    {tab.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              {visibleTabs.map((tab) => (
+                <TabsContent key={tab.id} value={tab.id} className="flex-1">
+                  <tab.Component profile={profile} isOwnProfile={isOwnProfile} />
+                </TabsContent>
+              ))}
+            </Tabs>
+          ) : (
+            <Text className="text-sm text-surface-600">Nothing to show here yet.</Text>
+          )}
         </Box>
       </Box>
     </Box>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { AvatarConfig } from '@inithium/db';
 import { useUploadAssetMutation } from '@inithium/api-client';
 import { Avatar } from '../components/Avatar/Avatar';
@@ -10,6 +10,7 @@ import { ColorSpecPicker } from './ColorSpecPicker';
 import { MediaField } from './MediaField';
 import type { AvatarShape, AvatarSource, AvatarVariant } from '../tokens/avatar';
 import type { ColorSpec } from '../contracts/color.contract';
+import type { MediaFieldHandle } from './MediaField';
 
 export interface AvatarEditDialogProps {
   readonly initialAvatar: AvatarConfig;
@@ -29,8 +30,16 @@ const generateRandomSeed = (): string => Math.random().toString(36).slice(2, 10)
 // AvatarConfig's color fields store intensity/opacity as a plain `number` (libs/db stays
 // ignorant of @inithium/ui's ColorSpec) - same boundary cast resolveAvatarConfigProps already
 // makes for the same reason.
+//
+// Deliberately checks `color?.color` rather than just `color` - fontColor has no Mongoose-level
+// default (unlike bgColor, which always gets DEFAULT_AVATAR_CONFIG's default applied), so on a
+// brand-new user it comes back from the API as an empty-but-present `{}`, not `undefined`. A
+// plain `color as ColorSpec | undefined` cast would let that `{}` through as "truthy", so the
+// `?? fallback` pattern everywhere this is called would never trigger and this dialog would go
+// on to save an invalid color object with no `color` field - which is exactly what the server's
+// avatarColorSchema (color required) then 400s on.
 const toColorSpec = (color: { color: string; intensity?: number; opacity?: number } | undefined): ColorSpec | undefined =>
-  color as ColorSpec | undefined;
+  color?.color ? (color as ColorSpec) : undefined;
 
 // The avatar/dicebear customization dialog - launched from ProfilePage's own edit-button overlay
 // on the owner's avatar. Prop-driven for persistence (builds a candidate AvatarConfig and hands
@@ -61,6 +70,7 @@ export const AvatarEditDialog = ({ initialAvatar, fullName, onSave, onClose }: A
   const [seedHistory, setSeedHistory] = useState<string[]>([initialAvatar.dicebear?.seed ?? generateRandomSeed()]);
   const [seedIndex, setSeedIndex] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
+  const mediaFieldRef = useRef<MediaFieldHandle>(null);
 
   const currentSeed = seedHistory[seedIndex]!;
 
@@ -90,11 +100,18 @@ export const AvatarEditDialog = ({ initialAvatar, fullName, onSave, onClose }: A
   const handleSave = async () => {
     setIsSaving(true);
     try {
+      // Resolves a still-pending crop (a file was selected/dragged into position but never
+      // separately "confirmed") into a real upload right here, rather than requiring a distinct
+      // confirm-then-save two-step flow a user could click Save ahead of. Returns null when
+      // there's nothing pending - see MediaFieldHandle's own comment on why this result must be
+      // used directly instead of re-reading `imageUrl` afterward (a stale-closure trap).
+      const uploaded = await mediaFieldRef.current?.resolvePendingUpload();
+      const finalImageUrl = uploaded?.url ?? imageUrl;
       const avatar: AvatarConfig = {
         variant,
         style: { bgColor, fontColor, shape },
         ...(variant === 'dicebear' ? { dicebear: { style: dicebearStyle, seed: currentSeed } } : {}),
-        ...(mode !== 'customize' ? { imageUrl } : {}),
+        ...(mode !== 'customize' ? { imageUrl: finalImageUrl } : {}),
       };
       await onSave(avatar);
       onClose();
@@ -154,10 +171,11 @@ export const AvatarEditDialog = ({ initialAvatar, fullName, onSave, onClose }: A
       </Box>
 
       <MediaField
+        ref={mediaFieldRef}
         label="Avatar Image"
         value={imageUrl}
         onValueChange={setImageUrl}
-        onUpload={async (file) => await uploadAsset({ file }).unwrap()}
+        onUpload={async (file) => await uploadAsset({ file, purpose: 'avatar' }).unwrap()}
         maxSizeBytes={MAX_UPLOAD_SIZE_BYTES}
         aspectRatio={1}
         mode={mode}
