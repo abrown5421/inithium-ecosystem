@@ -65,6 +65,7 @@ export {
   useAppName,
   useShowPersistentNotificationCenter,
   useIsProfileEnabled,
+  useIsDarkModeFeatureEnabled,
   SETTING_TYPES,
 } from './endpoints/settings.endpoints';
 export type { SettingType, SettingEntity, UpsertSettingInput } from './endpoints/settings.endpoints';
@@ -75,6 +76,7 @@ export {
   useUpdateMyProfileMutation,
   useVerifyCurrentPasswordMutation,
   useChangePasswordMutation,
+  useToggleDarkModeMutation,
 } from './endpoints/profile.endpoints';
 export type { ProfileDto, UpdateMyProfileInput, ChangePasswordInput } from './endpoints/profile.endpoints';
 

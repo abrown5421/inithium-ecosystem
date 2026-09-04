@@ -36,6 +36,7 @@ const toPublicUser = (user: UserEntity) => ({
   lastName: user.lastName,
   role: user.role,
   avatar: user.avatar,
+  darkMode: user.darkMode,
   createdAt: user.createdAt,
 });
 

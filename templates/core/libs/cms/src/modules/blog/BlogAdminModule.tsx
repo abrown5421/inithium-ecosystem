@@ -108,7 +108,7 @@ export const BlogAdminModule = () => {
 
   return (
     <Box padding={{ base: 24 }} flex={{ direction: 'col', gap: 16 }}>
-      <Text as="h1" className="text-2xl font-bold">
+      <Text as="h1" className="text-2xl font-bold text-surface-950">
         Blog
       </Text>
 
@@ -163,7 +163,7 @@ export const BlogAdminModule = () => {
                       </>
                     }
                   >
-                    <Text as="span" className="font-medium">
+                    <Text as="span" className="font-medium text-surface-950">
                       {post.title}
                     </Text>
                     <Text as="span" className="text-sm text-surface-600">

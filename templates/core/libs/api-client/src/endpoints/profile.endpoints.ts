@@ -11,6 +11,7 @@ export interface ProfileDto {
   lastName?: string;
   avatar: AvatarConfig;
   profileBanner?: UserProfileBannerConfig;
+  darkMode: boolean;
   createdAt: string;
   email?: string;
 }
@@ -58,6 +59,14 @@ export const profileApi = baseApi.injectEndpoints({
     changePassword: builder.mutation<void, ChangePasswordInput>({
       query: (input) => ({ url: '/api/profile/me/password', method: 'POST', body: input }),
     }),
+    // No request body - the server flips the currently-stored value itself (see
+    // profile.route.ts), so there's no client-supplied target value that could drift out of
+    // sync with it.
+    toggleDarkMode: builder.mutation<ProfileDto, void>({
+      query: () => ({ url: '/api/profile/me/dark-mode/toggle', method: 'POST' }),
+      transformResponse: (response: ApiResponse<ProfileDto>) => response.data,
+      invalidatesTags: (result) => (result ? ['User', { type: 'Profile', id: result.id }] : ['User']),
+    }),
   }),
 });
 
@@ -66,4 +75,5 @@ export const {
   useUpdateMyProfileMutation,
   useVerifyCurrentPasswordMutation,
   useChangePasswordMutation,
+  useToggleDarkModeMutation,
 } = profileApi;

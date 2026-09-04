@@ -115,7 +115,7 @@ export const UsersModule = () => {
   return (
     <Box padding={{ base: 24 }} flex={{ direction: 'col', gap: 16 }}>
       <Box flex={{ direction: 'row', justify: 'between', align: 'center', gap: 16 }}>
-        <Text as="h1" className="text-2xl font-bold">
+        <Text as="h1" className="text-2xl font-bold text-surface-950">
           Users
         </Text>
         <Box flex={{ direction: 'row', align: 'center', gap: 12 }}>
@@ -173,7 +173,7 @@ export const UsersModule = () => {
                 </>
               }
             >
-              <Text as="span" className="font-medium">
+              <Text as="span" className="font-medium text-surface-950">
                 {[user.firstName, user.lastName].filter(Boolean).join(' ')}
               </Text>
               <Text as="span" className="text-sm text-surface-600">

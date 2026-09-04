@@ -141,7 +141,7 @@ export const SettingRow = ({ definition, stored }: SettingRowProps) => {
         ) : null
       }
     >
-      <Text as="span" className="font-medium">
+      <Text as="span" className="font-medium text-surface-950">
         {definition.label}
       </Text>
       {definition.description ? (

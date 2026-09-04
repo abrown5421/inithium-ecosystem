@@ -1,6 +1,7 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Box, Loader } from '@inithium/ui';
+import { useIsDarkModeFeatureEnabled } from '@inithium/api-client';
 import { authStore } from './authStore';
 import { useCurrentUser, useAuthToken } from './useCurrentUser';
 import App from './app';
@@ -28,6 +29,17 @@ export function RootRouter() {
   const location = useLocation();
   const { currentUser, isResolving, logout } = useCurrentUser();
   const token = useAuthToken();
+
+  // Lives here rather than inside App - RootRouter is the one thing mounted on every route,
+  // public site and /cms alike, so this is the only place a data-theme stamp reliably reaches
+  // both (see theme.css's dark-mode override block, which is keyed off this attribute). Kill-
+  // switch pattern: the admin setting gates the feature entirely, matching profile.route.ts's
+  // own isDarkModeFeatureEnabled().
+  const darkModeFeatureEnabled = useIsDarkModeFeatureEnabled();
+  const isDarkMode = darkModeFeatureEnabled && Boolean(currentUser?.darkMode);
+  useEffect(() => {
+    document.documentElement.dataset.theme = isDarkMode ? 'dark' : 'light';
+  }, [isDarkMode]);
 
   if (location.pathname === '/cms' || location.pathname.startsWith('/cms/')) {
     return (

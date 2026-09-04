@@ -86,3 +86,14 @@ export const useIsProfileEnabled = (): boolean => {
   const { data } = useGetPublicSettingQuery(PROFILE_ENABLED_KEY);
   return data?.type === 'boolean' ? data.value : true;
 };
+
+const DARK_MODE_ENABLED_KEY = 'appearance.darkModeEnabled';
+
+// Defaults false (off unless an admin opts in) - must stay in sync with profile.route.ts's own
+// isDarkModeFeatureEnabled() fallback and the setting's own `default` in
+// libs/cms/src/settings/definitions/dark-mode-enabled.setting.ts. Acts as a feature kill-switch:
+// apps/web's App reads this before ever applying a user's own darkMode preference to the page.
+export const useIsDarkModeFeatureEnabled = (): boolean => {
+  const { data } = useGetPublicSettingQuery(DARK_MODE_ENABLED_KEY);
+  return data?.type === 'boolean' ? data.value : false;
+};
