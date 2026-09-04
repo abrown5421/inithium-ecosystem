@@ -15,7 +15,6 @@ const AccountInfoSection = ({ profile, isOwnProfile }: ProfileSectionProps) => (
 
 const accountInfoSection: ProfileSectionDescriptor = {
   id: 'account-info',
-  column: 'left',
   order: 0,
   Component: AccountInfoSection,
 };

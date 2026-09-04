@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Box, Button, IconButton, Input, MediaField, Text, Textarea } from '@inithium/ui';
+import type { MediaFieldHandle } from '@inithium/ui';
 import { useCreateBlogPostMutation, useUpdateBlogPostMutation, useUploadAssetMutation } from '@inithium/api-client';
 import type { BlogPostEntity } from '@inithium/api-client';
 
@@ -51,6 +52,7 @@ export const BlogPostEditDialog = ({ mode, initialPost, onDone }: BlogPostEditDi
   const [category, setCategory] = useState(initialPost?.category ?? '');
   const [image, setImage] = useState(initialPost?.image ?? '');
   const [excerpt, setExcerpt] = useState(initialPost?.excerpt ?? '');
+  const mediaFieldRef = useRef<MediaFieldHandle>(null);
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -62,13 +64,21 @@ export const BlogPostEditDialog = ({ mode, initialPost, onDone }: BlogPostEditDi
     const body = editor?.getHTML() ?? '';
 
     try {
+      // Resolves a still-pending crop (a file was selected/dragged into position but never
+      // separately "confirmed") into a real upload right here, rather than requiring a distinct
+      // confirm-then-save two-step flow a user could click Save ahead of. Returns null when
+      // there's nothing pending - see MediaFieldHandle's own comment on why this result must be
+      // used directly instead of re-reading `image` afterward (a stale-closure trap).
+      const uploaded = await mediaFieldRef.current?.resolvePendingUpload();
+      const finalImage = uploaded?.url ?? image;
+
       if (mode === 'create') {
         await createBlogPost({
           title,
           body,
           excerpt: excerpt || undefined,
           category,
-          image: image || undefined,
+          image: finalImage || undefined,
         }).unwrap();
       } else if (initialPost) {
         await updateBlogPost({
@@ -77,7 +87,7 @@ export const BlogPostEditDialog = ({ mode, initialPost, onDone }: BlogPostEditDi
           body,
           excerpt: excerpt || undefined,
           category,
-          image: image || undefined,
+          image: finalImage || undefined,
         }).unwrap();
       }
       onDone();
@@ -92,11 +102,12 @@ export const BlogPostEditDialog = ({ mode, initialPost, onDone }: BlogPostEditDi
       <Box flex={{ direction: 'row', gap: 12 }}>
         <Input label="Category" required value={category} onChange={(event) => setCategory(event.target.value)} className="flex-1" />
         <MediaField
+          ref={mediaFieldRef}
           label="Image"
           className="flex-1"
           value={image}
           onValueChange={setImage}
-          onUpload={async (file) => await uploadAsset({ file }).unwrap()}
+          onUpload={async (file) => await uploadAsset({ file, purpose: 'blog' }).unwrap()}
           aspectRatio={BLOG_IMAGE_ASPECT_RATIO}
         />
       </Box>

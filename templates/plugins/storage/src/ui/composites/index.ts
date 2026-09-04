@@ -49,4 +49,4 @@ export { BannerEditDialog } from './BannerEditDialog';
 export type { BannerEditDialogProps } from './BannerEditDialog';
 
 export { MediaField } from './MediaField';
-export type { MediaFieldProps, MediaFieldTab, UploadedAsset } from './MediaField';
+export type { MediaFieldProps, MediaFieldTab, MediaFieldHandle, UploadedAsset } from './MediaField';

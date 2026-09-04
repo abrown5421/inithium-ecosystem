@@ -1,5 +1,5 @@
-import type { Model } from 'mongoose';
-import { AssetEntity, AssetRepository, CreateAssetInput } from '../../contracts/asset.contract';
+import type { Model, QueryFilter } from 'mongoose';
+import { AssetEntity, AssetRepository, CreateAssetInput, ListAssetsForUserOptions } from '../../contracts/asset.contract';
 import { AssetDocument } from '../../schemas/asset.schema';
 
 const mapToAssetEntity = (doc: AssetDocument): AssetEntity => ({
@@ -11,6 +11,7 @@ const mapToAssetEntity = (doc: AssetDocument): AssetEntity => ({
   mimeType: doc.mimeType,
   sizeBytes: doc.sizeBytes,
   uploadedBy: doc.uploadedBy,
+  purpose: doc.purpose,
   createdAt: doc.createdAt,
 });
 
@@ -26,5 +27,13 @@ export const createMongoAssetRepository = (model: Model<AssetDocument>): AssetRe
   delete: async (id: string): Promise<boolean> => {
     const result = await model.findByIdAndDelete(id).exec();
     return result !== null;
+  },
+  listForUser: async (userId: string, options?: ListAssetsForUserOptions): Promise<AssetEntity[]> => {
+    const filter: QueryFilter<AssetDocument> = { uploadedBy: userId };
+    if (options?.purposes?.length) {
+      filter.purpose = { $in: options.purposes };
+    }
+    const docs = await model.find(filter).sort({ createdAt: -1 }).exec();
+    return docs.map(mapToAssetEntity);
   },
 });

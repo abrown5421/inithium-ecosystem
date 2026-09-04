@@ -9,8 +9,8 @@ import {
   NotFoundError,
   ValidationError,
 } from '@inithium/api-utils';
-import { requireAuth } from '@inithium/auth';
-import { createAsset, deleteAsset, getAssetById } from '@inithium/db';
+import { optionalAuth, requireAuth } from '@inithium/auth';
+import { createAsset, deleteAsset, getAssetById, getUserRepository, listAssetsForUser, updateUser } from '@inithium/db';
 import { deleteObject, uploadObject } from '@inithium/storage';
 import { uploadAssetSchema } from '../schemas/storage.schema';
 
@@ -92,9 +92,41 @@ router.post(
       mimeType: req.file.mimetype,
       sizeBytes: req.file.size,
       uploadedBy: req.user!.sub,
+      purpose: parsed.data.purpose,
     });
 
     res.status(201).json(createSuccessResponse({ url: asset.publicUrl, assetId: asset.id }));
+  }),
+);
+
+// Public-readable, matching GET /api/profile/:id's own optionalAuth precedent - a profile's
+// Assets tab is visible to owned and unowned viewers alike (see ProfileTabDescriptor's
+// 'all'-visibility case), so listing the images behind it can't require login either.
+router.get(
+  '/api/storage/assets',
+  optionalAuth,
+  asyncHandler(async (req: Request, res: Response) => {
+    const userId = typeof req.query['userId'] === 'string' ? req.query['userId'] : undefined;
+    if (!userId) {
+      throw ValidationError('userId query parameter is required');
+    }
+    const rawPurpose = req.query['purpose'];
+    const purposes = typeof rawPurpose === 'string' && rawPurpose.length > 0 ? rawPurpose.split(',') : undefined;
+
+    const assets = await listAssetsForUser(userId, { purposes });
+    res.status(200).json(
+      createSuccessResponse(
+        assets.map((asset) => ({
+          id: asset.id,
+          url: asset.publicUrl,
+          purpose: asset.purpose,
+          altText: asset.altText,
+          mimeType: asset.mimeType,
+          sizeBytes: asset.sizeBytes,
+          createdAt: asset.createdAt,
+        })),
+      ),
+    );
   }),
 );
 
@@ -116,6 +148,40 @@ router.delete(
     const isStaff = req.user!.role === 'admin' || req.user!.role === 'editor';
     if (!isOwner && !isStaff) {
       throw ForbiddenError('You do not have permission to delete this asset');
+    }
+
+    // If this asset is still the uploader's active avatar/banner image, clear that reference
+    // first - otherwise their profile would keep pointing at a URL that's about to 404, instead
+    // of falling back to its generated look the way it already does for a never-set imageUrl.
+    //
+    // Deliberately reconstructs each config from only its own declared fields rather than
+    // `{...uploader.avatar}` / `{...uploader.profileBanner}` minus imageUrl - a spread can carry
+    // forward whatever the Mongoose document actually returned (a single-nested subdocument path
+    // like profileBanner gets its own auto _id unless the schema opts out), silently corrupting
+    // what gets $set back. Building the object field-by-field against the AvatarConfig /
+    // UserProfileBannerConfig contracts is provably clean regardless of what Mongoose's internal
+    // shape happens to be.
+    const uploader = await getUserRepository().findById(asset.uploadedBy);
+    if (uploader) {
+      if (uploader.avatar.imageUrl === asset.publicUrl) {
+        await updateUser(uploader.id, {
+          avatar: {
+            variant: uploader.avatar.variant,
+            style: uploader.avatar.style,
+            ...(uploader.avatar.dicebear ? { dicebear: uploader.avatar.dicebear } : {}),
+          },
+        });
+      }
+      if (uploader.profileBanner?.imageUrl === asset.publicUrl) {
+        await updateUser(uploader.id, {
+          profileBanner: {
+            cellSize: uploader.profileBanner.cellSize,
+            variance: uploader.profileBanner.variance,
+            xColors: uploader.profileBanner.xColors,
+            yColors: uploader.profileBanner.yColors,
+          },
+        });
+      }
     }
 
     await deleteObject(asset.providerKey);

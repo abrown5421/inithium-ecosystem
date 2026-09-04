@@ -100,5 +100,5 @@ export type {
   UpdateBlogPostInput,
 } from './endpoints/blog.endpoints';
 
-export { storageApi, useUploadAssetMutation, useDeleteAssetMutation } from './endpoints/storage.endpoints';
-export type { UploadAssetResult, UploadAssetInput } from './endpoints/storage.endpoints';
+export { storageApi, useUploadAssetMutation, useListUserAssetsQuery, useDeleteAssetMutation } from './endpoints/storage.endpoints';
+export type { UploadAssetResult, UploadAssetInput, AssetDto, ListUserAssetsParams } from './endpoints/storage.endpoints';

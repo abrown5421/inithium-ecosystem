@@ -251,6 +251,7 @@ export type {
   BannerEditDialogProps,
   MediaFieldProps,
   MediaFieldTab,
+  MediaFieldHandle,
   UploadedAsset,
   SearchFilterBarProps,
   SearchFilterFieldOption,
