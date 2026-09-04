@@ -429,7 +429,51 @@
           "source": "src/cms/modules/blog/BlogCommentsPanel.tsx",
           "requires": "cms",
           "status": "applied"
+        },
+        {
+          "target": "libs/cms/src/modules/blog/BlogPostEditDialog.tsx",
+          "source": "src/cms/modules/blog/BlogPostEditDialog.storage.tsx",
+          "requires": "storage",
+          "status": "applied"
         }
+      ]
+    },
+    "storage": {
+      "version": "1.0.0",
+      "installedAt": "2026-09-03T00:00:00.000Z",
+      "dependencies": [],
+      "npmDependencies": {
+        "@aws-sdk/client-s3": "^3.700.0",
+        "@aws-sdk/s3-request-presigner": "^3.700.0",
+        "multer": "^2.0.0",
+        "@types/multer": "^1.4.12"
+      },
+      "injections": [
+        { "target": "libs/storage/package.json", "source": "src/storage/package.json", "requires": null, "status": "applied" },
+        { "target": "libs/storage/project.json", "source": "src/storage/project.json", "requires": null, "status": "applied" },
+        { "target": "libs/storage/tsconfig.json", "source": "src/storage/tsconfig.json", "requires": null, "status": "applied" },
+        { "target": "libs/storage/tsconfig.lib.json", "source": "src/storage/tsconfig.lib.json", "requires": null, "status": "applied" },
+        { "target": "libs/storage/src/contracts/storage-provider.contract.ts", "source": "src/storage/contracts/storage-provider.contract.ts", "requires": null, "status": "applied" },
+        { "target": "libs/storage/src/providers/s3/s3.provider.ts", "source": "src/storage/providers/s3/s3.provider.ts", "requires": null, "status": "applied" },
+        { "target": "libs/storage/src/index.ts", "source": "src/storage/index.ts", "requires": null, "status": "applied" },
+        { "target": "libs/db/src/contracts/asset.contract.ts", "source": "src/db/contracts/asset.contract.ts", "requires": null, "status": "applied" },
+        { "target": "libs/db/src/schemas/asset.schema.ts", "source": "src/db/schemas/asset.schema.ts", "requires": null, "status": "applied" },
+        { "target": "libs/db/src/providers/mongo/asset.repository.ts", "source": "src/db/providers/mongo/asset.repository.ts", "requires": null, "status": "applied" },
+        { "target": "libs/db/src/contracts/db-provider.contract.ts", "source": "src/db/contracts/db-provider.contract.ts", "requires": null, "status": "applied" },
+        { "target": "libs/db/src/providers/mongo/mongo.provider.ts", "source": "src/db/providers/mongo/mongo.provider.ts", "requires": null, "status": "applied" },
+        { "target": "libs/db/src/index.ts", "source": "src/db/index.ts", "requires": null, "status": "applied" },
+        { "target": "libs/api-core/src/schemas/storage.schema.ts", "source": "src/api-core/schemas/storage.schema.ts", "requires": null, "status": "applied" },
+        { "target": "libs/api-core/src/routes/storage.route.ts", "source": "src/api-core/routes/storage.route.ts", "requires": null, "status": "applied" },
+        { "target": "libs/api-core/src/index.ts", "source": "src/api-core/index.ts", "requires": null, "status": "applied" },
+        { "target": "libs/api-client/src/endpoints/storage.endpoints.ts", "source": "src/api-client/endpoints/storage.endpoints.ts", "requires": null, "status": "applied" },
+        { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.ts", "requires": null, "status": "applied" },
+        { "target": "libs/ui/src/composites/MediaField.tsx", "source": "src/ui/composites/MediaField.tsx", "requires": null, "status": "applied" },
+        { "target": "libs/ui/src/composites/AvatarEditDialog.tsx", "source": "src/ui/composites/AvatarEditDialog.tsx", "requires": null, "status": "applied" },
+        { "target": "libs/ui/src/composites/BannerEditDialog.tsx", "source": "src/ui/composites/BannerEditDialog.tsx", "requires": null, "status": "applied" },
+        { "target": "libs/ui/src/composites/index.ts", "source": "src/ui/composites/index.ts", "requires": null, "status": "applied" },
+        { "target": "libs/ui/src/index.ts", "source": "src/ui/index.ts", "requires": null, "status": "applied" },
+        { "target": "libs/ui/tsconfig.lib.json", "source": "src/ui/tsconfig.lib.json", "requires": null, "status": "applied" },
+        { "target": "tsconfig.base.json", "source": "src/tsconfig.base.json", "requires": null, "status": "applied" }
       ]
     }
   }
