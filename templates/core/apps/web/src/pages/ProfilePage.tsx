@@ -117,7 +117,12 @@ export const ProfilePage = () => {
     // desktop instead of stopping short at its own content height.
     <Box bgColor={{ color: 'surface', intensity: 100 }} flex={{ direction: 'col' }} className="w-full lg:min-h-[calc(100vh_-_64px)]">
       <div ref={bannerSizeRef} className="relative w-full" style={{ height: `${DEFAULT_BANNER_HEIGHT}px` }}>
-        <Banner trianglifyConfig={bannerConfig} width={bannerSize?.width} height={DEFAULT_BANNER_HEIGHT} />
+        <Banner
+          imageUrl={profile.profileBanner?.imageUrl}
+          trianglifyConfig={bannerConfig}
+          width={bannerSize?.width}
+          height={DEFAULT_BANNER_HEIGHT}
+        />
 
         {isOwnProfile ? (
           <Button

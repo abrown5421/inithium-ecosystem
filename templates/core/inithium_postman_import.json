@@ -15,7 +15,8 @@
     { "key": "userId", "value": "", "type": "string" },
     { "key": "notificationId", "value": "", "type": "string" },
     { "key": "blogPostId", "value": "000000000000000000000000", "type": "string" },
-    { "key": "blogCommentId", "value": "000000000000000000000000", "type": "string" }
+    { "key": "blogCommentId", "value": "000000000000000000000000", "type": "string" },
+    { "key": "assetId", "value": "000000000000000000000000", "type": "string" }
   ],
   "item": [
     {
@@ -975,6 +976,80 @@
               "raw": "{{baseUrl}}/api/profile/me/password",
               "host": ["{{baseUrl}}"],
               "path": ["api", "profile", "me", "password"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Storage",
+      "item": [
+        {
+          "name": "Upload Asset",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// No file is auto-attached by this collection (Postman can't portably bundle a binary",
+                  "// fixture) - attach one to the 'file' form field manually to exercise the 201 path. As",
+                  "// shipped, this deterministically exercises the route's own 'no file uploaded' validation.",
+                  "pm.test('Status code is 400 (no file attached) or 201 (a file was attached)', () => {",
+                  "  pm.expect([400, 201]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 201) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('assetId', json.data.assetId);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": [] },
+                { "key": "altText", "value": "", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/storage/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "storage", "upload"]
+            }
+          }
+        },
+        {
+          "name": "Delete Asset",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// {{assetId}} defaults to a well-formed but nonexistent ObjectId unless Upload Asset",
+                  "// above actually uploaded a file, so this deterministically exercises the not-found",
+                  "// path by default - same convention as Blog > Get Blog Post By Id.",
+                  "pm.test('Status code is 404 (no asset exists for this id)', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/storage/assets/{{assetId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "storage", "assets", "{{assetId}}"]
             }
           }
         }

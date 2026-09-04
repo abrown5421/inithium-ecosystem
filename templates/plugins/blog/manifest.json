@@ -46,6 +46,7 @@
     { "target": "libs/cms/src/modules/blog-admin.module.tsx", "source": "src/cms/modules/blog-admin.module.tsx", "requires": "cms" },
     { "target": "libs/cms/src/modules/blog/BlogAdminModule.tsx", "source": "src/cms/modules/blog/BlogAdminModule.tsx", "requires": "cms" },
     { "target": "libs/cms/src/modules/blog/BlogPostEditDialog.tsx", "source": "src/cms/modules/blog/BlogPostEditDialog.tsx", "requires": "cms" },
-    { "target": "libs/cms/src/modules/blog/BlogCommentsPanel.tsx", "source": "src/cms/modules/blog/BlogCommentsPanel.tsx", "requires": "cms" }
+    { "target": "libs/cms/src/modules/blog/BlogCommentsPanel.tsx", "source": "src/cms/modules/blog/BlogCommentsPanel.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/blog/BlogPostEditDialog.tsx", "source": "src/cms/modules/blog/BlogPostEditDialog.storage.tsx", "requires": "storage" }
   ]
 }
