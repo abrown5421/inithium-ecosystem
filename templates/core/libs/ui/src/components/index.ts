@@ -22,6 +22,9 @@ export type { AdornedContentProps } from './AdornedContent/AdornedContent';
 export { Input } from './Input/Input';
 export type { InputProps } from './Input/Input';
 
+export { PasswordInput } from './PasswordInput/PasswordInput';
+export type { PasswordInputProps } from './PasswordInput/PasswordInput';
+
 export { Select, SelectItem } from './Select/Select';
 export type { SelectProps, SelectItemProps } from './Select/Select';
 

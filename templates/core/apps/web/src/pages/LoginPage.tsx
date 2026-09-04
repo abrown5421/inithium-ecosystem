@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { alert, Box, Button, Input, Text, useNavigateWithTransition } from '@inithium/ui';
+import { alert, Box, Button, Input, PasswordInput, Text, useNavigateWithTransition } from '@inithium/ui';
 import { useLoginMutation } from '@inithium/api-client';
 import { authStore } from '../app/authStore';
 
@@ -70,7 +70,7 @@ export const LoginPage = () => {
         flex={{ direction: 'col', gap: 36, align: 'stretch' }}
         bgColor={{ color: 'slate', intensity: 100 }}
         padding={{ base: 32 }}
-        className="min-h-[25vh] w-9/10 md:w-1/2 lg:w-1/3 rounded"
+        className="min-h-[25vh] w-[95%] md:w-2/3 lg:w-1/3 rounded"
       >
         <Input
           label="Email"
@@ -81,9 +81,8 @@ export const LoginPage = () => {
           error={Boolean(fieldErrors.email)}
           helperText={fieldErrors.email}
         />
-        <Input
+        <PasswordInput
           label="Password"
-          type="password"
           required
           value={password}
           onChange={(event) => setPassword(event.target.value)}
