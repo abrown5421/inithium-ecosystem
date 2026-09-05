@@ -16,7 +16,8 @@
     { "key": "notificationId", "value": "", "type": "string" },
     { "key": "blogPostId", "value": "000000000000000000000000", "type": "string" },
     { "key": "blogCommentId", "value": "000000000000000000000000", "type": "string" },
-    { "key": "assetId", "value": "000000000000000000000000", "type": "string" }
+    { "key": "assetId", "value": "000000000000000000000000", "type": "string" },
+    { "key": "friendRequestId", "value": "000000000000000000000000", "type": "string" }
   ],
   "item": [
     {
@@ -1077,6 +1078,301 @@
               "raw": "{{baseUrl}}/api/storage/assets/{{assetId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "storage", "assets", "{{assetId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Friends",
+      "item": [
+        {
+          "name": "List My Friends",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response has success: true and a data array', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/friends?view=friends&page=1&pageSize=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "friends"],
+              "query": [
+                { "key": "view", "value": "friends" },
+                { "key": "page", "value": "1" },
+                { "key": "pageSize", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Pending Requests",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response has success: true and a data array', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/friends?view=pending&page=1&pageSize=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "friends"],
+              "query": [
+                { "key": "view", "value": "pending" },
+                { "key": "page", "value": "1" },
+                { "key": "pageSize", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Friend Candidates",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response has success: true and a data array', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/friends/candidates?page=1&pageSize=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "friends", "candidates"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "pageSize", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Friends Of User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// {{userId}} is the logged-in test account's own id (see Auth > Register/Login) - a",
+                  "// self-lookup is the only target this collection can reach deterministically without a",
+                  "// second real account, same convention as Get Friend Status below.",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response has success: true and a data array', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/friends/of/{{userId}}?view=all&page=1&pageSize=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "friends", "of", "{{userId}}"],
+              "query": [
+                { "key": "view", "value": "all" },
+                { "key": "page", "value": "1" },
+                { "key": "pageSize", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Friend Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Against {{userId}} (self) there can never be a relationship row, so this",
+                  "// deterministically exercises the 'exists: false' path.",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('exists is false', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.data.exists).to.eql(false);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/friends/status/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "friends", "status", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Send Friend Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// requesteeId is {{userId}} (self) - the route rejects self-requests before ever",
+                  "// touching the database, so this is reachable with only one seeded account.",
+                  "pm.test('Status code is 400 (cannot friend request yourself)', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requesteeId\": \"{{userId}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/friends/requests",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "friends", "requests"]
+            }
+          }
+        },
+        {
+          "name": "Accept Friend Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// {{friendRequestId}} defaults to a well-formed but nonexistent ObjectId, same",
+                  "// convention as Blog > Get Blog Post By Id / Storage > Delete Asset.",
+                  "pm.test('Status code is 404 (no friend request exists for this id)', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/friends/requests/{{friendRequestId}}/accept",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "friends", "requests", "{{friendRequestId}}", "accept"]
+            }
+          }
+        },
+        {
+          "name": "Delete Friend Request (Rescind/Decline/Unfriend)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// One endpoint covers rescind (requester), decline (requestee), and unfriend (either",
+                  "// side) - all three are just 'delete this relationship row' - see friends.route.ts.",
+                  "// {{friendRequestId}} defaults to a nonexistent ObjectId, same convention as above.",
+                  "pm.test('Status code is 404 (no friend request exists for this id)', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/friends/requests/{{friendRequestId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "friends", "requests", "{{friendRequestId}}"]
+            }
+          }
+        },
+        {
+          "name": "Mark Friend Requests Seen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response has a numeric count', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.data.count).to.be.a('number');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/friends/requests/seen",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "friends", "requests", "seen"]
             }
           }
         }

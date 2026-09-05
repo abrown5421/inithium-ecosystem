@@ -12,6 +12,10 @@ export interface ButtonVariantDefaults {
 
 const DEFAULT_INTENSITY = 500;
 const NEUTRAL_TEXT_COLOR: ColorSpec = { color: 'slate', intensity: 500 };
+// red-500 specifically reads better with a near-white label than the general slate-500 fallback
+// below (e.g. destructive confirm buttons) - carved out ahead of that fallback rather than
+// replacing it, so every other raw color/intensity combination keeps today's slate-500 text.
+const RED_500_TEXT_COLOR: ColorSpec = { color: 'slate', intensity: 100 };
 
 const STANDARD_PADDING: SpacingProp = { top: 5, right: 15, bottom: 5, left: 15 };
 const LINK_PADDING: SpacingProp = { top: 4, bottom: 4 };
@@ -43,10 +47,13 @@ export const resolveButtonVariant = (spec: ButtonVariantSpec | undefined): Butto
     case 'filled': {
       // Semantic tokens (primary, secondary, ...) pair with their own `-foreground` token
       // for legible text; raw palette colors (red, emerald, ...) have no such pairing, so
-      // they fall back to a fixed light neutral instead of guessing a contrasting shade.
+      // they fall back to a fixed light neutral instead of guessing a contrasting shade -
+      // except red at its default intensity (500), which gets its own lighter override above.
       const textColor: ColorSpec = isSemanticColorToken(color)
         ? { color: `${color}-foreground`, intensity, opacity }
-        : NEUTRAL_TEXT_COLOR;
+        : color === 'red' && intensity === DEFAULT_INTENSITY
+          ? RED_500_TEXT_COLOR
+          : NEUTRAL_TEXT_COLOR;
 
       return {
         bgColor: colorSpec,
