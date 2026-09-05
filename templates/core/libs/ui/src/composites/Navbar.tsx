@@ -66,8 +66,8 @@ export interface NavbarProps {
   // The drawer's "Friends" item, from the friends plugin (absent entirely when it isn't
   // installed - both are undefined and the item just doesn't render). When profileEnabled is
   // true this is a Link to the profile page's Friends tab; when false there's no profile page to
-  // link to, so onOpenFriendsPanel instead opens the same owned-friends UI directly in this
-  // drawer (see the friends plugin's own app.tsx wiring for what it renders).
+  // link to, so onOpenFriendsPanel instead closes this drawer and opens the same owned-friends UI
+  // in a wide dialog (see the friends plugin's own app.tsx wiring for what it renders).
   readonly friendsHref?: string;
   readonly onOpenFriendsPanel?: () => void;
 }
@@ -134,8 +134,10 @@ const ProfileDrawerLink = ({
   );
 
 // Mirrors ProfileDrawerLink's own profileEnabled-driven branch: a Link to the profile page's
-// Friends tab when profiles are on, or a Button opening the drawer-embedded FriendsPanel in place
-// when they're off. Renders nothing when the friends plugin isn't installed (both props absent).
+// Friends tab when profiles are on, or (like the Change Password fallback below it) a Button
+// that closes this drawer and opens the FriendsPanel in a dialog instead when they're off - there
+// being no profile page to embed a tab in. Renders nothing when the friends plugin isn't
+// installed (both props absent).
 const FriendsDrawerLink = ({
   profileEnabled,
   friendsHref,
@@ -160,7 +162,10 @@ const FriendsDrawerLink = ({
         variant={{ kind: 'link', color: 'accent' }}
         textColor={{ color: 'surface', intensity: 950 }}
         className="justify-start"
-        onClick={onOpenFriendsPanel}
+        onClick={() => {
+          onNavigate();
+          onOpenFriendsPanel();
+        }}
       >
         Friends
       </Button>
