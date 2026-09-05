@@ -10,7 +10,7 @@ import {
   PageShell,
   Loader,
   alert,
-  drawer,
+  dialog,
   useNavigateWithTransition,
 } from '@inithium/ui';
 import {
@@ -70,9 +70,13 @@ export function App() {
   // the notification center" moment the friends plugin's status model is tied to (see
   // friends.route.ts's PATCH /api/friends/requests/seen for why this is bulk, not per-id).
   const [markFriendRequestsSeen] = useMarkFriendRequestsSeenMutation();
+  // A dialog rather than a second drawer - opened from a Button inside the already-open Menu
+  // drawer (see Navbar.tsx's FriendsDrawerLink), which closes itself first so this doesn't stack
+  // on top of it. 75vw per the "look nicer as a wide dialog" request, matching the width other
+  // wide dialogs in this app already use (AvatarEditDialog/BannerEditDialog/AssetLightbox).
   const openFriendsPanel = () => {
     if (!currentUser) return;
-    drawer.show(() => <FriendsPanel mode="owned" currentUserId={currentUser.id} />, { side: 'right', title: 'Friends' });
+    dialog.show(() => <FriendsPanel mode="owned" currentUserId={currentUser.id} />, { title: 'Friends', width: '75vw' });
   };
 
   useEffect(() => {
