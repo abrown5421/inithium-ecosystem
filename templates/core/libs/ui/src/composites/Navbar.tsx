@@ -338,7 +338,7 @@ export const Navbar = ({
         <Link to="/" className="flex shrink-0 items-center gap-2">
           {logo ? <img src={logo.src} alt={logo.alt ?? ''} className="h-8 w-auto" /> : null}
           {title ? (
-            <Text textColor={{color: 'surface', intensity: 950}} as="span" className="text-lg font-semibold">
+            <Text textColor={{color: 'surface', intensity: 950}} as="span" className="text-lg font-semibold font-primary">
               {title}
             </Text>
           ) : null}

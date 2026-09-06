@@ -135,6 +135,7 @@ export function App() {
             onNotificationDelete={removeNotification}
             onLogin={() => navigate('/login')}
             onLogout={logout}
+            logo={{ src: '/logo.webp', alt: appName }}
             title={appName}
             height={NAVBAR_HEIGHT}
           />
