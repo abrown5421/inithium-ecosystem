@@ -68,7 +68,7 @@ export const CmsNavbar = ({ currentUser, onLogout }: CmsNavbarProps) => {
       className="h-16 w-full shrink-0 border-b"
     >
       <Link to="/cms" className="flex shrink-0 items-center gap-2">
-        <Text as="span" className="text-lg font-semibold text-surface-950">
+        <Text as="span" className="text-lg font-semibold font-primary text-surface-950">
           {appName}
         </Text>
       </Link>

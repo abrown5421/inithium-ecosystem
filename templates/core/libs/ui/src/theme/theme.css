@@ -13,7 +13,37 @@
  * stylesheet.
  */
 
+/*
+ * Brand typography. Same "define once at the token layer, consume everywhere" pattern as the
+ * color tokens below: --ui-font-primary is the display face (applied to every h1-h6 in the app,
+ * plus the Navbar/CmsNavbar brand title further down, which render as a <span> so the element
+ * rule alone doesn't reach them), --ui-font-secondary is the body-copy face applied to <body> and
+ * inherited by everything that doesn't opt into primary. Both are also registered into Tailwind's
+ * --font-* theme namespace below so `font-primary`/`font-secondary` utility classes work anywhere
+ * a one-off override is needed.
+ */
+@font-face {
+  font-family: 'InithiumPrimary';
+  src: url('./fonts/primary.woff2') format('woff2');
+  /* Full weight range on a single face so font-bold/font-semibold (already used on every
+     h1-h3 in the app) pick this real face instead of triggering the browser's faux-bold. */
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'InithiumSecondary';
+  src: url('./fonts/secondary.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
+  --ui-font-primary: 'InithiumPrimary', ui-sans-serif, system-ui, sans-serif;
+  --ui-font-secondary: 'InithiumSecondary', ui-sans-serif, system-ui, sans-serif;
+
   --ui-primary-100: #e6f3f8;
   --ui-primary-200: #c0e3ef;
   --ui-primary-300: #8ccce1;
@@ -145,6 +175,14 @@
   --ui-quaternary-foreground-800: #fafafa;
   --ui-quaternary-foreground-900: #fafafa;
   --ui-quaternary-foreground-950: #fafafa;
+}
+
+body {
+  font-family: var(--ui-font-secondary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--ui-font-primary);
 }
 
 /*
@@ -323,6 +361,11 @@
   --color-quaternary-foreground-800: var(--ui-quaternary-foreground-800);
   --color-quaternary-foreground-900: var(--ui-quaternary-foreground-900);
   --color-quaternary-foreground-950: var(--ui-quaternary-foreground-950);
+}
+
+@theme {
+  --font-primary: var(--ui-font-primary);
+  --font-secondary: var(--ui-font-secondary);
 }
 
 /*
