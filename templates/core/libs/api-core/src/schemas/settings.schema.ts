@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
-const SETTING_TYPES = ['string', 'boolean', 'number', 'date', 'stringList', 'json'] as const;
+const SETTING_TYPES = ['string', 'boolean', 'number', 'date', 'stringList', 'json', 'color'] as const;
+
+// Same 3/6-digit hex shape ColorPicker validates client-side (libs/ui/src/contracts/color.contract.ts's
+// HEX_COLOR_PATTERN) - duplicated here rather than imported since libs/api-core has no dependency on
+// libs/ui, and this is the server-side backstop regardless of what the CMS form already checked.
+const HEX_COLOR_PATTERN = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
 // Zod schema each `type` must match, keyed the same way settingValueSchemas is switched on in
 // the route handler - z.unknown() at the top level, then superRefine cross-checks `value`
@@ -13,6 +18,7 @@ const settingValueSchemas: Record<(typeof SETTING_TYPES)[number], z.ZodTypeAny> 
   date: z.string(),
   stringList: z.array(z.string()),
   json: z.record(z.string(), z.unknown()),
+  color: z.string().regex(HEX_COLOR_PATTERN),
 };
 
 export const upsertSettingSchema = z

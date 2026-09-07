@@ -1,4 +1,4 @@
-export const SETTING_TYPES = ['string', 'boolean', 'number', 'date', 'stringList', 'json'] as const;
+export const SETTING_TYPES = ['string', 'boolean', 'number', 'date', 'stringList', 'json', 'color'] as const;
 export type SettingType = (typeof SETTING_TYPES)[number];
 
 interface SettingBase {
@@ -16,7 +16,8 @@ export type SettingEntity =
   | (SettingBase & { type: 'number'; value: number })
   | (SettingBase & { type: 'date'; value: string })
   | (SettingBase & { type: 'stringList'; value: string[] })
-  | (SettingBase & { type: 'json'; value: Record<string, unknown> });
+  | (SettingBase & { type: 'json'; value: Record<string, unknown> })
+  | (SettingBase & { type: 'color'; value: string });
 
 export type UpsertSettingInput =
   | { key: string; type: 'string'; value: string }
@@ -24,7 +25,8 @@ export type UpsertSettingInput =
   | { key: string; type: 'number'; value: number }
   | { key: string; type: 'date'; value: string }
   | { key: string; type: 'stringList'; value: string[] }
-  | { key: string; type: 'json'; value: Record<string, unknown> };
+  | { key: string; type: 'json'; value: Record<string, unknown> }
+  | { key: string; type: 'color'; value: string };
 
 export interface SettingsRepository {
   findAll: () => Promise<SettingEntity[]>;

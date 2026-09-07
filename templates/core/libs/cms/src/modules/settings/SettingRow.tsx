@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, IconButton, Input, ListRow, Switch, Text, Textarea } from '@inithium/ui';
+import { Box, Button, IconButton, Input, ListRow, Switch, Text, Textarea, HEX_COLOR_PATTERN } from '@inithium/ui';
 import { useUpsertSettingMutation } from '@inithium/api-client';
 import type { SettingEntity, UpsertSettingInput } from '@inithium/api-client';
 import type { SettingDefinition } from '../../settings/definitions/registry';
@@ -111,6 +111,29 @@ export const SettingRow = ({ definition, stored }: SettingRowProps) => {
         );
       case 'stringList':
         return <StringListEditor value={draft as string[]} onChange={setDraft} />;
+      case 'color': {
+        const hexValue = draft as string;
+        const trimmed = hexValue.trim();
+        const isValidHex = HEX_COLOR_PATTERN.test(trimmed);
+        return (
+          <Box flex={{ direction: 'row', gap: 8, align: 'center' }}>
+            <Box
+              style={{ backgroundColor: isValidHex ? trimmed : undefined }}
+              bgColor={isValidHex ? undefined : { color: 'surface', intensity: 200 }}
+              borderColor={{ color: 'surface', intensity: 300 }}
+              className="h-10 w-10 shrink-0 rounded border"
+            />
+            <Input
+              value={hexValue}
+              onChange={(event) => setDraft(event.target.value)}
+              placeholder="#000000"
+              error={trimmed.length > 0 && !isValidHex}
+              helperText={trimmed.length > 0 && !isValidHex ? 'Enter a valid hex color, e.g. #006a8e.' : undefined}
+              className="max-w-40"
+            />
+          </Box>
+        );
+      }
       case 'json':
         return (
           <Textarea
@@ -126,6 +149,7 @@ export const SettingRow = ({ definition, stored }: SettingRowProps) => {
   };
 
   const needsExplicitSave = definition.type !== 'boolean';
+  const isColorInvalid = definition.type === 'color' && !HEX_COLOR_PATTERN.test((draft as string).trim());
 
   return (
     <ListRow
@@ -133,7 +157,7 @@ export const SettingRow = ({ definition, stored }: SettingRowProps) => {
         needsExplicitSave ? (
           <Button
             variant={{ kind: 'filled', color: 'primary' }}
-            disabled={isLoading}
+            disabled={isLoading || isColorInvalid}
             onClick={definition.type === 'json' ? handleSaveJson : () => save(draft)}
           >
             {isLoading ? 'Saving…' : 'Save'}

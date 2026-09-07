@@ -11,6 +11,7 @@ export {
   COLOR_UTILITY_PREFIXES,
   SEMANTIC_COLOR_TOKENS,
   isSemanticColorToken,
+  HEX_COLOR_PATTERN,
 } from './contracts/color.contract';
 
 export type {
@@ -107,6 +108,11 @@ export { resolveDicebearUrl } from './utils/resolveDicebearUrl';
 export { resolveComputedColorHex } from './utils/resolveComputedColorHex';
 export { createSeededRandom } from './utils/createSeededRandom';
 export { resolveStringHash } from './utils/resolveStringHash';
+export { generateColorScale, mirrorColorScale } from './utils/generateColorScale';
+export type { ColorScale } from './utils/generateColorScale';
+export { resolveForegroundHex } from './utils/resolveForegroundHex';
+export { buildCustomBrandThemeCss } from './utils/buildCustomBrandThemeCss';
+export type { CustomBrandColors } from './utils/buildCustomBrandThemeCss';
 
 export { alert } from './alert/alert';
 export type { AlertOptions } from './alert/alert';

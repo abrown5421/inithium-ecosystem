@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Box, Loader } from '@inithium/ui';
-import { useIsDarkModeFeatureEnabled } from '@inithium/api-client';
+import { Box, Loader, buildCustomBrandThemeCss } from '@inithium/ui';
+import { useIsDarkModeFeatureEnabled, useCustomBrandColors } from '@inithium/api-client';
 import { authStore } from './authStore';
 import { useCurrentUser, useAuthToken } from './useCurrentUser';
 import App from './app';
@@ -41,21 +41,40 @@ export function RootRouter() {
     document.documentElement.dataset.theme = isDarkMode ? 'dark' : 'light';
   }, [isDarkMode]);
 
+  // Also lives here rather than inside App, for the identical reason as the data-theme effect
+  // above: this is the one component mounted on every route, so it's the only place a brand-color
+  // override reliably reaches both the public site and /cms. Rendered as a plain <style> tag
+  // (rather than a useEffect DOM mutation like the data-theme stamp) since a `:root { ... }` rule
+  // applies to the whole document regardless of where in the tree the <style> element itself is -
+  // React can own its lifecycle declaratively instead of this component manually creating/
+  // removing a DOM node. An admin who hasn't customized any color yields an empty string here, so
+  // theme.css's own static defaults keep applying untouched.
+  const customBrandColors = useCustomBrandColors();
+  const customBrandThemeCss = buildCustomBrandThemeCss(customBrandColors);
+
   if (location.pathname === '/cms' || location.pathname.startsWith('/cms/')) {
     return (
-      <Suspense fallback={<CmsBootLoader />}>
-        <LazyCmsRoot
-          currentUser={currentUser}
-          isResolving={isResolving}
-          onLoginSuccess={(token: string) => authStore.setToken(token)}
-          onLogout={logout}
-          token={token}
-        />
-      </Suspense>
+      <>
+        {customBrandThemeCss && <style>{customBrandThemeCss}</style>}
+        <Suspense fallback={<CmsBootLoader />}>
+          <LazyCmsRoot
+            currentUser={currentUser}
+            isResolving={isResolving}
+            onLoginSuccess={(token: string) => authStore.setToken(token)}
+            onLogout={logout}
+            token={token}
+          />
+        </Suspense>
+      </>
     );
   }
 
-  return <App />;
+  return (
+    <>
+      {customBrandThemeCss && <style>{customBrandThemeCss}</style>}
+      <App />
+    </>
+  );
 }
 
 export default RootRouter;

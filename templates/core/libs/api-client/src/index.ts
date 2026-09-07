@@ -66,9 +66,15 @@ export {
   useShowPersistentNotificationCenter,
   useIsProfileEnabled,
   useIsDarkModeFeatureEnabled,
+  useCustomBrandColors,
   SETTING_TYPES,
 } from './endpoints/settings.endpoints';
-export type { SettingType, SettingEntity, UpsertSettingInput } from './endpoints/settings.endpoints';
+export type {
+  SettingType,
+  SettingEntity,
+  UpsertSettingInput,
+  CustomBrandColorSettings,
+} from './endpoints/settings.endpoints';
 
 export {
   profileApi,
