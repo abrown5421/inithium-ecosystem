@@ -17,7 +17,8 @@
     { "key": "blogPostId", "value": "000000000000000000000000", "type": "string" },
     { "key": "blogCommentId", "value": "000000000000000000000000", "type": "string" },
     { "key": "assetId", "value": "000000000000000000000000", "type": "string" },
-    { "key": "friendRequestId", "value": "000000000000000000000000", "type": "string" }
+    { "key": "friendRequestId", "value": "000000000000000000000000", "type": "string" },
+    { "key": "galleryImageId", "value": "000000000000000000000000", "type": "string" }
   ],
   "item": [
     {
@@ -1373,6 +1374,205 @@
               "raw": "{{baseUrl}}/api/friends/requests/seen",
               "host": ["{{baseUrl}}"],
               "path": ["api", "friends", "requests", "seen"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gallery",
+      "item": [
+        {
+          "name": "List Gallery Images",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response has success: true and a data array', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/gallery?page=1&pageSize=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gallery"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "pageSize", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Gallery Images (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response has success: true and a data array', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/gallery/admin?page=1&pageSize=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gallery", "admin"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "pageSize", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Local Gallery Image",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// No file is auto-attached by this collection (Postman can't portably bundle a binary",
+                  "// fixture) - attach one to the 'file' form field manually to exercise the 201 path. As",
+                  "// shipped, this deterministically exercises the route's own 'no file uploaded' validation.",
+                  "pm.test('Status code is 400 (no file attached) or 201 (a file was attached)', () => {",
+                  "  pm.expect([400, 201]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": [] }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/gallery/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gallery", "upload"]
+            }
+          }
+        },
+        {
+          "name": "Create Gallery Image",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Response has an id', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.data.id).to.be.a('string');",
+                  "  pm.collectionVariables.set('galleryImageId', json.data.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Sample Image\",\n  \"description\": \"A sample gallery image.\",\n  \"altText\": \"A sample image\",\n  \"isPublished\": true,\n  \"sourceType\": \"external\",\n  \"url\": \"https://example.com/sample.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/gallery",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gallery"]
+            }
+          }
+        },
+        {
+          "name": "Update Gallery Image",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Sample Image\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/gallery/{{galleryImageId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gallery", "{{galleryImageId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Gallery Image",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 204 (deleted) or 404 (already gone)', () => {",
+                  "  pm.expect([204, 404]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/gallery/{{galleryImageId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gallery", "{{galleryImageId}}"]
             }
           }
         }
