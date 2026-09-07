@@ -50,3 +50,8 @@ export interface ColorSpec {
   readonly intensity?: ColorIntensity;
   readonly opacity?: ColorOpacity;
 }
+
+// Shared by ColorPicker (an existing free-text hex field) and anything else that accepts a raw
+// hex string rather than a semantic ColorSpec token - e.g. the CMS's brand-color settings, which
+// let an admin type any hex to become a token's 500 intensity (see utils/generateColorScale.ts).
+export const HEX_COLOR_PATTERN = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
