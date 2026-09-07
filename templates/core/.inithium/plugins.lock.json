@@ -477,6 +477,39 @@
         { "target": "tsconfig.base.json", "source": "src/tsconfig.base.json", "requires": null, "status": "applied" },
         { "target": "apps/web/src/pages/profile/tabs/assets.tab.tsx", "source": "src/pages/profile/tabs/assets.tab.tsx", "requires": null, "status": "applied" }
       ]
+    },
+    "gallery": {
+      "version": "1.0.0",
+      "installedAt": "2026-09-06T00:00:00.000Z",
+      "dependencies": [],
+      "npmDependencies": {
+        "multer": "^2.0.0",
+        "@types/multer": "^1.4.12"
+      },
+      "injections": [
+        { "target": "libs/db/src/contracts/gallery-image.contract.ts", "source": "src/db/contracts/gallery-image.contract.ts", "requires": null, "status": "applied" },
+        { "target": "libs/db/src/contracts/db-provider.contract.ts", "source": "src/db/contracts/db-provider.contract.ts", "requires": null, "status": "applied" },
+        { "target": "libs/db/src/schemas/gallery-image.schema.ts", "source": "src/db/schemas/gallery-image.schema.ts", "requires": null, "status": "applied" },
+        { "target": "libs/db/src/providers/mongo/gallery-image.repository.ts", "source": "src/db/providers/mongo/gallery-image.repository.ts", "requires": null, "status": "applied" },
+        { "target": "libs/db/src/providers/mongo/mongo.provider.ts", "source": "src/db/providers/mongo/mongo.provider.ts", "requires": null, "status": "applied" },
+        { "target": "libs/db/src/index.ts", "source": "src/db/index.ts", "requires": null, "status": "applied" },
+        { "target": "libs/db/src/page-seeds/gallery.page-seed.ts", "source": "src/db/page-seeds/gallery.page-seed.ts", "requires": null, "status": "applied" },
+        { "target": "libs/db/src/page-seeds/registry.ts", "source": "src/db/page-seeds/registry.ts", "requires": null, "status": "applied" },
+        { "target": "libs/api-core/src/schemas/gallery.schema.ts", "source": "src/api-core/schemas/gallery.schema.ts", "requires": null, "status": "applied" },
+        { "target": "libs/api-core/src/routes/gallery.route.ts", "source": "src/api-core/routes/gallery.route.ts", "requires": null, "status": "applied" },
+        { "target": "libs/api-core/src/index.ts", "source": "src/api-core/index.ts", "requires": null, "status": "applied" },
+        { "target": "libs/api-core/src/routes/gallery.route.ts", "source": "src/api-core/routes/gallery.route.storage.ts", "requires": "storage", "status": "applied" },
+        { "target": "apps/api/uploads/gallery/.gitkeep", "source": "src/apps/api/uploads/gallery/.gitkeep", "requires": null, "status": "applied" },
+        { "target": "libs/api-client/src/endpoints/gallery.endpoints.ts", "source": "src/api-client/endpoints/gallery.endpoints.ts", "requires": null, "status": "applied" },
+        { "target": "libs/api-client/src/baseApi.ts", "source": "src/api-client/baseApi.ts", "requires": null, "status": "applied" },
+        { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.ts", "requires": null, "status": "applied" },
+        { "target": "apps/web/src/pages/GalleryPage.tsx", "source": "src/pages/GalleryPage.tsx", "requires": null, "status": "applied" },
+        { "target": "apps/web/src/pages/pageComponents.ts", "source": "src/pages/pageComponents.ts", "requires": null, "status": "applied" },
+        { "target": "libs/cms/src/modules/gallery-admin.module.tsx", "source": "src/cms/modules/gallery-admin.module.tsx", "requires": "cms", "status": "applied" },
+        { "target": "libs/cms/src/modules/gallery/GalleryAdminModule.tsx", "source": "src/cms/modules/gallery/GalleryAdminModule.tsx", "requires": "cms", "status": "applied" },
+        { "target": "libs/cms/src/modules/gallery/GalleryImageEditDialog.tsx", "source": "src/cms/modules/gallery/GalleryImageEditDialog.tsx", "requires": "cms", "status": "applied" },
+        { "target": "libs/cms/src/modules/gallery/GalleryImageEditDialog.tsx", "source": "src/cms/modules/gallery/GalleryImageEditDialog.storage.tsx", "requires": "storage", "status": "applied" }
+      ]
     }
   }
 }
