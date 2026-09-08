@@ -1,0 +1,50 @@
+{
+  "name": "contact",
+  "version": "1.0.0",
+  "description": "Contact-us page with a 'communications' collection, admin notifications and a two-way reply thread over the existing notification center, plus honeypot/rate-limit/optional-CAPTCHA spam protection",
+  "dependencies": {
+    "npm": {
+      "express-rate-limit": "^8.7.0"
+    },
+    "plugins": []
+  },
+  "injections": [
+    { "target": "libs/db/src/contracts/communication.contract.ts", "source": "src/db/contracts/communication.contract.ts" },
+    { "target": "libs/db/src/contracts/db-provider.contract.ts", "source": "src/db/contracts/db-provider.contract.ts" },
+    { "target": "libs/db/src/contracts/notification.contract.ts", "source": "src/db/contracts/notification.contract.ts" },
+    { "target": "libs/db/src/schemas/communication.schema.ts", "source": "src/db/schemas/communication.schema.ts" },
+    { "target": "libs/db/src/providers/mongo/communication.repository.ts", "source": "src/db/providers/mongo/communication.repository.ts" },
+    { "target": "libs/db/src/providers/mongo/notification.repository.ts", "source": "src/db/providers/mongo/notification.repository.ts" },
+    { "target": "libs/db/src/providers/mongo/mongo.provider.ts", "source": "src/db/providers/mongo/mongo.provider.ts" },
+    { "target": "libs/db/src/index.ts", "source": "src/db/index.ts" },
+    { "target": "libs/db/src/page-seeds/contact.page-seed.ts", "source": "src/db/page-seeds/contact.page-seed.ts" },
+    { "target": "libs/db/src/page-seeds/registry.ts", "source": "src/db/page-seeds/registry.ts" },
+
+    { "target": "libs/api-core/src/schemas/contact.schema.ts", "source": "src/api-core/schemas/contact.schema.ts" },
+    { "target": "libs/api-core/src/routes/contact.route.ts", "source": "src/api-core/routes/contact.route.ts" },
+    { "target": "libs/api-core/src/index.ts", "source": "src/api-core/index.ts" },
+
+    { "target": "libs/api-client/src/endpoints/contact.endpoints.ts", "source": "src/api-client/endpoints/contact.endpoints.ts" },
+    { "target": "libs/api-client/src/endpoints/settings.endpoints.ts", "source": "src/api-client/endpoints/settings.endpoints.ts" },
+    { "target": "libs/api-client/src/baseApi.ts", "source": "src/api-client/baseApi.ts" },
+    { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.ts" },
+
+    { "target": "libs/ui/src/composites/CommunicationThread.tsx", "source": "src/ui/composites/CommunicationThread.tsx" },
+    { "target": "libs/ui/src/composites/index.ts", "source": "src/ui/composites/index.ts" },
+    { "target": "libs/ui/src/index.ts", "source": "src/ui/index.ts" },
+
+    { "target": "apps/web/src/pages/ContactPage.tsx", "source": "src/apps/web/pages/ContactPage.tsx" },
+    { "target": "apps/web/src/pages/ContactThreadDialogContent.tsx", "source": "src/apps/web/pages/ContactThreadDialogContent.tsx" },
+    { "target": "apps/web/src/pages/pageComponents.ts", "source": "src/apps/web/pages/pageComponents.ts" },
+    { "target": "apps/web/src/app/app.tsx", "source": "src/apps/web/app/app.tsx" },
+
+    { "target": "libs/cms/src/modules/communications-admin.module.tsx", "source": "src/cms/modules/communications-admin.module.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/communications/CommunicationsAdminModule.tsx", "source": "src/cms/modules/communications/CommunicationsAdminModule.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/communications/CommunicationThreadDialogContent.tsx", "source": "src/cms/modules/communications/CommunicationThreadDialogContent.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/communications/communicationNeedsReply.ts", "source": "src/cms/modules/communications/communicationNeedsReply.ts", "requires": "cms" },
+    { "target": "libs/cms/src/dashboard/widgets/communications-needing-reply.widget.tsx", "source": "src/cms/dashboard/widgets/communications-needing-reply.widget.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/settings/definitions/contact-recipient-email.setting.ts", "source": "src/cms/settings/definitions/contact-recipient-email.setting.ts", "requires": "cms" },
+    { "target": "libs/cms/src/settings/definitions/contact-captcha-enabled.setting.ts", "source": "src/cms/settings/definitions/contact-captcha-enabled.setting.ts", "requires": "cms" },
+    { "target": "libs/cms/src/settings/definitions/contact-captcha-site-key.setting.ts", "source": "src/cms/settings/definitions/contact-captcha-site-key.setting.ts", "requires": "cms" }
+  ]
+}
