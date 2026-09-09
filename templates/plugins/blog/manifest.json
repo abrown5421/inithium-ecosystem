@@ -12,6 +12,7 @@
     "plugins": []
   },
   "injections": [
+    { "target": "libs/permissions/src/roles/role-capability-defaults.ts", "source": "src/permissions/roles/role-capability-defaults.ts" },
     { "target": "libs/db/src/contracts/blog.contract.ts", "source": "src/db/contracts/blog.contract.ts" },
     { "target": "libs/db/src/contracts/db-provider.contract.ts", "source": "src/db/contracts/db-provider.contract.ts" },
     { "target": "libs/db/src/schemas/blog-post.schema.ts", "source": "src/db/schemas/blog-post.schema.ts" },
@@ -43,6 +44,8 @@
 
     { "target": "libs/cms/package.json", "source": "src/cms/package.json", "requires": "cms" },
     { "target": "libs/cms/src/settings/definitions/blog-comments-enabled.setting.ts", "source": "src/cms/settings/definitions/blog-comments-enabled.setting.ts", "requires": "cms" },
+    { "target": "libs/cms/src/permissions/definitions/blog-manage.capability.ts", "source": "src/cms/permissions/definitions/blog-manage.capability.ts", "requires": "cms" },
+    { "target": "libs/cms/src/permissions/definitions/blog-manage-comments.capability.ts", "source": "src/cms/permissions/definitions/blog-manage-comments.capability.ts", "requires": "cms" },
     { "target": "libs/cms/src/modules/blog-admin.module.tsx", "source": "src/cms/modules/blog-admin.module.tsx", "requires": "cms" },
     { "target": "libs/cms/src/modules/blog/BlogAdminModule.tsx", "source": "src/cms/modules/blog/BlogAdminModule.tsx", "requires": "cms" },
     { "target": "libs/cms/src/modules/blog/BlogPostEditDialog.tsx", "source": "src/cms/modules/blog/BlogPostEditDialog.tsx", "requires": "cms" },

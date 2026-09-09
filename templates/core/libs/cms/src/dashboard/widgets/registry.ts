@@ -8,6 +8,9 @@ export interface DashboardWidget {
   // widget pick its own footprint (a small stat tile vs. a wide graph) without the dashboard
   // itself needing to know anything about what any given widget renders.
   readonly span?: 1 | 2 | 3;
+  // Same gating contract as CmsModule.requiredCapability - omit for a widget every CMS-capable
+  // viewer should see.
+  readonly requiredCapability?: string;
   readonly Component: ComponentType;
 }
 

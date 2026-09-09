@@ -30,6 +30,11 @@ import type { PageEntity } from '@inithium/db';
 // bundle. Small, stable literal arrays, kept in sync by hand.
 const NAV_LOCATIONS = ['primary-nav', 'profile-nav', 'primary-footer', 'secondary-footer'] as const;
 const PAGE_LAYOUT_TEMPLATES = ['default', 'full-width', 'sidebar-left', 'sidebar-right'] as const;
+// Same hardcoded-local-mirror precedent as NAV_LOCATIONS/PAGE_LAYOUT_TEMPLATES above, mirroring
+// @inithium/db's CORE_ROLES. This is page-visibility config (who may *view* a published page),
+// a separate concern from CMS-editing capabilities - deliberately not conflated with the
+// capability keys @inithium/permissions checks.
+const CORE_ROLES = ['user', 'contributor', 'editor', 'admin'] as const;
 
 export interface PageEditDialogProps {
   readonly page: PageEntity;
@@ -258,7 +263,7 @@ export const PageEditDialog = ({ page, onDone }: PageEditDialogProps) => {
               <Text as="span" className="text-sm font-medium text-surface-900">
                 Required Roles
               </Text>
-              {['user', 'admin'].map((role) => (
+              {CORE_ROLES.map((role) => (
                 <Checkbox
                   key={role}
                   label={role}

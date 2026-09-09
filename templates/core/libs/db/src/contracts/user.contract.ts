@@ -3,6 +3,19 @@ import type { PaginatedResult } from './pagination.contract';
 export const AVATAR_VARIANTS = ['initials', 'dicebear'] as const;
 export type AvatarVariant = (typeof AVATAR_VARIANTS)[number];
 
+// Fixed, core-owned role vocabulary - a role is a default-capability template, not the
+// enforcement unit itself. Plugins may only contribute new capability keys (see
+// @inithium/permissions), never new entries here, so this list stays a small, stable mental
+// model no matter how many plugins are installed.
+export const CORE_ROLES = ['user', 'contributor', 'editor', 'admin'] as const;
+export type Role = (typeof CORE_ROLES)[number];
+
+// A user's effective capability set is their role's default bundle (see
+// ROLE_CAPABILITY_DEFAULTS in @inithium/permissions) with these explicit per-key
+// grants/revokes layered on top - an absent key means "use the role default", `true`/`false`
+// force-grants/force-revokes regardless of what the role would otherwise imply.
+export type CapabilityOverrides = Record<string, boolean>;
+
 export const AVATAR_SHAPES = ['circle', 'square'] as const;
 export type AvatarShape = (typeof AVATAR_SHAPES)[number];
 
@@ -66,7 +79,12 @@ export interface UserEntity {
   firstName: string;
   lastName?: string;
   passwordHash: string;
-  role: string;
+  role: Role;
+  // The single distinguished account: bypasses every capability check unconditionally and is
+  // the only account allowed to edit another user's capabilityOverrides by default. Never
+  // settable through CreateUserInput/UpdateUserInput - see transferOwnership below.
+  isOwner: boolean;
+  capabilityOverrides: CapabilityOverrides;
   avatar: AvatarConfig;
   profileBanner?: UserProfileBannerConfig;
   darkMode: boolean;
@@ -78,7 +96,7 @@ export interface CreateUserInput {
   firstName: string;
   lastName?: string;
   passwordHash: string;
-  role?: string;
+  role?: Role;
   avatar?: AvatarConfig;
   profileBanner?: UserProfileBannerConfig;
   darkMode?: boolean;
@@ -89,7 +107,10 @@ export interface UpdateUserInput {
   firstName?: string;
   lastName?: string;
   passwordHash?: string;
-  role?: string;
+  role?: Role;
+  // Whole-map replace, matching this repository's existing convention for avatar/profileBanner -
+  // callers must submit the full merged override map, never a partial patch.
+  capabilityOverrides?: CapabilityOverrides;
   avatar?: AvatarConfig;
   profileBanner?: UserProfileBannerConfig;
   darkMode?: boolean;
@@ -117,4 +138,9 @@ export interface UserRepository {
   update: (id: string, input: UpdateUserInput) => Promise<UserEntity | null>;
   delete: (id: string) => Promise<boolean>;
   countRegistrationsByDay: () => Promise<UserRegistrationCount[]>;
+  countAll: () => Promise<number>;
+  // Unsets isOwner on whoever currently holds it, sets it on newOwnerId, returns the updated
+  // new-owner entity. Ownership transfer never goes through the generic update() - keeping it a
+  // dedicated method means it can never be smuggled through a normal user-edit form.
+  transferOwnership: (newOwnerId: string) => Promise<UserEntity>;
 }

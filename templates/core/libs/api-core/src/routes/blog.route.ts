@@ -8,7 +8,8 @@ import {
   NotFoundError,
   ValidationError,
 } from '@inithium/api-utils';
-import { requireAuth, requireRole } from '@inithium/auth';
+import { requireAuth } from '@inithium/auth';
+import { requirePermission, hasCapability } from '@inithium/permissions';
 import {
   addCommentToBlogPost,
   createBlogPost,
@@ -125,11 +126,16 @@ router.post(
       throw ValidationError('Invalid request body', parsed.error.flatten());
     }
 
+    const commenter = await getUserRepository().findById(req.user!.sub);
+    if (!commenter) {
+      throw NotFoundError('User not found');
+    }
+
     // Staff (anyone who can create/edit/reply to posts) never comments as a reader - this also
     // means an admin can never end up replying to their own comment (the exact scenario that
     // broke the realtime notification layer during testing: two staff accounts replying back and
     // forth is a real path, but staff-to-self never should be).
-    if (req.user!.role === 'admin' || req.user!.role === 'editor') {
+    if (hasCapability(commenter, 'blog:manage') || hasCapability(commenter, 'blog:manageComments')) {
       throw ForbiddenError('Admins and editors cannot comment on blog posts');
     }
 
@@ -140,11 +146,6 @@ router.post(
     const post = await getBlogPostById(id);
     if (!post) {
       throw NotFoundError('Blog post not found');
-    }
-
-    const commenter = await getUserRepository().findById(req.user!.sub);
-    if (!commenter) {
-      throw NotFoundError('User not found');
     }
 
     const updated = await addCommentToBlogPost(id, {
@@ -174,7 +175,7 @@ router.post(
 router.post(
   '/api/blog',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('blog:manage'),
   asyncHandler(async (req: Request, res: Response) => {
     const parsed = createBlogPostSchema.safeParse(req.body);
     if (!parsed.success) {
@@ -203,7 +204,7 @@ router.post(
 router.put(
   '/api/blog/:id',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('blog:manage'),
   asyncHandler(async (req: Request, res: Response) => {
     const id = normalizeParam(req.params.id);
     const parsed = updateBlogPostSchema.safeParse(req.body);
@@ -229,7 +230,7 @@ router.put(
 router.delete(
   '/api/blog/:id',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('blog:manage'),
   asyncHandler(async (req: Request, res: Response) => {
     const id = normalizeParam(req.params.id);
     const deleted = await deleteBlogPost(id);
@@ -243,7 +244,7 @@ router.delete(
 router.post(
   '/api/blog/:id/comments/:commentId/reply',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('blog:manageComments'),
   asyncHandler(async (req: Request, res: Response) => {
     const id = normalizeParam(req.params.id);
     const commentId = normalizeParam(req.params.commentId);
@@ -289,7 +290,7 @@ router.post(
 router.delete(
   '/api/blog/:id/comments/:commentId',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('blog:manageComments'),
   asyncHandler(async (req: Request, res: Response) => {
     const id = normalizeParam(req.params.id);
     const commentId = normalizeParam(req.params.commentId);

@@ -10,6 +10,7 @@
     "plugins": []
   },
   "injections": [
+    { "target": "libs/permissions/src/roles/role-capability-defaults.ts", "source": "src/permissions/roles/role-capability-defaults.ts" },
     { "target": "libs/db/src/contracts/gallery-image.contract.ts", "source": "src/db/contracts/gallery-image.contract.ts" },
     { "target": "libs/db/src/contracts/db-provider.contract.ts", "source": "src/db/contracts/db-provider.contract.ts" },
     { "target": "libs/db/src/schemas/gallery-image.schema.ts", "source": "src/db/schemas/gallery-image.schema.ts" },
@@ -36,6 +37,7 @@
     { "target": "libs/cms/src/modules/gallery-admin.module.tsx", "source": "src/cms/modules/gallery-admin.module.tsx", "requires": "cms" },
     { "target": "libs/cms/src/modules/gallery/GalleryAdminModule.tsx", "source": "src/cms/modules/gallery/GalleryAdminModule.tsx", "requires": "cms" },
     { "target": "libs/cms/src/modules/gallery/GalleryImageEditDialog.tsx", "source": "src/cms/modules/gallery/GalleryImageEditDialog.tsx", "requires": "cms" },
-    { "target": "libs/cms/src/modules/gallery/GalleryImageEditDialog.tsx", "source": "src/cms/modules/gallery/GalleryImageEditDialog.storage.tsx", "requires": "storage" }
+    { "target": "libs/cms/src/modules/gallery/GalleryImageEditDialog.tsx", "source": "src/cms/modules/gallery/GalleryImageEditDialog.storage.tsx", "requires": "storage" },
+    { "target": "libs/cms/src/permissions/definitions/gallery-manage.capability.ts", "source": "src/cms/permissions/definitions/gallery-manage.capability.ts", "requires": "cms" }
   ]
 }

@@ -6,6 +6,7 @@ const pagesModule: CmsModule = {
   navLabel: 'Pages',
   icon: 'FileText',
   order: 20,
+  requiredCapability: 'pages:manage',
   Component: PagesModule,
 };
 

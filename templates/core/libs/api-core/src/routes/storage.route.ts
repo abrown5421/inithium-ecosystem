@@ -11,6 +11,7 @@ import {
 } from '@inithium/api-utils';
 import { optionalAuth, requireAuth } from '@inithium/auth';
 import { createAsset, deleteAsset, getAssetById, getUserRepository, listAssetsForUser, updateUser } from '@inithium/db';
+import { hasCapability } from '@inithium/permissions';
 import { deleteObject, uploadObject } from '@inithium/storage';
 import { uploadAssetSchema } from '../schemas/storage.schema';
 
@@ -142,10 +143,11 @@ router.delete(
 
     // Ownership-scoped, with a staff override - matches notification.contract.ts's
     // deleteForUser precedent (a caller can never delete another user's asset by guessing an id),
-    // with admin/editor able to clean up assets attached to content they didn't personally
-    // upload, mirroring DELETE /api/blog/:id's own requireRole('admin', 'editor') gate.
+    // with staff able to clean up assets attached to content they didn't personally upload,
+    // mirroring DELETE /api/blog/:id's own requirePermission('blog:manage') gate.
     const isOwner = asset.uploadedBy === req.user!.sub;
-    const isStaff = req.user!.role === 'admin' || req.user!.role === 'editor';
+    const actingUser = await getUserRepository().findById(req.user!.sub);
+    const isStaff = actingUser != null && hasCapability(actingUser, 'storage:manageAssets');
     if (!isOwner && !isStaff) {
       throw ForbiddenError('You do not have permission to delete this asset');
     }

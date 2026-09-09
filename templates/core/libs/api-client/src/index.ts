@@ -45,6 +45,8 @@ export {
   useCreateUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
+  useUpdateUserPermissionsMutation,
+  useTransferOwnershipMutation,
   useGetUserRegistrationsOverTimeQuery,
 } from './endpoints/users.endpoints';
 export type {
@@ -54,6 +56,7 @@ export type {
   ListUsersResult,
   CreateUserInput,
   UpdateUserInput,
+  UpdateUserPermissionsInput,
   UserRegistrationCount,
 } from './endpoints/users.endpoints';
 

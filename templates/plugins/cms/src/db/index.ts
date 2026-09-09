@@ -27,6 +27,8 @@ export const createUser = (input: CreateUserInput) => getUserRepository().create
 export const updateUser = (id: string, input: UpdateUserInput) => getUserRepository().update(id, input);
 export const deleteUser = (id: string) => getUserRepository().delete(id);
 export const getUserRegistrationsByDay = () => getUserRepository().countRegistrationsByDay();
+export const countAllUsers = () => getUserRepository().countAll();
+export const transferOwnership = (newOwnerId: string) => getUserRepository().transferOwnership(newOwnerId);
 
 export const getPageRepository = () => activeProvider.getPageRepository();
 export const findPageByRoutePattern = (routePattern: string) =>
@@ -66,8 +68,10 @@ export type {
   UserSearchField,
   FindManyUsersOptions,
   UserRegistrationCount,
+  Role,
+  CapabilityOverrides,
 } from './contracts/user.contract';
-export { AVATAR_VARIANTS, AVATAR_SHAPES, DEFAULT_AVATAR_CONFIG } from './contracts/user.contract';
+export { CORE_ROLES, AVATAR_VARIANTS, AVATAR_SHAPES, DEFAULT_AVATAR_CONFIG } from './contracts/user.contract';
 export type {
   AvatarVariant,
   AvatarShape,
@@ -97,4 +101,5 @@ export type { NotificationEntity, CreateNotificationInput, NotificationRepositor
 export { SETTING_TYPES } from './contracts/settings.contract';
 export type { SettingType, SettingEntity, UpsertSettingInput, SettingsRepository } from './contracts/settings.contract';
 export { ensureSeededPages } from './page-seeds/ensureSeededPages';
+export { ensureOwnerBootstrap } from './bootstrap/ensureOwnerBootstrap';
 export { mongoProvider } from './providers/mongo/mongo.provider';

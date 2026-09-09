@@ -6,6 +6,7 @@ const usersModule: CmsModule = {
   navLabel: 'Users',
   icon: 'Users',
   order: 10,
+  requiredCapability: 'users:manage',
   Component: UsersModule,
 };
 

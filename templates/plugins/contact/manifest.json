@@ -9,6 +9,7 @@
     "plugins": []
   },
   "injections": [
+    { "target": "libs/permissions/src/roles/role-capability-defaults.ts", "source": "src/permissions/roles/role-capability-defaults.ts" },
     { "target": "libs/db/src/contracts/communication.contract.ts", "source": "src/db/contracts/communication.contract.ts" },
     { "target": "libs/db/src/contracts/db-provider.contract.ts", "source": "src/db/contracts/db-provider.contract.ts" },
     { "target": "libs/db/src/contracts/notification.contract.ts", "source": "src/db/contracts/notification.contract.ts" },
@@ -45,6 +46,7 @@
     { "target": "libs/cms/src/dashboard/widgets/communications-needing-reply.widget.tsx", "source": "src/cms/dashboard/widgets/communications-needing-reply.widget.tsx", "requires": "cms" },
     { "target": "libs/cms/src/settings/definitions/contact-recipient-email.setting.ts", "source": "src/cms/settings/definitions/contact-recipient-email.setting.ts", "requires": "cms" },
     { "target": "libs/cms/src/settings/definitions/contact-captcha-enabled.setting.ts", "source": "src/cms/settings/definitions/contact-captcha-enabled.setting.ts", "requires": "cms" },
-    { "target": "libs/cms/src/settings/definitions/contact-captcha-site-key.setting.ts", "source": "src/cms/settings/definitions/contact-captcha-site-key.setting.ts", "requires": "cms" }
+    { "target": "libs/cms/src/settings/definitions/contact-captcha-site-key.setting.ts", "source": "src/cms/settings/definitions/contact-captcha-site-key.setting.ts", "requires": "cms" },
+    { "target": "libs/cms/src/permissions/definitions/contact-manage-threads.capability.ts", "source": "src/cms/permissions/definitions/contact-manage-threads.capability.ts", "requires": "cms" }
   ]
 }

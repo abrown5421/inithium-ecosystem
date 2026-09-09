@@ -2,6 +2,7 @@ import { Box, Text, mergeClassNames } from '@inithium/ui';
 import { useAppName } from '@inithium/api-client';
 import { dashboardWidgets } from './widgets/registry';
 import type { DashboardWidget } from './widgets/registry';
+import { canAccessCmsResource, useCmsCurrentUser } from '../CmsCurrentUserContext';
 
 const SPAN_CLASSES: Record<number, string> = {
   1: 'md:col-span-1',
@@ -17,6 +18,10 @@ const spanClassName = (span: DashboardWidget['span']): string => SPAN_CLASSES[sp
 // renders itself inside a card this page provides.
 export const DashboardPage = () => {
   const appName = useAppName();
+  const currentUser = useCmsCurrentUser();
+  const visibleWidgets = dashboardWidgets.filter((widget) =>
+    canAccessCmsResource(currentUser, widget.requiredCapability)
+  );
 
   return (
     <Box padding={{ base: 24 }} flex={{ direction: 'col', gap: 16 }}>
@@ -24,13 +29,13 @@ export const DashboardPage = () => {
         Dashboard
       </Text>
 
-      {dashboardWidgets.length === 0 ? (
+      {visibleWidgets.length === 0 ? (
         <Text as="p" className="text-surface-600">
           Welcome to the {appName} CMS. Widgets installed by plugins will appear here.
         </Text>
       ) : (
         <Box className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {dashboardWidgets.map((widget) => (
+          {visibleWidgets.map((widget) => (
             <Box
               key={widget.id}
               bgColor={{ color: 'surface', intensity: 100 }}

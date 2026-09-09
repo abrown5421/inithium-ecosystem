@@ -6,6 +6,7 @@ import { cmsModules } from './modules/registry';
 import { ModuleRenderer } from './ModuleRenderer';
 import { CmsNavbar } from './CmsNavbar';
 import { CmsSidebar } from './CmsSidebar';
+import { CmsCurrentUserProvider, canAccessCmsResource } from './CmsCurrentUserContext';
 
 export interface CmsShellProps {
   readonly currentUser: AuthUser;
@@ -17,22 +18,31 @@ export interface CmsShellProps {
 // match against the full current pathname, not a stripped-down remainder.
 export const CmsShell = ({ currentUser, onLogout }: CmsShellProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const firstModuleId = cmsModules[0]?.id;
+  // The default redirect target must respect the same capability gate CmsSidebar/ModuleRenderer
+  // apply, or /cms could redirect a viewer straight into a module they can't actually see.
+  const accessibleModules = cmsModules.filter((cmsModule) =>
+    canAccessCmsResource(currentUser, cmsModule.requiredCapability)
+  );
+  const firstModuleId = accessibleModules[0]?.id;
 
   return (
-    <Box flex={{ direction: 'col' }} className="h-screen w-full overflow-hidden">
-      <CmsNavbar currentUser={currentUser} onLogout={onLogout} />
+    <CmsCurrentUserProvider value={currentUser}>
+      <Box flex={{ direction: 'col' }} className="h-screen w-full overflow-hidden">
+        <CmsNavbar currentUser={currentUser} onLogout={onLogout} />
 
-      <Box flex={{ direction: 'row' }} className="min-h-0 flex-1">
-        <CmsSidebar isCollapsed={isCollapsed} onToggleCollapsed={() => setIsCollapsed((prev) => !prev)} />
+        <Box flex={{ direction: 'row' }} className="min-h-0 flex-1">
+          <CmsSidebar isCollapsed={isCollapsed} onToggleCollapsed={() => setIsCollapsed((prev) => !prev)} />
 
-        <Box bgColor={{ color: 'surface', intensity: 100 }} className="min-w-0 flex-1 overflow-y-auto">
-          <Routes>
-            {firstModuleId ? <Route path="/cms" element={<Navigate to={`/cms/${firstModuleId}`} replace />} /> : null}
-            <Route path="/cms/:moduleId" element={<ModuleRenderer />} />
-          </Routes>
+          <Box bgColor={{ color: 'surface', intensity: 100 }} className="min-w-0 flex-1 overflow-y-auto">
+            <Routes>
+              {firstModuleId ? (
+                <Route path="/cms" element={<Navigate to={`/cms/${firstModuleId}`} replace />} />
+              ) : null}
+              <Route path="/cms/:moduleId" element={<ModuleRenderer />} />
+            </Routes>
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </CmsCurrentUserProvider>
   );
 };

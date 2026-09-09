@@ -5,6 +5,19 @@ import type { AdminUser } from '@inithium/api-client';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Hardcoded local mirror of @inithium/db's CORE_ROLES rather than importing it - every existing
+// frontend import from @inithium/db is `import type` only, since @inithium/db's barrel also
+// re-exports the Mongo provider and its mongoose-dependent code; importing this as a runtime
+// *value* would pull that into the client bundle. Small, stable literal array, kept in sync by
+// hand (same precedent as PageEditDialog's NAV_LOCATIONS/PAGE_LAYOUT_TEMPLATES mirrors).
+const CORE_ROLES = ['user', 'contributor', 'editor', 'admin'] as const;
+const ROLE_LABELS: Record<(typeof CORE_ROLES)[number], string> = {
+  user: 'User',
+  contributor: 'Contributor',
+  editor: 'Editor',
+  admin: 'Admin',
+};
+
 interface FieldErrors {
   email?: string;
   password?: string;
@@ -107,9 +120,18 @@ export const UserFormDialog = ({ mode, initialUser, onDone }: UserFormDialogProp
         helperText={fieldErrors.firstName}
       />
       <Input label="Last Name" value={lastName} onChange={(event) => setLastName(event.target.value)} />
-      <Select label="Role" value={role} onValueChange={setRole}>
-        <SelectItem value="user">User</SelectItem>
-        <SelectItem value="admin">Admin</SelectItem>
+      <Select
+        label="Role"
+        value={role}
+        onValueChange={setRole}
+        disabled={initialUser?.isOwner}
+        helperText={initialUser?.isOwner ? "The owner's role can't be changed here." : undefined}
+      >
+        {CORE_ROLES.map((coreRole) => (
+          <SelectItem key={coreRole} value={coreRole}>
+            {ROLE_LABELS[coreRole]}
+          </SelectItem>
+        ))}
       </Select>
       {submitError ? (
         <Text as="p" className="text-sm text-red-600">

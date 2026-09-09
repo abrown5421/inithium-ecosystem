@@ -115,24 +115,28 @@ export const BlogPostPage = () => {
           ))}
         </Box>
 
-        {currentUser && commentsEnabled && currentUser.role !== 'admin' && currentUser.role !== 'editor' && (
-          <Box flex={{ direction: 'col', gap: 8 }}>
-            <Textarea
-              label="Add a comment"
-              value={commentText}
-              onChange={(event) => setCommentText(event.target.value)}
-              rows={3}
-            />
-            <Button
-              variant={{ kind: 'filled', color: 'primary' }}
-              onClick={handleSubmitComment}
-              disabled={isSubmittingComment || !commentText.trim()}
-              className="self-start"
-            >
-              Post Comment
-            </Button>
-          </Box>
-        )}
+        {currentUser &&
+          commentsEnabled &&
+          !currentUser.isOwner &&
+          !currentUser.capabilities.includes('blog:manage') &&
+          !currentUser.capabilities.includes('blog:manageComments') && (
+            <Box flex={{ direction: 'col', gap: 8 }}>
+              <Textarea
+                label="Add a comment"
+                value={commentText}
+                onChange={(event) => setCommentText(event.target.value)}
+                rows={3}
+              />
+              <Button
+                variant={{ kind: 'filled', color: 'primary' }}
+                onClick={handleSubmitComment}
+                disabled={isSubmittingComment || !commentText.trim()}
+                className="self-start"
+              >
+                Post Comment
+              </Button>
+            </Box>
+          )}
       </Box>
     </Box>
   );
