@@ -10,6 +10,11 @@ export interface AdminUser {
   firstName: string;
   lastName?: string;
   role: string;
+  isOwner: boolean;
+  // Raw per-user overrides, not resolved against role defaults - the Permissions module's edit
+  // dialog needs to distinguish an explicit override from a role default, unlike AuthUser's
+  // already-resolved `capabilities` (see auth.endpoints.ts).
+  capabilityOverrides: Record<string, boolean>;
   avatar: AvatarConfig;
   darkMode: boolean;
   createdAt: string;
@@ -49,6 +54,11 @@ export interface UpdateUserInput {
   role?: string;
 }
 
+export interface UpdateUserPermissionsInput {
+  id: string;
+  capabilityOverrides: Record<string, boolean>;
+}
+
 export interface UserRegistrationCount {
   date: string;
   count: number;
@@ -86,6 +96,20 @@ export const usersApi = baseApi.injectEndpoints({
       query: (id) => ({ url: `/api/users/${id}`, method: 'DELETE' }),
       invalidatesTags: ['User'],
     }),
+    updateUserPermissions: builder.mutation<AdminUser, UpdateUserPermissionsInput>({
+      query: ({ id, capabilityOverrides }) => ({
+        url: `/api/users/${id}/permissions`,
+        method: 'PATCH',
+        body: { capabilityOverrides },
+      }),
+      transformResponse: (response: ApiResponse<AdminUser>) => response.data,
+      invalidatesTags: ['User'],
+    }),
+    transferOwnership: builder.mutation<AdminUser, string>({
+      query: (id) => ({ url: `/api/users/${id}/transfer-ownership`, method: 'POST' }),
+      transformResponse: (response: ApiResponse<AdminUser>) => response.data,
+      invalidatesTags: ['User'],
+    }),
     getUserRegistrationsOverTime: builder.query<UserRegistrationCount[], void>({
       query: () => '/api/users/stats/registrations',
       transformResponse: (response: ApiResponse<UserRegistrationCount[]>) => response.data,
@@ -99,5 +123,7 @@ export const {
   useCreateUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
+  useUpdateUserPermissionsMutation,
+  useTransferOwnershipMutation,
   useGetUserRegistrationsOverTimeQuery,
 } = usersApi;

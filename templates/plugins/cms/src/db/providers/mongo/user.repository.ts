@@ -19,6 +19,11 @@ const mapToUserEntity = (doc: UserDocument): UserEntity => ({
   lastName: doc.lastName,
   passwordHash: doc.passwordHash,
   role: doc.role,
+  // Defensive fallbacks - a document written before this field existed won't have it until
+  // ensureOwnerBootstrap()/an explicit permissions edit touches it (Mongoose schema `default:`
+  // only applies to newly-created documents, not pre-existing ones read back via findById).
+  isOwner: doc.isOwner ?? false,
+  capabilityOverrides: doc.capabilityOverrides ?? {},
   avatar: doc.avatar,
   createdAt: doc.createdAt,
 });
@@ -65,6 +70,7 @@ export const createMongoUserRepository = (model: Model<UserDocument>): UserRepos
     if (input.lastName !== undefined) updateDoc['lastName'] = input.lastName;
     if (input.passwordHash !== undefined) updateDoc['passwordHash'] = input.passwordHash;
     if (input.role !== undefined) updateDoc['role'] = input.role;
+    if (input.capabilityOverrides !== undefined) updateDoc['capabilityOverrides'] = input.capabilityOverrides;
     if (input.avatar !== undefined) updateDoc['avatar'] = input.avatar;
 
     const user = await model.findByIdAndUpdate(id, { $set: updateDoc }, { new: true }).exec();
@@ -82,5 +88,15 @@ export const createMongoUserRepository = (model: Model<UserDocument>): UserRepos
       ])
       .exec();
     return results.map((entry) => ({ date: entry._id, count: entry.count }));
+  },
+  countAll: async (): Promise<number> => model.countDocuments().exec(),
+  transferOwnership: async (newOwnerId: string): Promise<UserEntity> => {
+    // No multi-document transactions elsewhere in this repository (see e.g. storage's
+    // asset-vs-avatar cleanup) - sequential updates with a small, accepted non-atomic window
+    // rather than introducing session/transaction machinery for this one case.
+    await model.updateMany({ isOwner: true }, { $set: { isOwner: false } }).exec();
+    const user = await model.findByIdAndUpdate(newOwnerId, { $set: { isOwner: true } }, { new: true }).exec();
+    if (!user) throw new Error(`transferOwnership: user ${newOwnerId} not found`);
+    return mapToUserEntity(user);
   },
 });

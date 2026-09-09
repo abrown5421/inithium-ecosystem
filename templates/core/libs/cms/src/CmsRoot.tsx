@@ -5,8 +5,6 @@ import { CmsLoginPage } from './CmsLoginPage';
 import { CmsShell } from './CmsShell';
 import { CmsRealtimeBoundary } from './CmsRealtimeBoundary';
 
-const ADMIN_ROLE = 'admin';
-
 export interface CmsRootProps {
   readonly currentUser: AuthUser | null;
   readonly isResolving: boolean;
@@ -39,10 +37,11 @@ export const CmsRoot = ({ currentUser, isResolving, onLoginSuccess, onLogout, to
     );
   } else if (!currentUser) {
     content = <CmsLoginPage onLoginSuccess={onLoginSuccess} />;
-  } else if (currentUser.role !== ADMIN_ROLE) {
-    // Credentials were valid - CmsLoginPage already let them through. A non-admin gets no
-    // acknowledgement that an admin area exists at all: a silent redirect home, not an "access
-    // denied" message, so /cms reveals nothing to an account that can't use it.
+  } else if (!currentUser.isOwner && currentUser.capabilities.length === 0) {
+    // Credentials were valid - CmsLoginPage already let them through. A viewer with no CMS
+    // capabilities at all gets no acknowledgement that an admin area exists: a silent redirect
+    // home, not an "access denied" message, so /cms reveals nothing to an account that can't use
+    // it. Per-module visibility beyond this base gate is CmsSidebar/ModuleRenderer's job.
     content = <Navigate to="/" replace />;
   } else {
     content = <CmsShell currentUser={currentUser} onLogout={onLogout} />;

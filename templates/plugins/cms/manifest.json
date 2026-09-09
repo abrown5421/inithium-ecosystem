@@ -15,6 +15,7 @@
     { "target": "apps/web/src/main.tsx", "source": "src/app/main.tsx" },
     { "target": "apps/web/src/pages/HomePage.tsx", "source": "src/pages/HomePage.tsx" },
     { "target": "tsconfig.base.json", "source": "src/tsconfig.base.json" },
+    { "target": "libs/permissions/src/roles/role-capability-defaults.ts", "source": "src/permissions/roles/role-capability-defaults.ts" },
     { "target": "libs/db/src/contracts/pagination.contract.ts", "source": "src/db/contracts/pagination.contract.ts" },
     { "target": "libs/db/src/contracts/user.contract.ts", "source": "src/db/contracts/user.contract.ts" },
     { "target": "libs/db/src/contracts/page.contract.ts", "source": "src/db/contracts/page.contract.ts" },

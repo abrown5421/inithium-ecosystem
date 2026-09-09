@@ -9,7 +9,8 @@ import {
   UnauthorizedError,
   ForbiddenError,
 } from '@inithium/api-utils';
-import { requireAuth, requireRole, optionalAuth } from '@inithium/auth';
+import { requireAuth, optionalAuth } from '@inithium/auth';
+import { requirePermission } from '@inithium/permissions';
 import {
   createPage,
   findPagesByNavLocation,
@@ -33,7 +34,7 @@ const isSearchField = (value: unknown): value is PageSearchField =>
 router.get(
   '/api/pages',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('pages:manage'),
   asyncHandler(async (req: Request, res: Response) => {
     const page = Math.max(1, Number(req.query['page']) || 1);
     const pageSize = Math.min(100, Math.max(1, Number(req.query['pageSize']) || 20));
@@ -124,7 +125,7 @@ router.get(
 router.post(
   '/api/pages',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('pages:manage'),
   asyncHandler(async (req: Request, res: Response) => {
     const parsed = createPageSchema.safeParse(req.body);
     if (!parsed.success) {
@@ -147,7 +148,7 @@ router.post(
 router.patch(
   '/api/pages/:id',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('pages:manage'),
   asyncHandler(async (req: Request, res: Response) => {
     const parsed = updatePageSchema.safeParse(req.body);
     if (!parsed.success) {

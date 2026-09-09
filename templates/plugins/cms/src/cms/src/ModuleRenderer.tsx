@@ -1,12 +1,18 @@
 import { useParams } from 'react-router-dom';
 import { Box, Text } from '@inithium/ui';
 import { cmsModules } from './modules/registry';
+import { canAccessCmsResource, useCmsCurrentUser } from './CmsCurrentUserContext';
 
 export const ModuleRenderer = () => {
   const { moduleId } = useParams<{ moduleId: string }>();
+  const currentUser = useCmsCurrentUser();
   const cmsModule = cmsModules.find((candidate) => candidate.id === moduleId);
 
-  if (!cmsModule) {
+  // A module whose requiredCapability the viewer lacks gets the identical "not found" fallback a
+  // genuinely nonexistent moduleId gets - deliberately indistinguishable, mirroring CmsRoot's own
+  // "reveal nothing" behavior for the top-level gate rather than an "access denied" message that
+  // confirms the module exists.
+  if (!cmsModule || !canAccessCmsResource(currentUser, cmsModule.requiredCapability)) {
     return (
       <Box padding={{ base: 24 }}>
         <Text as="h1" className="text-xl font-bold">

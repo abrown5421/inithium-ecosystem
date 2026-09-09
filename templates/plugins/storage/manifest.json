@@ -12,6 +12,7 @@
     "plugins": []
   },
   "injections": [
+    { "target": "libs/permissions/src/roles/role-capability-defaults.ts", "source": "src/permissions/roles/role-capability-defaults.ts" },
     { "target": "libs/storage/package.json", "source": "src/storage/package.json" },
     { "target": "libs/storage/project.json", "source": "src/storage/project.json" },
     { "target": "libs/storage/tsconfig.json", "source": "src/storage/tsconfig.json" },
@@ -44,6 +45,8 @@
 
     { "target": "tsconfig.base.json", "source": "src/tsconfig.base.json" },
 
-    { "target": "apps/web/src/pages/profile/tabs/assets.tab.tsx", "source": "src/pages/profile/tabs/assets.tab.tsx" }
+    { "target": "apps/web/src/pages/profile/tabs/assets.tab.tsx", "source": "src/pages/profile/tabs/assets.tab.tsx" },
+
+    { "target": "libs/cms/src/permissions/definitions/storage-manage-assets.capability.ts", "source": "src/cms/permissions/definitions/storage-manage-assets.capability.ts", "requires": "cms" }
   ]
 }

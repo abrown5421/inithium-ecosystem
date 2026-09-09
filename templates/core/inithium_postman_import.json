@@ -429,8 +429,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "// A freshly registered/logged-in user always has role 'user' (see Auth > Register) — role is never client-suppliable at signup, so this route's admin/editor guard should reject it.",
-                  "pm.test('Status code is 403 (default user lacks admin/editor role)', () => pm.response.to.have.status(403));"
+                  "// A freshly registered/logged-in user always has role 'user' (see Auth > Register), which grants no capabilities by default, so this route's pages:manage guard should reject it.",
+                  "pm.test('Status code is 403 (default user lacks pages:manage capability)', () => pm.response.to.have.status(403));"
                 ]
               }
             }
@@ -477,7 +477,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "// Verifies a page can be assigned to more than one nav location at once (primary-nav AND primary-footer).",
-                  "pm.test('Status code is 403 (default user lacks admin/editor role)', () => pm.response.to.have.status(403));"
+                  "pm.test('Status code is 403 (default user lacks pages:manage capability)', () => pm.response.to.have.status(403));"
                 ]
               }
             }
@@ -524,7 +524,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "// Verifies a page can be assigned to more than one nav location at once (primary-nav AND primary-footer).",
-                  "pm.test('Status code is 403 (default user lacks admin/editor role)', () => pm.response.to.have.status(403));"
+                  "pm.test('Status code is 403 (default user lacks pages:manage capability)', () => pm.response.to.have.status(403));"
                 ]
               }
             }
@@ -571,7 +571,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "// Lives only in the footer's secondary section (secondary-footer), not the primary nav.",
-                  "pm.test('Status code is 403 (default user lacks admin/editor role)', () => pm.response.to.have.status(403));"
+                  "pm.test('Status code is 403 (default user lacks pages:manage capability)', () => pm.response.to.have.status(403));"
                 ]
               }
             }
@@ -941,8 +941,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "// A freshly registered/logged-in user always has role 'user' (see Auth > Register) — role is never client-suppliable at signup, so this route's admin/editor guard should reject it.",
-                  "pm.test('Status code is 403 (default user lacks admin/editor role)', () => pm.response.to.have.status(403));"
+                  "// A freshly registered/logged-in user always has role 'user' (see Auth > Register), which grants no capabilities by default, so this route's blog:manage guard should reject it.",
+                  "pm.test('Status code is 403 (default user lacks blog:manage capability)', () => pm.response.to.have.status(403));"
                 ]
               }
             }
@@ -988,7 +988,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status code is 403 (default user lacks admin/editor role)', () => pm.response.to.have.status(403));"
+                  "pm.test('Status code is 403 (default user lacks blog:manage capability)', () => pm.response.to.have.status(403));"
                 ]
               }
             }
@@ -1086,7 +1086,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status code is 403 (default user lacks admin/editor role)', () => pm.response.to.have.status(403));"
+                  "pm.test('Status code is 403 (default user lacks blog:manageComments capability)', () => pm.response.to.have.status(403));"
                 ]
               }
             }
@@ -1136,7 +1136,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status code is 403 (default user lacks admin/editor role)', () => pm.response.to.have.status(403));"
+                  "pm.test('Status code is 403 (default user lacks blog:manageComments capability)', () => pm.response.to.have.status(403));"
                 ]
               }
             }
@@ -1172,7 +1172,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status code is 403 (default user lacks admin/editor role)', () => pm.response.to.have.status(403));"
+                  "pm.test('Status code is 403 (default user lacks blog:manage capability)', () => pm.response.to.have.status(403));"
                 ]
               }
             }
@@ -2432,6 +2432,96 @@
                   "key": "pageSize",
                   "value": "20"
                 }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Update User Permissions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// A freshly registered/logged-in user always has role 'user' (see Auth > Register), which grants no capabilities by default - users:managePermissions is deliberately excluded from every role's default bundle (owner-granted only), so this route's guard should reject it regardless of role.",
+                  "pm.test('Status code is 403 (default user lacks users:managePermissions capability)', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"capabilityOverrides\": { \"pages:manage\": true }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}/permissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{userId}}",
+                "permissions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Transfer Ownership",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// requireOwner (not requirePermission) gates this route - a freshly registered second-or-later user is never the owner (only the very first user ever registered is, see Auth > Register), so this should be rejected regardless of role/capabilities.",
+                  "pm.test('Status code is 403 (default user is not the owner)', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}/transfer-ownership",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{userId}}",
+                "transfer-ownership"
               ]
             }
           }

@@ -6,6 +6,7 @@ const settingsModule: CmsModule = {
   navLabel: 'Settings',
   icon: 'Gear',
   order: 30,
+  requiredCapability: 'settings:manage',
   Component: SettingsModule,
 };
 

@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import type { Request, Response, Router as RouterType } from 'express';
 import { asyncHandler, createSuccessResponse, NotFoundError, ValidationError } from '@inithium/api-utils';
-import { requireAuth, requireRole } from '@inithium/auth';
+import { requireAuth } from '@inithium/auth';
+import { requirePermission } from '@inithium/permissions';
 import { getSetting, listSettings, upsertSetting } from '@inithium/db';
 import type { UpsertSettingInput } from '@inithium/db';
 import { upsertSettingSchema } from '../schemas/settings.schema';
@@ -30,7 +31,7 @@ router.get(
 router.get(
   '/api/settings',
   requireAuth,
-  requireRole('admin'),
+  requirePermission('settings:manage'),
   asyncHandler(async (_req: Request, res: Response) => {
     const settings = await listSettings();
     res.status(200).json(createSuccessResponse(settings));
@@ -40,7 +41,7 @@ router.get(
 router.patch(
   '/api/settings/:key',
   requireAuth,
-  requireRole('admin'),
+  requirePermission('settings:manage'),
   asyncHandler(async (req: Request, res: Response) => {
     const parsed = upsertSettingSchema.safeParse(req.body);
     if (!parsed.success) {

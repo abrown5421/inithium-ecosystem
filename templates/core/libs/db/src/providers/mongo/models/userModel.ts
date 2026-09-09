@@ -1,13 +1,15 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { AVATAR_SHAPES, AVATAR_VARIANTS, DEFAULT_AVATAR_CONFIG } from '../../../contracts/user.contract';
-import type { AvatarConfig, UserProfileBannerConfig } from '../../../contracts/user.contract';
+import { AVATAR_SHAPES, AVATAR_VARIANTS, CORE_ROLES, DEFAULT_AVATAR_CONFIG } from '../../../contracts/user.contract';
+import type { AvatarConfig, CapabilityOverrides, Role, UserProfileBannerConfig } from '../../../contracts/user.contract';
 
 export interface UserDocument extends Document {
   email: string;
   firstName: string;
   lastName?: string;
   passwordHash: string;
-  role: string;
+  role: Role;
+  isOwner: boolean;
+  capabilityOverrides: CapabilityOverrides;
   avatar: AvatarConfig;
   profileBanner?: UserProfileBannerConfig;
   darkMode: boolean;
@@ -20,7 +22,12 @@ const userSchema = new Schema<UserDocument>(
     firstName: { type: String, required: true },
     lastName: { type: String, required: false },
     passwordHash: { type: String, required: true },
-    role: { type: String, required: true, default: 'user' },
+    role: { type: String, required: true, enum: CORE_ROLES, default: 'user' },
+    isOwner: { type: Boolean, required: true, default: false },
+    // Sparse map of capability-key -> explicit grant(true)/revoke(false), layered on top of the
+    // role's default bundle (see @inithium/permissions). Mixed rather than a sub-schema since
+    // keys are opaque, plugin-owned strings core has no fixed list of.
+    capabilityOverrides: { type: Schema.Types.Mixed, required: true, default: {} },
     darkMode: { type: Boolean, required: true, default: false },
     avatar: {
       variant: { type: String, required: true, enum: AVATAR_VARIANTS, default: DEFAULT_AVATAR_CONFIG.variant },

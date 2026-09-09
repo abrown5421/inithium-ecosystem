@@ -6,6 +6,10 @@ export interface CmsModule {
   readonly navLabel: string;
   readonly icon: IconName;
   readonly order?: number;
+  // Gates this module's nav entry (CmsSidebar) and direct-navigation access (ModuleRenderer) to
+  // viewers whose resolved capabilities include this key, or who are the owner. Omit for a
+  // module every CMS-capable viewer should reach regardless of capability (e.g. the dashboard).
+  readonly requiredCapability?: string;
   readonly Component: ComponentType;
 }
 

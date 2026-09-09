@@ -2,7 +2,8 @@ import { Router } from 'express';
 import type { Request, Response, Router as RouterType } from 'express';
 import rateLimit from 'express-rate-limit';
 import { asyncHandler, createSuccessResponse, ForbiddenError, NotFoundError, ValidationError } from '@inithium/api-utils';
-import { requireAuth, requireRole } from '@inithium/auth';
+import { requireAuth } from '@inithium/auth';
+import { requirePermission, hasCapability } from '@inithium/permissions';
 import {
   addCommunicationMessage,
   createCommunication,
@@ -159,13 +160,13 @@ router.post(
     }
 
     const isSubmitter = communication.submitterUserId === req.user!.sub;
-    const isStaff = req.user!.role === 'admin' || req.user!.role === 'editor';
+    const actingUser = await getUserRepository().findById(req.user!.sub);
+    const isStaff = actingUser ? hasCapability(actingUser, 'contact:manageThreads') : false;
     if (!isSubmitter && !isStaff) {
       throw ForbiddenError('You do not have access to this communication');
     }
 
-    const requester = await getUserRepository().findById(req.user!.sub);
-    const authorName = requester ? `${requester.firstName} ${requester.lastName ?? ''}`.trim() : 'Someone';
+    const authorName = actingUser ? `${actingUser.firstName} ${actingUser.lastName ?? ''}`.trim() : 'Someone';
 
     const updated = await addCommunicationMessage(id, {
       authorRole: isSubmitter ? 'submitter' : 'admin',
@@ -208,7 +209,7 @@ router.get(
 router.get(
   '/api/contact',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('contact:manageThreads'),
   asyncHandler(async (req: Request, res: Response) => {
     const page = Math.max(1, Number(req.query['page']) || 1);
     const pageSize = Math.min(100, Math.max(1, Number(req.query['pageSize']) || 20));
@@ -245,7 +246,8 @@ router.get(
     }
 
     const isSubmitter = communication.submitterUserId === req.user!.sub;
-    const isStaff = req.user!.role === 'admin' || req.user!.role === 'editor';
+    const actingUser = await getUserRepository().findById(req.user!.sub);
+    const isStaff = actingUser ? hasCapability(actingUser, 'contact:manageThreads') : false;
     if (!isSubmitter && !isStaff) {
       throw ForbiddenError('You do not have access to this communication');
     }
@@ -260,7 +262,7 @@ router.get(
 router.delete(
   '/api/contact/:id',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('contact:manageThreads'),
   asyncHandler(async (req: Request, res: Response) => {
     const id = normalizeParam(req.params.id);
     const communication = await getCommunicationById(id);

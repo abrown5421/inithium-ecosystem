@@ -10,6 +10,10 @@ export interface AuthUser {
   firstName: string;
   lastName?: string;
   role: string;
+  isOwner: boolean;
+  // Resolved server-side (role default bundle + overrides) - see auth.route.ts's toAuthUser.
+  // Never re-derived client-side so the merge logic stays single-sourced.
+  capabilities: string[];
   avatar: AvatarConfig;
   darkMode: boolean;
 }

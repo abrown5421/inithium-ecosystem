@@ -6,6 +6,7 @@ const blogAdminModule: CmsModule = {
   navLabel: 'Blog',
   icon: 'Newspaper',
   order: 25,
+  requiredCapability: 'blog:manage',
   Component: BlogAdminModule,
 };
 

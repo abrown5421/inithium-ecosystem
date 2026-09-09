@@ -1,7 +1,7 @@
 import dns from 'node:dns';
 import express from 'express';
 import cors from 'cors';
-import { connectDatabase, ensureSeededPages } from '@inithium/db';
+import { connectDatabase, ensureOwnerBootstrap, ensureSeededPages } from '@inithium/db';
 import { getAuthProvider } from '@inithium/auth';
 import { registerCoreRoutes } from '@inithium/api-core';
 import { errorHandler } from '@inithium/api-utils';
@@ -36,6 +36,10 @@ const startServer = async () => {
     // reach a deployed instance the same way any other code change does: git push -> redeploy ->
     // this runs again against the persistent database.
     await ensureSeededPages();
+    // Idempotent, same "run on every boot" precedent as ensureSeededPages above - the concrete
+    // migration path for a workspace upgrading into capability-based permissions with
+    // pre-existing users that predate the isOwner field.
+    await ensureOwnerBootstrap();
 
     getAuthProvider().assertConfigured?.();
     registerCoreRoutes(app);

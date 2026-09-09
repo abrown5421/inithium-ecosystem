@@ -5,7 +5,8 @@ import express, { Router } from 'express';
 import type { NextFunction, Request, Response, Router as RouterType } from 'express';
 import multer from 'multer';
 import { asyncHandler, createSuccessResponse, NotFoundError, ValidationError } from '@inithium/api-utils';
-import { requireAuth, requireRole } from '@inithium/auth';
+import { requireAuth } from '@inithium/auth';
+import { requirePermission } from '@inithium/permissions';
 import {
   createGalleryImage,
   deleteGalleryImage,
@@ -117,7 +118,7 @@ router.get(
 router.get(
   '/api/gallery/admin',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('gallery:manage'),
   asyncHandler(async (req: Request, res: Response) => {
     const page = Math.max(1, Number(req.query['page']) || 1);
     const pageSize = Math.min(100, Math.max(1, Number(req.query['pageSize']) || 20));
@@ -146,7 +147,7 @@ router.get(
 router.post(
   '/api/gallery/upload',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('gallery:manage'),
   handleUpload,
   asyncHandler(async (req: Request, res: Response) => {
     if (!req.file) {
@@ -166,7 +167,7 @@ router.use('/api/gallery/uploads', express.static(GALLERY_UPLOAD_DIR));
 router.post(
   '/api/gallery',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('gallery:manage'),
   asyncHandler(async (req: Request, res: Response) => {
     const parsed = createGalleryImageSchema.safeParse(req.body);
     if (!parsed.success) {
@@ -185,7 +186,7 @@ router.post(
 router.put(
   '/api/gallery/:id',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('gallery:manage'),
   asyncHandler(async (req: Request, res: Response) => {
     const id = normalizeParam(req.params.id);
     const parsed = updateGalleryImageSchema.safeParse(req.body);
@@ -204,7 +205,7 @@ router.put(
 router.delete(
   '/api/gallery/:id',
   requireAuth,
-  requireRole('admin', 'editor'),
+  requirePermission('gallery:manage'),
   asyncHandler(async (req: Request, res: Response) => {
     const id = normalizeParam(req.params.id);
     const image = await getGalleryImageById(id);
