@@ -112,5 +112,6 @@ export type { SettingType, SettingEntity, UpsertSettingInput, SettingsRepository
 // inithium:anchor:type-exports
 export { ensureSeededPages } from './page-seeds/ensureSeededPages';
 export { pruneOrphanedPluginPages } from './page-seeds/pruneOrphanedPluginPages';
+export { ensureSeededSettings } from './settings-seeds/ensureSeededSettings';
 export { ensureOwnerBootstrap } from './bootstrap/ensureOwnerBootstrap';
 export { mongoProvider } from './providers/mongo/mongo.provider';

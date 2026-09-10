@@ -59,7 +59,7 @@ export const BlogPostPage = () => {
       </div>
 
       <Box flex={{ direction: 'col', gap: 16 }} padding={{ base: 64 }}>
-        <Text as="h1" className="text-3xl font-bold">
+        <Text textColor={{ color: 'surface', intensity: 950 }} as="h1" className="text-3xl font-bold">
           {post.title}
         </Text>
 

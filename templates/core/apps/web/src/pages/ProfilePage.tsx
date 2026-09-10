@@ -156,6 +156,7 @@ export const ProfilePage = () => {
             at its direct middle" per spec. left offset matches the sidebar's own padding below
             (COLUMN_INSET) so the avatar and the left column read as one aligned column. */}
         <Box
+          bgColor={{ color: 'surface', intensity: 100 }}
           borderColor={{ color: 'surface', intensity: 100 }}
           className="absolute rounded-full border-4"
           style={{ left: `${COLUMN_INSET}px`, top: `${DEFAULT_BANNER_HEIGHT}px`, transform: 'translateY(-50%)' }}

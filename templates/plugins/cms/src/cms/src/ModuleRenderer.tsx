@@ -15,7 +15,7 @@ export const ModuleRenderer = () => {
   if (!cmsModule || !canAccessCmsResource(currentUser, cmsModule.requiredCapability)) {
     return (
       <Box padding={{ base: 24 }}>
-        <Text as="h1" className="text-xl font-bold">
+        <Text textColor={{ color: 'surface', intensity: 950 }} as="h1" className="text-xl font-bold">
           Module not found
         </Text>
         <Text as="p" className="text-surface-600">

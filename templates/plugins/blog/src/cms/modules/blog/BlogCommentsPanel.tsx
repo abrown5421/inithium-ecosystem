@@ -60,7 +60,7 @@ const CommentRow = ({ postId, comment }: CommentRowProps) => {
       }
     >
       <Box flex={{ direction: 'row', justify: 'between' }}>
-        <Text as="span" className="font-medium">
+        <Text textColor={{ color: 'surface', intensity: 950 }} as="span" className="font-medium">
           {comment.userName}
         </Text>
         <Text as="span" className="text-xs text-surface-600">

@@ -18,7 +18,7 @@ const contactPageSeed: CreatePageInput = {
   backgroundColor: { color: 'surface', intensity: 100 },
   foregroundColor: { color: 'surface', intensity: 950 },
   access: { isPublic: true, isAnonymousOnly: false, requiredRoles: [] },
-  navigation: { locations: ['primary-nav'], label: 'Contact', order: 4 },
+  navigation: { locations: ['primary-nav', 'primary-footer'], label: 'Contact', order: 4 },
   layoutTemplate: 'default',
   isPublished: true,
 };

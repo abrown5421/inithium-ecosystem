@@ -34,7 +34,7 @@ export const CmsSidebar = ({ isCollapsed, onToggleCollapsed }: CmsSidebarProps) 
             key={cmsModule.id}
             asChild
             variant={{ kind: 'ghost', color: 'surface' }}
-            textColor={{ color: 'surface', intensity: 100 }}
+            textColor={{ color: 'surface', intensity: 950 }}
             className={isCollapsed ? 'justify-center' : 'justify-start'}
             aria-label={cmsModule.navLabel}
           >
@@ -48,7 +48,7 @@ export const CmsSidebar = ({ isCollapsed, onToggleCollapsed }: CmsSidebarProps) 
 
       <Button
         variant={{ kind: 'ghost', color: 'surface' }}
-        textColor={{ color: 'surface', intensity: 100 }}
+        textColor={{ color: 'surface', intensity: 950 }}
         className={`flex flex-row items-center gap-2 ${isCollapsed ? 'justify-center' : 'justify-start'}`}
         aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         onClick={onToggleCollapsed}

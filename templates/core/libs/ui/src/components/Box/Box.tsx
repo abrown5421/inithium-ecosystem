@@ -20,6 +20,11 @@ export interface BoxProps extends SpacingProps {
   readonly style?: CSSProperties;
 }
 
+// Matches Tailwind's own border-width utilities ('border', 'border-b', 'border-x-2', ...) -
+// used below to tell whether a caller already picked a specific side/width so Box doesn't need
+// to fall back to a generic (all-sides) one.
+const BORDER_WIDTH_CLASS_PATTERN = /\bborder(-[trblxy])?(-\d+)?\b/;
+
 export const Box = ({
   as: Component = 'div',
   children,
@@ -31,10 +36,15 @@ export const Box = ({
   className,
   style,
 }: BoxProps) => {
+  // border-color utilities are inert without a border-width utility alongside them - but only
+  // fall back to the generic (all-sides) 'border' when the caller's own className hasn't already
+  // picked a directional one (e.g. 'border-b' for a bottom-only divider): otherwise both apply
+  // simultaneously and every side the caller didn't ask for still gets a visible 1px border.
+  const hasOwnBorderWidth = className ? BORDER_WIDTH_CLASS_PATTERN.test(className) : false;
+
   const classes = mergeClassNames(
     resolveColorClass('bg', bgColor),
-    // border-color utilities are inert without a border-width utility alongside them.
-    borderColor && 'border',
+    borderColor && !hasOwnBorderWidth && 'border',
     resolveColorClass('border', borderColor),
     resolveFlexClasses(flex),
     resolveMargin(margin),

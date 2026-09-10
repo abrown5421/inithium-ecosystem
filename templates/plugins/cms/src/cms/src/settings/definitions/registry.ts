@@ -14,7 +14,8 @@ export type SettingDefinition =
   | (SettingDefinitionBase & { type: 'number'; default: number })
   | (SettingDefinitionBase & { type: 'date'; default: string })
   | (SettingDefinitionBase & { type: 'stringList'; default: string[] })
-  | (SettingDefinitionBase & { type: 'json'; default: Record<string, unknown> });
+  | (SettingDefinitionBase & { type: 'json'; default: Record<string, unknown> })
+  | (SettingDefinitionBase & { type: 'color'; default: string });
 
 // Every plugin that wants to push a new setting (a future blog plugin's "allow comments"
 // toggle, etc.) drops its own uniquely-named *.setting.ts file here, default-exporting a

@@ -58,7 +58,7 @@ export const PagesModule = () => {
 
   return (
     <Box padding={{ base: 24 }} flex={{ direction: 'col', gap: 16 }}>
-      <Text as="h1" className="text-2xl font-bold">
+      <Text textColor={{ color: 'surface', intensity: 950 }} as="h1" className="text-2xl font-bold">
         Pages
       </Text>
 
@@ -90,7 +90,7 @@ export const PagesModule = () => {
                 />
               }
             >
-              <Text as="span" className="font-medium">
+              <Text textColor={{ color: 'surface', intensity: 950 }} as="span" className="font-medium">
                 {pageEntity.title}
               </Text>
               <Text as="span" className="text-sm text-surface-600">

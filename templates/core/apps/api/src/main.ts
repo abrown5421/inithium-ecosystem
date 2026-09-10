@@ -1,7 +1,7 @@
 import dns from 'node:dns';
 import express from 'express';
 import cors from 'cors';
-import { connectDatabase, ensureOwnerBootstrap, ensureSeededPages, pruneOrphanedPluginPages } from '@inithium/db';
+import { connectDatabase, ensureOwnerBootstrap, ensureSeededPages, ensureSeededSettings, pruneOrphanedPluginPages } from '@inithium/db';
 import { getAuthProvider } from '@inithium/auth';
 import { registerCoreRoutes } from '@inithium/api-core';
 import { errorHandler } from '@inithium/api-utils';
@@ -33,6 +33,10 @@ const startServer = async () => {
     // reach a deployed instance the same way any other code change does: git push -> redeploy ->
     // this runs again against the persistent database.
     await ensureSeededPages();
+    // Same idempotent seed-once pattern as ensureSeededPages, for the settings collection instead
+    // of pages - see settings-seeds/registry.ts's own comment for why this is core's
+    // responsibility rather than something left to each admin to configure by hand.
+    await ensureSeededSettings();
     // The other direction of the reconciliation above: a page whose plugin has since been
     // removed (inithium remove deletes its page-seed and registry.ts entry, but never touches
     // the database) would otherwise linger forever, still published, still in the nav. Deletes
