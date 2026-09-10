@@ -83,6 +83,11 @@ export interface PageRepository {
   findByNavLocation: (location: NavLocation) => Promise<PageEntity[]>;
   findPublished: () => Promise<PageEntity[]>;
   findMany: (options: FindManyPagesOptions) => Promise<PaginatedResult<PageEntity>>;
+  // Every page a plugin ever seeded (isPluginPage:true), published or not - the candidate set
+  // pruneOrphanedPluginPages() reconciles on every boot against whichever plugins are currently
+  // installed. Core's own hand-authored pages (isPluginPage:false) never appear here.
+  findPluginPages: () => Promise<PageEntity[]>;
   create: (input: CreatePageInput) => Promise<PageEntity>;
   update: (id: string, input: UpdatePageInput) => Promise<PageEntity | null>;
+  delete: (id: string) => Promise<boolean>;
 }

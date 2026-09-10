@@ -1,12 +1,19 @@
 import path from 'path';
 import fs from 'fs-extra';
 import { readJsonFile, writeJsonFile } from './json.js';
+import type { InjectionStrategy } from './json.js';
 
 export interface LockfileInjectionEntry {
   target: string;
   source: string;
   requires: string | null;
   status: 'applied' | 'deferred';
+  /** Defaults to 'overwrite' for entries written before this field existed. */
+  strategy: InjectionStrategy;
+  /** package-json-merge only: the dependency keys/values this specific injection contributed. */
+  jsonDependencies?: Record<string, string>;
+  /** tsconfig-paths-merge only: the path-alias keys/values this specific injection contributed. */
+  jsonPaths?: Record<string, string[]>;
 }
 
 export interface LockfilePluginEntry {
@@ -88,6 +95,15 @@ export const removePluginEntry = (lockfile: Lockfile, pluginName: string): Lockf
   return { ...lockfile, plugins: remainingPlugins };
 };
 
+/**
+ * A single injection entry's true identity is (target, source), not bare target: the same
+ * plugin can legitimately declare two entries for one target with different sources gated on
+ * different `requires` (e.g. blog's plain vs. `requires:"storage"` BlogPostEditDialog.tsx
+ * variants). Matching on target alone would flip both together.
+ */
+const injectionKey = (injection: Pick<LockfileInjectionEntry, 'target' | 'source'>): string =>
+  `${injection.target}::${injection.source}`;
+
 const setInjectionStatus = (
   lockfile: Lockfile,
   refs: GatedBlockRef[],
@@ -102,7 +118,7 @@ const setInjectionStatus = (
       [plugin]: {
         ...entry,
         injections: entry.injections.map((inj) =>
-          inj.target === injection.target ? { ...inj, status } : inj
+          injectionKey(inj) === injectionKey(injection) ? { ...inj, status } : inj
         ),
       },
     };
@@ -115,3 +131,75 @@ export const applyDeferredBlocks = (lockfile: Lockfile, refs: GatedBlockRef[]): 
 
 export const deferAppliedBlocks = (lockfile: Lockfile, refs: GatedBlockRef[]): Lockfile =>
   setInjectionStatus(lockfile, refs, 'deferred');
+
+/** Sets fields (e.g. jsonDependencies/jsonPaths) on one specific injection entry, identified by (target, source). */
+export const setInjectionExtras = (
+  lockfile: Lockfile,
+  plugin: string,
+  target: string,
+  source: string,
+  extra: Partial<Pick<LockfileInjectionEntry, 'jsonDependencies' | 'jsonPaths'>>
+): Lockfile => {
+  const entry = lockfile.plugins[plugin];
+  if (!entry) return lockfile;
+  return {
+    ...lockfile,
+    plugins: {
+      ...lockfile.plugins,
+      [plugin]: {
+        ...entry,
+        injections: entry.injections.map((inj) =>
+          injectionKey(inj) === injectionKey({ target, source }) ? { ...inj, ...extra } : inj
+        ),
+      },
+    },
+  };
+};
+
+export interface InjectionRef {
+  plugin: string;
+  injection: LockfileInjectionEntry;
+}
+
+/**
+ * Finds another currently-applied injection (any plugin) targeting the same path, excluding
+ * one specific (plugin, source) pair. Used by `remove` so reverting one variant of a
+ * multi-variant single-owner file (e.g. storage's gated override of blog's
+ * BlogPostEditDialog.tsx) restores whichever other variant is still applicable, instead of
+ * deleting the file outright just because a (now-pristine) core has no opinion on it.
+ */
+export const findOtherAppliedEntryForTarget = (
+  lockfile: Lockfile,
+  target: string,
+  exclude: { plugin: string; source: string }
+): InjectionRef | undefined => {
+  for (const [plugin, entry] of Object.entries(lockfile.plugins)) {
+    for (const injection of entry.injections) {
+      if (injection.target !== target || injection.status !== 'applied') continue;
+      if (plugin === exclude.plugin && injection.source === exclude.source) continue;
+      return { plugin, injection };
+    }
+  }
+  return undefined;
+};
+
+/**
+ * Finds every currently-applied injection (any plugin) targeting the same path, optionally
+ * excluding one (plugin, source) pair. Used to reference-count package-json-merge/
+ * tsconfig-paths-merge contributions across plugins before removing any of them.
+ */
+export const findAppliedInjectionsForTarget = (
+  lockfile: Lockfile,
+  target: string,
+  exclude?: { plugin: string; source: string }
+): InjectionRef[] => {
+  const result: InjectionRef[] = [];
+  for (const [plugin, entry] of Object.entries(lockfile.plugins)) {
+    for (const injection of entry.injections) {
+      if (injection.target !== target || injection.status !== 'applied') continue;
+      if (exclude && plugin === exclude.plugin && injection.source === exclude.source) continue;
+      result.push({ plugin, injection });
+    }
+  }
+  return result;
+};

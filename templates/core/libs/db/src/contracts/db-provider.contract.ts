@@ -2,11 +2,7 @@ import { UserRepository } from './user.contract';
 import { PageRepository } from './page.contract';
 import { NotificationRepository } from './notification.contract';
 import { SettingsRepository } from './settings.contract';
-import { BlogRepository } from './blog.contract';
-import { AssetRepository } from './asset.contract';
-import { FriendRepository } from './friend.contract';
-import { GalleryRepository } from './gallery-image.contract';
-import { CommunicationRepository } from './communication.contract';
+// inithium:anchor:imports
 
 export interface DbConfig {
   uri?: string;
@@ -22,9 +18,5 @@ export interface DbProvider {
   getPageRepository: () => PageRepository;
   getNotificationRepository: () => NotificationRepository;
   getSettingRepository: () => SettingsRepository;
-  getBlogRepository: () => BlogRepository;
-  getAssetRepository: () => AssetRepository;
-  getFriendRepository: () => FriendRepository;
-  getGalleryRepository: () => GalleryRepository;
-  getCommunicationRepository: () => CommunicationRepository;
+  // inithium:anchor:members
 }

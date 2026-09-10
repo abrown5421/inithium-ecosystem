@@ -1,7 +1,7 @@
 import dns from 'node:dns';
 import express from 'express';
 import cors from 'cors';
-import { connectDatabase, ensureOwnerBootstrap, ensureSeededPages } from '@inithium/db';
+import { connectDatabase, ensureOwnerBootstrap, ensureSeededPages, pruneOrphanedPluginPages } from '@inithium/db';
 import { getAuthProvider } from '@inithium/auth';
 import { registerCoreRoutes } from '@inithium/api-core';
 import { errorHandler } from '@inithium/api-utils';
@@ -36,6 +36,12 @@ const startServer = async () => {
     // reach a deployed instance the same way any other code change does: git push -> redeploy ->
     // this runs again against the persistent database.
     await ensureSeededPages();
+    // The other direction of the reconciliation above: a page whose plugin has since been
+    // removed (inithium remove deletes its page-seed and registry.ts entry, but never touches
+    // the database) would otherwise linger forever, still published, still in the nav. Deletes
+    // it if it was never edited since being seeded, or just unpublishes it if an admin has since
+    // customized it - see pruneOrphanedPluginPages's own comment.
+    await pruneOrphanedPluginPages();
     // Idempotent, same "run on every boot" precedent as ensureSeededPages above - the concrete
     // migration path for a workspace upgrading into capability-based permissions with
     // pre-existing users that predate the isOwner field.

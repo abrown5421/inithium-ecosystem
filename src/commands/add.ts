@@ -1,9 +1,18 @@
 import path from 'path';
 import fs from 'fs-extra';
 import { fetchTemplate } from '../utils/fetcher.js';
-import { readJsonFile, updatePackageJsonWithPlugin, PluginManifest } from '../utils/json.js';
+import {
+  readJsonFile,
+  updatePackageJsonWithPlugin,
+  PluginManifest,
+  PluginManifestInjection,
+  InjectionStrategy,
+} from '../utils/json.js';
 import { runPackageInstall } from '../utils/installer.js';
 import { resolvePluginSource } from '../utils/paths.js';
+import { writeFileAtomic } from '../utils/atomicWrite.js';
+import { applyMergeFragment, parseFragmentSections, validateAnchorsPresent } from '../utils/anchors.js';
+import { mergePackageJsonDependencies, mergeTsconfigPaths } from '../utils/jsonMerge.js';
 import {
   readLockfile,
   writeLockfile,
@@ -11,15 +20,142 @@ import {
   findDeferredBlocksRequiring,
   upsertPluginEntry,
   applyDeferredBlocks,
+  setInjectionExtras,
   LockfileInjectionEntry,
 } from '../utils/lockfile.js';
 
-const copyInjection = async (srcRoot: string, targetRoot: string, target: string, source: string) => {
+const readFileIfExists = async (filePath: string): Promise<string | null> =>
+  (await fs.pathExists(filePath)) ? fs.readFile(filePath, 'utf8') : null;
+
+const applyOverwriteInjection = async (srcRoot: string, targetRoot: string, target: string, source: string): Promise<void> => {
   const srcPath = path.join(srcRoot, source);
   const destPath = path.join(targetRoot, target);
+  if (!(await fs.pathExists(srcPath))) return;
 
-  if (await fs.pathExists(srcPath)) {
+  const srcStat = await fs.stat(srcPath);
+  if (srcStat.isDirectory()) {
     await fs.copy(srcPath, destPath, { overwrite: true });
+    return;
+  }
+  await writeFileAtomic(destPath, await fs.readFile(srcPath, 'utf8'));
+};
+
+const applyMergeInjection = async (
+  srcRoot: string,
+  targetRoot: string,
+  target: string,
+  source: string,
+  plugin: string
+): Promise<void> => {
+  const fragmentContent = await readFileIfExists(path.join(srcRoot, source));
+  if (fragmentContent === null) {
+    throw new Error(`Merge fragment "${source}" not found for plugin "${plugin}".`);
+  }
+
+  const destPath = path.join(targetRoot, target);
+  const targetContent = await readFileIfExists(destPath);
+  if (targetContent === null) {
+    throw new Error(
+      `Cannot merge into "${target}" — the file does not exist in this workspace. A merge-strategy injection requires the target to already be shipped by core or a previously-installed plugin.`
+    );
+  }
+
+  const anchorIds = parseFragmentSections(fragmentContent).map((section) => section.anchorId);
+  const issues = validateAnchorsPresent(targetContent, anchorIds, target);
+  if (issues.length > 0) {
+    throw new Error(issues.map((issue) => issue.message).join('\n'));
+  }
+
+  await writeFileAtomic(destPath, applyMergeFragment(targetContent, fragmentContent, plugin));
+};
+
+const applyPackageJsonMergeInjection = async (
+  srcRoot: string,
+  targetRoot: string,
+  target: string,
+  source: string
+): Promise<Record<string, string>> => {
+  const fragment = await readJsonFile<{ dependencies?: Record<string, string> }>(path.join(srcRoot, source));
+  const deps = fragment?.dependencies ?? {};
+  await mergePackageJsonDependencies(path.join(targetRoot, target), deps);
+  return deps;
+};
+
+const applyTsconfigPathsMergeInjection = async (
+  srcRoot: string,
+  targetRoot: string,
+  target: string,
+  source: string
+): Promise<Record<string, string[]>> => {
+  const fragment = (await readJsonFile<Record<string, string[]>>(path.join(srcRoot, source))) ?? {};
+  await mergeTsconfigPaths(path.join(targetRoot, target), fragment);
+  return fragment;
+};
+
+type InjectionExtras = Partial<Pick<LockfileInjectionEntry, 'jsonDependencies' | 'jsonPaths'>>;
+
+interface ApplyableInjection {
+  target: string;
+  source: string;
+  strategy?: InjectionStrategy;
+}
+
+const applyInjection = async (
+  srcRoot: string,
+  targetRoot: string,
+  plugin: string,
+  injection: ApplyableInjection
+): Promise<InjectionExtras> => {
+  const strategy = injection.strategy ?? 'overwrite';
+  switch (strategy) {
+    case 'merge':
+      await applyMergeInjection(srcRoot, targetRoot, injection.target, injection.source, plugin);
+      return {};
+    case 'package-json-merge':
+      return { jsonDependencies: await applyPackageJsonMergeInjection(srcRoot, targetRoot, injection.target, injection.source) };
+    case 'tsconfig-paths-merge':
+      return { jsonPaths: await applyTsconfigPathsMergeInjection(srcRoot, targetRoot, injection.target, injection.source) };
+    case 'overwrite':
+    default:
+      await applyOverwriteInjection(srcRoot, targetRoot, injection.target, injection.source);
+      return {};
+  }
+};
+
+/**
+ * Validates every merge-strategy injection this run would actually apply *before* mutating
+ * anything, so a missing/duplicated anchor aborts the whole `add` instead of leaving some
+ * files changed and others not.
+ */
+const preflightMergeInjections = async (
+  tempPluginDir: string,
+  targetRoot: string,
+  pluginName: string,
+  injections: PluginManifestInjection[],
+  isRequirementSatisfied: (requires: string | null) => boolean
+): Promise<void> => {
+  const issues: string[] = [];
+
+  for (const injection of injections) {
+    if ((injection.strategy ?? 'overwrite') !== 'merge') continue;
+    if (!isRequirementSatisfied(injection.requires ?? null)) continue; // will be deferred, not applied now
+
+    const fragmentContent = await readFileIfExists(path.join(tempPluginDir, injection.source));
+    if (fragmentContent === null) {
+      issues.push(`Merge fragment "${injection.source}" not found for plugin "${pluginName}".`);
+      continue;
+    }
+    const targetContent = await readFileIfExists(path.join(targetRoot, injection.target));
+    if (targetContent === null) {
+      issues.push(`Cannot merge into "${injection.target}" — the file does not exist in this workspace.`);
+      continue;
+    }
+    const anchorIds = parseFragmentSections(fragmentContent).map((section) => section.anchorId);
+    issues.push(...validateAnchorsPresent(targetContent, anchorIds, injection.target).map((issue) => issue.message));
+  }
+
+  if (issues.length > 0) {
+    throw new Error(`Cannot add plugin "${pluginName}":\n${issues.join('\n')}`);
   }
 };
 
@@ -55,20 +191,29 @@ export const addCommand = async (
       );
     }
 
+    await preflightMergeInjections(
+      tempPluginDir,
+      targetRoot,
+      pluginName,
+      manifest.injections ?? [],
+      (requires) => requires === null || requires in lockfile.plugins
+    );
+
     const injectionEntries: LockfileInjectionEntry[] = [];
     for (const injection of manifest.injections ?? []) {
       const requires = injection.requires ?? null;
       const shouldApply = requires === null || requires in lockfile.plugins;
+      const strategy = injection.strategy ?? 'overwrite';
 
-      if (shouldApply) {
-        await copyInjection(tempPluginDir, targetRoot, injection.target, injection.source);
-      }
+      const extras = shouldApply ? await applyInjection(tempPluginDir, targetRoot, pluginName, injection) : {};
 
       injectionEntries.push({
         target: injection.target,
         source: injection.source,
         requires,
         status: shouldApply ? 'applied' : 'deferred',
+        strategy,
+        ...extras,
       });
     }
 
@@ -93,7 +238,8 @@ export const addCommand = async (
 
       const refsForPlugin = toReconcile.filter((ref) => ref.plugin === dependentPluginName);
       for (const ref of refsForPlugin) {
-        await copyInjection(reconcileTempDir, targetRoot, ref.injection.target, ref.injection.source);
+        const extras = await applyInjection(reconcileTempDir, targetRoot, dependentPluginName, ref.injection);
+        lockfile = setInjectionExtras(lockfile, dependentPluginName, ref.injection.target, ref.injection.source, extras);
       }
     }
 

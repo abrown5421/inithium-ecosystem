@@ -1,20 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { UserProfileBannerConfig } from '@inithium/db';
-import { useUploadAssetMutation } from '@inithium/api-client';
 import { AutoIncrementingList } from './AutoIncrementingList';
 import { ColorPicker } from './ColorPicker';
-import { MediaField } from './MediaField';
-import type { MediaFieldHandle } from './MediaField';
 import { useElementSize } from './useElementSize';
 import { Banner, Box, Button, Slider, Text } from '../components';
 import { alert } from '../alert/alert';
-import { DEFAULT_BANNER_HEIGHT, DEFAULT_MESH_WIDTH } from '../tokens/banner';
-
-export interface BannerEditDialogProps {
-  readonly initialBanner: UserProfileBannerConfig;
-  readonly onSave: (banner: UserProfileBannerConfig) => Promise<void>;
-  readonly onClose: () => void;
-}
 
 const MIN_CELL_SIZE = 10;
 const MAX_CELL_SIZE = 100;
@@ -23,11 +13,12 @@ const MAX_VARIANCE = 0.9;
 const PREVIEW_HEIGHT = 140;
 const FALLBACK_COLOR_HEX = '#94a3b8';
 const ALERT_POSITION = 'bottom-right' as const;
-const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024;
-// The real, live-page banner's ratio (DEFAULT_MESH_WIDTH x DEFAULT_BANNER_HEIGHT) - not this
-// dialog's own smaller PREVIEW_HEIGHT, which is just a convenience preview size unrelated to how
-// the saved image will actually be displayed on the profile page.
-const BANNER_ASPECT_RATIO = DEFAULT_MESH_WIDTH / DEFAULT_BANNER_HEIGHT;
+
+export interface BannerEditDialogProps {
+  readonly initialBanner: UserProfileBannerConfig;
+  readonly onSave: (banner: UserProfileBannerConfig) => Promise<void>;
+  readonly onClose: () => void;
+}
 
 // One row of an x/yColors AutoIncrementingList. AutoIncrementingList only tracks row identity
 // (a stable `id` per row, see its own docstring) - it never exposes each row's current value
@@ -69,22 +60,15 @@ const useColorRowMap = (): [Record<string, string>, (id: string, hex: string | n
 };
 
 // The trianglify banner customization dialog - launched from ProfilePage's own edit-button
-// overlay on the owner's banner. Prop-driven for persistence, same contract shape as
-// AvatarEditDialog - and the same deliberate, narrow exception on the "never talks to
-// @inithium/api-client" rule: this file is the storage plugin's own unconditional injection
-// target, and its whole job is wiring the upload mutation into MediaField's onUpload prop.
+// overlay on the owner's banner. Core ships the generated-mesh banner only; an uploaded-photo
+// option is added by the storage plugin, which replaces this file wholesale with a variant that
+// also wires the upload mutation into a MediaField upload/URL tab.
 export const BannerEditDialog = ({ initialBanner, onSave, onClose }: BannerEditDialogProps) => {
-  const [uploadAsset] = useUploadAssetMutation();
   const [cellSize, setCellSize] = useState(initialBanner.cellSize);
   const [variance, setVariance] = useState(initialBanner.variance);
   const [xColorsById, registerXColor] = useColorRowMap();
   const [yColorsById, registerYColor] = useColorRowMap();
-  const [imageUrl, setImageUrl] = useState(initialBanner.imageUrl ?? '');
-  // Defaults to whichever mode already matches the persisted config, so reopening a
-  // previously-uploaded/URL banner lands back on that tab instead of always resetting to Customize.
-  const [mode, setMode] = useState(initialBanner.imageUrl ? 'url' : 'customize');
   const [isSaving, setIsSaving] = useState(false);
-  const mediaFieldRef = useRef<MediaFieldHandle>(null);
   // Banner defaults to generating its mesh against a fixed reference width (DEFAULT_MESH_WIDTH)
   // whenever it isn't given a real pixel width, then stretches that mesh to fill however wide it
   // actually renders - fine when the real width is close to that reference, but visibly
@@ -106,20 +90,7 @@ export const BannerEditDialog = ({ initialBanner, onSave, onClose }: BannerEditD
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      // Resolves a still-pending crop (a file was selected/dragged into position but never
-      // separately "confirmed") into a real upload right here, rather than requiring a distinct
-      // confirm-then-save two-step flow a user could click Save ahead of. Returns null when
-      // there's nothing pending - see MediaFieldHandle's own comment on why this result must be
-      // used directly instead of re-reading `imageUrl` afterward (a stale-closure trap).
-      const uploaded = await mediaFieldRef.current?.resolvePendingUpload();
-      const finalImageUrl = uploaded?.url ?? imageUrl;
-      const banner: UserProfileBannerConfig = {
-        cellSize,
-        variance,
-        xColors,
-        yColors,
-        ...(mode !== 'customize' ? { imageUrl: finalImageUrl } : {}),
-      };
+      const banner: UserProfileBannerConfig = { cellSize, variance, xColors, yColors };
       await onSave(banner);
       onClose();
       alert.success('Banner updated successfully.', { position: ALERT_POSITION });
@@ -130,8 +101,16 @@ export const BannerEditDialog = ({ initialBanner, onSave, onClose }: BannerEditD
     }
   };
 
-  const customizeContent = (
+  return (
     <Box flex={{ direction: 'col', gap: 16 }}>
+      <div ref={previewSizeRef} className="w-full">
+        <Banner
+          trianglifyConfig={{ cellSize, variance, xColors: xColors as [string, ...string[]], yColors: yColors as [string, ...string[]] }}
+          width={previewSize?.width}
+          height={PREVIEW_HEIGHT}
+        />
+      </div>
+
       <Slider
         label={`Cell Size — ${cellSize}`}
         min={MIN_CELL_SIZE}
@@ -175,32 +154,6 @@ export const BannerEditDialog = ({ initialBanner, onSave, onClose }: BannerEditD
           />
         </Box>
       </Box>
-    </Box>
-  );
-
-  return (
-    <Box flex={{ direction: 'col', gap: 16 }}>
-      <div ref={previewSizeRef} className="w-full">
-        <Banner
-          imageUrl={mode !== 'customize' ? imageUrl || undefined : undefined}
-          trianglifyConfig={{ cellSize, variance, xColors: xColors as [string, ...string[]], yColors: yColors as [string, ...string[]] }}
-          width={previewSize?.width}
-          height={PREVIEW_HEIGHT}
-        />
-      </div>
-
-      <MediaField
-        ref={mediaFieldRef}
-        label="Banner Image"
-        value={imageUrl}
-        onValueChange={setImageUrl}
-        onUpload={async (file) => await uploadAsset({ file, purpose: 'banner' }).unwrap()}
-        maxSizeBytes={MAX_UPLOAD_SIZE_BYTES}
-        aspectRatio={BANNER_ASPECT_RATIO}
-        mode={mode}
-        onModeChange={setMode}
-        extraTabs={[{ value: 'customize', label: 'Customize', content: customizeContent }]}
-      />
 
       <Box flex={{ direction: 'row', gap: 8, justify: 'end' }}>
         <Button variant={{ kind: 'ghost', color: 'surface' }} onClick={onClose} disabled={isSaving}>

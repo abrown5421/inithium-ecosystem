@@ -1,16 +1,13 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import type { AvatarConfig } from '@inithium/db';
-import { useUploadAssetMutation } from '@inithium/api-client';
 import { Avatar } from '../components/Avatar/Avatar';
 import { Box, Button, IconButton, RadioGroup, RadioGroupItem, Text } from '../components';
 import { alert } from '../alert/alert';
 import { resolveContrastColor } from '../utils/resolveContrastColor';
 import { DEFAULT_AVATAR_STYLE, DICEBEAR_STYLES, humanizeDicebearStyle } from '../tokens/avatar';
 import { ColorSpecPicker } from './ColorSpecPicker';
-import { MediaField } from './MediaField';
 import type { AvatarShape, AvatarSource, AvatarVariant } from '../tokens/avatar';
 import type { ColorSpec } from '../contracts/color.contract';
-import type { MediaFieldHandle } from './MediaField';
 
 export interface AvatarEditDialogProps {
   readonly initialAvatar: AvatarConfig;
@@ -23,7 +20,6 @@ const PREVIEW_SIZE = 128;
 const PICKER_BUTTON_SIZE = 40;
 const ALERT_POSITION = 'bottom-right' as const;
 const SELECTED_RING_CLASS = 'ring-2 ring-offset-2 ring-primary-500';
-const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024;
 
 const generateRandomSeed = (): string => Math.random().toString(36).slice(2, 10);
 
@@ -42,15 +38,12 @@ const toColorSpec = (color: { color: string; intensity?: number; opacity?: numbe
   color?.color ? (color as ColorSpec) : undefined;
 
 // The avatar/dicebear customization dialog - launched from ProfilePage's own edit-button overlay
-// on the owner's avatar. Prop-driven for persistence (builds a candidate AvatarConfig and hands
-// it to `onSave`) exactly like every other libs/ui composite (see ChangePasswordDialog's own
-// comment) - with one deliberate, narrow exception: this file is the storage plugin's own
-// unconditional injection target (installing "storage" replaces this exact file), and its whole
-// job is wiring @inithium/api-client's upload mutation into MediaField's onUpload prop so the
-// Upload tab appears. A workspace without storage installed never has this import at all - see
-// MediaField's own comment on how that retroactivity actually works.
+// on the owner's avatar. Core ships procedural avatars only (initials or dicebear-generated
+// looks); an uploaded-photo option is added by the storage plugin, which replaces this file
+// wholesale with a variant that also wires @inithium/api-client's upload mutation into a
+// MediaField upload/URL tab. See @inithium/api-client's `AvatarConfig.imageUrl` - present in the
+// contract either way so it round-trips untouched when this dialog never sets it.
 export const AvatarEditDialog = ({ initialAvatar, fullName, onSave, onClose }: AvatarEditDialogProps) => {
-  const [uploadAsset] = useUploadAssetMutation();
   const [variant, setVariant] = useState<AvatarVariant>(initialAvatar.variant);
   const [bgColor, setBgColor] = useState<ColorSpec>(toColorSpec(initialAvatar.style.bgColor) ?? DEFAULT_AVATAR_STYLE.bgColor);
   const [fontColor, setFontColor] = useState<ColorSpec>(
@@ -58,10 +51,6 @@ export const AvatarEditDialog = ({ initialAvatar, fullName, onSave, onClose }: A
   );
   const [shape, setShape] = useState<AvatarShape>(initialAvatar.style.shape ?? DEFAULT_AVATAR_STYLE.shape);
   const [dicebearStyle, setDicebearStyle] = useState<string>(initialAvatar.dicebear?.style ?? DICEBEAR_STYLES[0]);
-  const [imageUrl, setImageUrl] = useState(initialAvatar.imageUrl ?? '');
-  // Defaults to whichever mode already matches the persisted config, so reopening a
-  // previously-uploaded/URL avatar lands back on that tab instead of always resetting to Customize.
-  const [mode, setMode] = useState(initialAvatar.imageUrl ? 'url' : 'customize');
 
   // Right arrow always either steps forward into a look already seen, or generates and appends a
   // brand new one; left arrow only ever steps back through history - never discards it. Resets
@@ -70,7 +59,6 @@ export const AvatarEditDialog = ({ initialAvatar, fullName, onSave, onClose }: A
   const [seedHistory, setSeedHistory] = useState<string[]>([initialAvatar.dicebear?.seed ?? generateRandomSeed()]);
   const [seedIndex, setSeedIndex] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
-  const mediaFieldRef = useRef<MediaFieldHandle>(null);
 
   const currentSeed = seedHistory[seedIndex]!;
 
@@ -92,26 +80,14 @@ export const AvatarEditDialog = ({ initialAvatar, fullName, onSave, onClose }: A
 
   const previewSource: AvatarSource =
     variant === 'dicebear' ? { variant: 'dicebear', style: dicebearStyle, seed: currentSeed, alt: fullName } : { variant: 'initials', name: fullName };
-  // imageUrl already takes precedence over source/styleConfig at the Avatar primitive level (see
-  // AvatarConfig's own comment) - only fed in outside Customize mode so switching tabs previews
-  // the right thing without needing to clear the other mode's state.
-  const previewImageUrl = mode !== 'customize' ? imageUrl || undefined : undefined;
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      // Resolves a still-pending crop (a file was selected/dragged into position but never
-      // separately "confirmed") into a real upload right here, rather than requiring a distinct
-      // confirm-then-save two-step flow a user could click Save ahead of. Returns null when
-      // there's nothing pending - see MediaFieldHandle's own comment on why this result must be
-      // used directly instead of re-reading `imageUrl` afterward (a stale-closure trap).
-      const uploaded = await mediaFieldRef.current?.resolvePendingUpload();
-      const finalImageUrl = uploaded?.url ?? imageUrl;
       const avatar: AvatarConfig = {
         variant,
         style: { bgColor, fontColor, shape },
         ...(variant === 'dicebear' ? { dicebear: { style: dicebearStyle, seed: currentSeed } } : {}),
-        ...(mode !== 'customize' ? { imageUrl: finalImageUrl } : {}),
       };
       await onSave(avatar);
       onClose();
@@ -123,8 +99,14 @@ export const AvatarEditDialog = ({ initialAvatar, fullName, onSave, onClose }: A
     }
   };
 
-  const customizeContent = (
+  return (
     <Box flex={{ direction: 'col', gap: 16 }}>
+      <Box flex={{ direction: 'row', align: 'center', justify: 'center', gap: 16 }}>
+        {variant === 'dicebear' && <IconButton icon="CaretLeft" label="Previous look" onClick={goToPreviousSeed} disabled={seedIndex === 0} />}
+        <Avatar source={previewSource} styleConfig={{ bgColor, fontColor, shape }} size={PREVIEW_SIZE} />
+        {variant === 'dicebear' && <IconButton icon="CaretRight" label="Next look" onClick={goToNextSeed} />}
+      </Box>
+
       <Box flex={{ direction: 'row', gap: 8 }} className="flex-wrap justify-center">
         <Avatar
           source={{ variant: 'initials', name: fullName }}
@@ -157,31 +139,6 @@ export const AvatarEditDialog = ({ initialAvatar, fullName, onSave, onClose }: A
           </RadioGroup>
         </Box>
       )}
-    </Box>
-  );
-
-  return (
-    <Box flex={{ direction: 'col', gap: 16 }}>
-      <Box flex={{ direction: 'row', align: 'center', justify: 'center', gap: 16 }}>
-        {mode === 'customize' && variant === 'dicebear' && (
-          <IconButton icon="CaretLeft" label="Previous look" onClick={goToPreviousSeed} disabled={seedIndex === 0} />
-        )}
-        <Avatar source={previewSource} styleConfig={{ bgColor, fontColor, shape }} imageUrl={previewImageUrl} size={PREVIEW_SIZE} />
-        {mode === 'customize' && variant === 'dicebear' && <IconButton icon="CaretRight" label="Next look" onClick={goToNextSeed} />}
-      </Box>
-
-      <MediaField
-        ref={mediaFieldRef}
-        label="Avatar Image"
-        value={imageUrl}
-        onValueChange={setImageUrl}
-        onUpload={async (file) => await uploadAsset({ file, purpose: 'avatar' }).unwrap()}
-        maxSizeBytes={MAX_UPLOAD_SIZE_BYTES}
-        aspectRatio={1}
-        mode={mode}
-        onModeChange={setMode}
-        extraTabs={[{ value: 'customize', label: 'Customize', content: customizeContent }]}
-      />
 
       <Box flex={{ direction: 'row', gap: 8, justify: 'end' }}>
         <Button variant={{ kind: 'ghost', color: 'surface' }} onClick={onClose} disabled={isSaving}>

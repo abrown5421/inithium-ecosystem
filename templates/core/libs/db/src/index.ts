@@ -2,21 +2,7 @@ import { DbProvider, DbConfig } from './contracts/db-provider.contract';
 import { CreatePageInput, FindManyPagesOptions, NavLocation, UpdatePageInput } from './contracts/page.contract';
 import { CreateUserInput, FindManyUsersOptions, UpdateUserInput } from './contracts/user.contract';
 import { UpsertSettingInput } from './contracts/settings.contract';
-import {
-  AddCommentInput,
-  CreateBlogPostInput,
-  FindManyBlogPostsOptions,
-  UpdateBlogPostInput,
-} from './contracts/blog.contract';
-import { CreateAssetInput, ListAssetsForUserOptions } from './contracts/asset.contract';
-import { CreateFriendRequestInput, FriendStatus } from './contracts/friend.contract';
-import {
-  CreateGalleryImageInput,
-  FindManyGalleryImagesOptions,
-  FindPublishedGalleryImagesOptions,
-  UpdateGalleryImageInput,
-} from './contracts/gallery-image.contract';
-import { AddCommunicationMessageInput, CreateCommunicationInput, FindManyCommunicationsOptions } from './contracts/communication.contract';
+// inithium:anchor:imports
 import { activeProvider as defaultProvider } from './providers/active-provider';
 
 let activeProvider: DbProvider = defaultProvider;
@@ -52,9 +38,11 @@ export const findPageBySlug = (slug: string) => getPageRepository().findBySlug(s
 export const findPagesByNavLocation = (location: NavLocation) =>
   getPageRepository().findByNavLocation(location);
 export const findPublishedPages = () => getPageRepository().findPublished();
+export const findPluginPages = () => getPageRepository().findPluginPages();
 export const listPages = (options: FindManyPagesOptions) => getPageRepository().findMany(options);
 export const createPage = (input: CreatePageInput) => getPageRepository().create(input);
 export const updatePage = (id: string, input: UpdatePageInput) => getPageRepository().update(id, input);
+export const deletePage = (id: string) => getPageRepository().delete(id);
 
 export const getNotificationRepository = () => activeProvider.getNotificationRepository();
 export const listNotificationsForUser = (userId: string, options?: { limit?: number }) =>
@@ -77,62 +65,7 @@ export const listSettings = () => getSettingsRepository().findAll();
 export const getSetting = (key: string) => getSettingsRepository().findByKey(key);
 export const upsertSetting = (input: UpsertSettingInput) => getSettingsRepository().upsert(input);
 
-export const getBlogRepository = () => activeProvider.getBlogRepository();
-export const listBlogPosts = (options: FindManyBlogPostsOptions) => getBlogRepository().findMany(options);
-export const getBlogPostById = (id: string) => getBlogRepository().findById(id);
-export const createBlogPost = (input: CreateBlogPostInput) => getBlogRepository().create(input);
-export const updateBlogPost = (id: string, input: UpdateBlogPostInput) => getBlogRepository().update(id, input);
-export const deleteBlogPost = (id: string) => getBlogRepository().delete(id);
-export const addCommentToBlogPost = (postId: string, input: AddCommentInput) =>
-  getBlogRepository().addComment(postId, input);
-export const replyToBlogPostComment = (postId: string, commentId: string, reply: string) =>
-  getBlogRepository().replyToComment(postId, commentId, reply);
-export const deleteBlogPostComment = (postId: string, commentId: string) =>
-  getBlogRepository().deleteComment(postId, commentId);
-export const listBlogCategories = () => getBlogRepository().findDistinctCategories();
-export const listBlogAuthors = () => getBlogRepository().findDistinctAuthors();
-
-export const getAssetRepository = () => activeProvider.getAssetRepository();
-export const createAsset = (input: CreateAssetInput) => getAssetRepository().create(input);
-export const getAssetById = (id: string) => getAssetRepository().findById(id);
-export const deleteAsset = (id: string) => getAssetRepository().delete(id);
-export const listAssetsForUser = (userId: string, options?: ListAssetsForUserOptions) =>
-  getAssetRepository().listForUser(userId, options);
-
-export const getFriendRepository = () => activeProvider.getFriendRepository();
-export const getFriendById = (id: string) => getFriendRepository().findById(id);
-export const findFriendBetweenUsers = (userIdA: string, userIdB: string) =>
-  getFriendRepository().findBetweenUsers(userIdA, userIdB);
-export const createFriendRequest = (input: CreateFriendRequestInput) => getFriendRepository().create(input);
-export const updateFriendStatus = (id: string, status: FriendStatus) =>
-  getFriendRepository().updateStatus(id, status);
-export const deleteFriend = (id: string) => getFriendRepository().delete(id);
-export const markIncomingFriendRequestsSeen = (requesteeId: string) =>
-  getFriendRepository().markIncomingRequestsSeen(requesteeId);
-export const listAcceptedFriendsForUser = (userId: string) => getFriendRepository().listAcceptedForUser(userId);
-export const listPendingFriendsForUser = (userId: string) => getFriendRepository().listPendingForUser(userId);
-export const listRelatedFriendUserIds = (userId: string) => getFriendRepository().listRelatedUserIds(userId);
-
-export const getGalleryRepository = () => activeProvider.getGalleryRepository();
-export const listGalleryImages = (options: FindManyGalleryImagesOptions) => getGalleryRepository().findMany(options);
-export const listPublishedGalleryImages = (options: FindPublishedGalleryImagesOptions) =>
-  getGalleryRepository().findPublished(options);
-export const getGalleryImageById = (id: string) => getGalleryRepository().findById(id);
-export const createGalleryImage = (input: CreateGalleryImageInput) => getGalleryRepository().create(input);
-export const updateGalleryImage = (id: string, input: UpdateGalleryImageInput) =>
-  getGalleryRepository().update(id, input);
-export const deleteGalleryImage = (id: string) => getGalleryRepository().delete(id);
-
-export const getCommunicationRepository = () => activeProvider.getCommunicationRepository();
-export const listCommunications = (options: FindManyCommunicationsOptions) =>
-  getCommunicationRepository().findMany(options);
-export const getCommunicationById = (id: string) => getCommunicationRepository().findById(id);
-export const listCommunicationsForUser = (submitterUserId: string) =>
-  getCommunicationRepository().findForUser(submitterUserId);
-export const createCommunication = (input: CreateCommunicationInput) => getCommunicationRepository().create(input);
-export const addCommunicationMessage = (id: string, input: AddCommunicationMessageInput) =>
-  getCommunicationRepository().addMessage(id, input);
-export const deleteCommunication = (id: string) => getCommunicationRepository().delete(id);
+// inithium:anchor:repositories
 
 export type { DbProvider, DbConfig } from './contracts/db-provider.contract';
 export type { PaginatedResult } from './contracts/pagination.contract';
@@ -176,45 +109,8 @@ export type {
 export type { NotificationEntity, CreateNotificationInput, NotificationRepository } from './contracts/notification.contract';
 export { SETTING_TYPES } from './contracts/settings.contract';
 export type { SettingType, SettingEntity, UpsertSettingInput, SettingsRepository } from './contracts/settings.contract';
-export type {
-  BlogPostEntity,
-  CommentEntity,
-  CreateBlogPostInput,
-  UpdateBlogPostInput,
-  AddCommentInput,
-  BlogPostSearchField,
-  FindManyBlogPostsOptions,
-  BlogRepository,
-} from './contracts/blog.contract';
-export type { AssetEntity, CreateAssetInput, AssetRepository, ListAssetsForUserOptions } from './contracts/asset.contract';
-export type {
-  FriendEntity,
-  FriendStatus,
-  CreateFriendRequestInput,
-  FriendRepository,
-} from './contracts/friend.contract';
-export { GALLERY_IMAGE_SOURCE_TYPES } from './contracts/gallery-image.contract';
-export type {
-  GalleryImageEntity,
-  CreateGalleryImageInput,
-  UpdateGalleryImageInput,
-  GalleryImageSourceType,
-  GalleryImageSearchField,
-  FindManyGalleryImagesOptions,
-  FindPublishedGalleryImagesOptions,
-  GalleryRepository,
-} from './contracts/gallery-image.contract';
-export type {
-  CommunicationEntity,
-  CommunicationMessage,
-  CommunicationAuthorRole,
-  CreateCommunicationInput,
-  AddCommunicationMessageInput,
-  CommunicationSearchField,
-  FindManyCommunicationsOptions,
-  CommunicationRepository,
-} from './contracts/communication.contract';
-export { generateExcerptFromHtml } from './utils/generateExcerptFromHtml';
+// inithium:anchor:type-exports
 export { ensureSeededPages } from './page-seeds/ensureSeededPages';
+export { pruneOrphanedPluginPages } from './page-seeds/pruneOrphanedPluginPages';
 export { ensureOwnerBootstrap } from './bootstrap/ensureOwnerBootstrap';
 export { mongoProvider } from './providers/mongo/mongo.provider';
