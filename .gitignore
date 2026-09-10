@@ -55,3 +55,7 @@ Thumbs.db
 .claude/settings.local.json
 
 vite.config.*.timestamp*
+
+# Local plugin sandbox - a scaffolded core + all plugins installed, for manually testing plugin
+# code in a browser before it's considered done. Entirely local, never pushed.
+/templates/sandbox/
