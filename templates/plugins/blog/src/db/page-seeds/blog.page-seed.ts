@@ -10,7 +10,7 @@ const blogPageSeed: CreatePageInput = {
   backgroundColor: { color: 'surface', intensity: 100 },
   foregroundColor: { color: 'surface', intensity: 950 },
   access: { isPublic: true, isAnonymousOnly: false, requiredRoles: [] },
-  navigation: { locations: ['primary-nav'], label: 'Blog', order: 2 },
+  navigation: { locations: ['primary-nav', 'primary-footer'], label: 'Blog', order: 2 },
   layoutTemplate: 'default',
   isPublished: true,
 };

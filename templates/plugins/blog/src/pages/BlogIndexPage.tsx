@@ -96,7 +96,7 @@ export const BlogIndexPage = () => {
 
   return (
     <Box flex={{ direction: 'col', gap: 24 }} padding={{ base: 32 }}>
-      <Text as="h1" className="text-3xl font-bold">
+      <Text textColor={{ color: 'surface', intensity: 950 }} as="h1" className="text-3xl font-bold">
         Blog
       </Text>
 

@@ -10,7 +10,7 @@ const galleryPageSeed: CreatePageInput = {
   backgroundColor: { color: 'surface', intensity: 100 },
   foregroundColor: { color: 'surface', intensity: 950 },
   access: { isPublic: true, isAnonymousOnly: false, requiredRoles: [] },
-  navigation: { locations: ['primary-nav'], label: 'Gallery', order: 3 },
+  navigation: { locations: ['primary-nav', 'primary-footer'], label: 'Gallery', order: 3 },
   layoutTemplate: 'default',
   isPublished: true,
 };

@@ -25,7 +25,7 @@ export const DashboardPage = () => {
 
   return (
     <Box padding={{ base: 24 }} flex={{ direction: 'col', gap: 16 }}>
-      <Text as="h1" className="text-2xl font-bold">
+      <Text textColor={{ color: 'surface', intensity: 950 }} as="h1" className="text-2xl font-bold">
         Dashboard
       </Text>
 
@@ -44,7 +44,7 @@ export const DashboardPage = () => {
               className={mergeClassNames('rounded border', spanClassName(widget.span))}
             >
               {widget.title ? (
-                <Text as="h2" className="mb-2 text-lg font-semibold">
+                <Text textColor={{ color: 'surface', intensity: 950 }} as="h2" className="mb-2 text-lg font-semibold">
                   {widget.title}
                 </Text>
               ) : null}
