@@ -10,7 +10,6 @@ import {
   PageShell,
   Loader,
   alert,
-  dialog,
   useNavigateWithTransition,
 } from '@inithium/ui';
 import {
@@ -18,18 +17,17 @@ import {
   useGetNavPagesQuery,
   useGetPageByRouteQuery,
   useIsProfileEnabled,
-  useMarkFriendRequestsSeenMutation,
   useNotificationCenter,
   useRealtimeConnectionStatus,
   useShowPersistentNotificationCenter,
 } from '@inithium/api-client';
 import { useCurrentUser, useAuthToken } from './useCurrentUser';
 import { RealtimeConnectionBoundary } from './RealtimeConnectionBoundary';
+import { useResolvedNotificationHooks } from './notificationHooks/registry';
 import { pageComponents } from '../pages/pageComponents';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { useOpenChangePasswordDialog } from '../pages/profile/openChangePasswordDialog';
-import { FriendsPanel } from '../pages/profile/friends/FriendsPanel';
-import { ContactThreadDialogContent } from '../pages/ContactThreadDialogContent';
+// inithium:anchor:imports
 
 // Kept in one place and passed to both Navbar (`height`) and PageShell (`navbarHeight`) so the
 // two composites' sizing always stays in sync.
@@ -66,31 +64,7 @@ export function App() {
       });
     },
   });
-  // Bulk 'sent' -> 'pending' flip for the current user's own incoming friend requests - fired
-  // from the notification-center interactions below, which are the "user viewing the request via
-  // the notification center" moment the friends plugin's status model is tied to (see
-  // friends.route.ts's PATCH /api/friends/requests/seen for why this is bulk, not per-id).
-  const [markFriendRequestsSeen] = useMarkFriendRequestsSeenMutation();
-  // A dialog rather than a second drawer - opened from a Button inside the already-open Menu
-  // drawer (see Navbar.tsx's FriendsDrawerLink), which closes itself first so this doesn't stack
-  // on top of it. 75vw per the "look nicer as a wide dialog" request, matching the width other
-  // wide dialogs in this app already use (AvatarEditDialog/BannerEditDialog/AssetLightbox).
-  const openFriendsPanel = () => {
-    if (!currentUser) return;
-    dialog.show(() => <FriendsPanel mode="owned" currentUserId={currentUser.id} />, { title: 'Friends', width: '75vw' });
-  };
-
-  // 'contact:replied' notifications carry a communication id in actionUrl (as
-  // "/contact/thread/<id>") purely as a string carrier, never as a real route - see
-  // onNotificationClick below, which intercepts this type before the normal navigate() call.
-  const openCommunicationThreadDialog = (communicationId: string) => {
-    dialog.show(() => <ContactThreadDialogContent communicationId={communicationId} />, {
-      title: 'Your message',
-      width: 600,
-    });
-  };
-  const extractCommunicationThreadId = (actionUrl?: string): string | undefined =>
-    actionUrl?.match(/^\/contact\/thread\/(.+)$/)?.[1];
+  const resolvedNotificationHooks = useResolvedNotificationHooks();
 
   useEffect(() => {
     document.title = appName;
@@ -117,6 +91,8 @@ export function App() {
     if (isBootstrapDataReady) setHasBootstrapped(true);
   }, [isBootstrapDataReady]);
 
+  // inithium:anchor:before-return
+
   return (
     // The absolute top-level container: a near-black backdrop so the (mostly slate-100/surface)
     // pages have real contrast to fade or slide against — without this, a page fading toward
@@ -134,25 +110,33 @@ export function App() {
             showPersistentNotificationCenter={showPersistentNotificationCenter}
             profileEnabled={profileEnabled}
             onChangePasswordClick={openChangePasswordDialog}
-            friendsHref={currentUser ? `/profile/${currentUser.id}?tab=friends` : undefined}
-            onOpenFriendsPanel={currentUser ? openFriendsPanel : undefined}
             onNotificationClick={(notification) => {
               markAsRead(notification.id);
-              if (notification.type === 'friend:request-received') void markFriendRequestsSeen();
-              if (notification.type === 'contact:replied') {
-                const communicationId = extractCommunicationThreadId(notification.actionUrl);
-                if (communicationId) openCommunicationThreadDialog(communicationId);
+              // A plugin that needs custom notification-click behavior drops its own
+              // *.notification-hook.ts file rather than editing this callback - see
+              // notificationHooks/registry.ts. Two hooks both claiming the same notification is
+              // a plugin-authoring bug (hooks must key off their own disjoint notification
+              // types), surfaced loudly in dev rather than silently resolved by install order.
+              const matches = resolvedNotificationHooks.filter((hook) => hook.test(notification));
+              if (matches.length > 1 && import.meta.env?.DEV) {
+                console.warn(
+                  `Multiple notification hooks matched notification type "${notification.type}" - only the first will handle it.`,
+                );
+              }
+              if (matches[0]) {
+                matches[0].onClick?.(notification, { navigate });
                 return;
               }
               if (notification.actionUrl) navigate(notification.actionUrl);
             }}
             onMarkAllNotificationsRead={() => {
               markAllAsRead();
-              void markFriendRequestsSeen();
+              resolvedNotificationHooks.forEach((hook) => hook.onMarkAllRead?.());
             }}
             onNotificationDelete={removeNotification}
             onLogin={() => navigate('/login')}
             onLogout={logout}
+            // inithium:anchor:navbar-props
             logo={{ src: '/logo.webp', alt: appName }}
             title={appName}
             height={NAVBAR_HEIGHT}

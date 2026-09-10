@@ -56,6 +56,10 @@ export const createMongoPageRepository = (model: Model<PageDocument>): PageRepos
     const pages = await model.find({ isPublished: true }).exec();
     return pages.map(mapToPageEntity);
   },
+  findPluginPages: async (): Promise<PageEntity[]> => {
+    const pages = await model.find({ isPluginPage: true }).exec();
+    return pages.map(mapToPageEntity);
+  },
   findMany: async (options: FindManyPagesOptions): Promise<PaginatedResult<PageEntity>> => {
     const { page, pageSize, search, searchField } = options;
     const filter: QueryFilter<PageDocument> = {};
@@ -82,5 +86,9 @@ export const createMongoPageRepository = (model: Model<PageDocument>): PageRepos
     // are still replaced wholesale, not deep-merged.
     const page = await model.findByIdAndUpdate(id, { $set: input }, { new: true, runValidators: true }).exec();
     return page ? mapToPageEntity(page) : null;
+  },
+  delete: async (id: string): Promise<boolean> => {
+    const result = await model.findByIdAndDelete(id).exec();
+    return result !== null;
   },
 });

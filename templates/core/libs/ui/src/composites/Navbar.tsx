@@ -63,13 +63,6 @@ export interface NavbarProps {
   // default-enabled fallback.
   readonly profileEnabled?: boolean;
   readonly onChangePasswordClick?: () => void;
-  // The drawer's "Friends" item, from the friends plugin (absent entirely when it isn't
-  // installed - both are undefined and the item just doesn't render). When profileEnabled is
-  // true this is a Link to the profile page's Friends tab; when false there's no profile page to
-  // link to, so onOpenFriendsPanel instead closes this drawer and opens the same owned-friends UI
-  // in a wide dialog (see the friends plugin's own app.tsx wiring for what it renders).
-  readonly friendsHref?: string;
-  readonly onOpenFriendsPanel?: () => void;
 }
 
 const DEFAULT_HEIGHT = 64;
@@ -133,55 +126,12 @@ const ProfileDrawerLink = ({
     </Button>
   );
 
-// Mirrors ProfileDrawerLink's own profileEnabled-driven branch: a Link to the profile page's
-// Friends tab when profiles are on, or (like the Change Password fallback below it) a Button
-// that closes this drawer and opens the FriendsPanel in a dialog instead when they're off - there
-// being no profile page to embed a tab in. Renders nothing when the friends plugin isn't
-// installed (both props absent).
-const FriendsDrawerLink = ({
-  profileEnabled,
-  friendsHref,
-  onOpenFriendsPanel,
-  onNavigate,
-}: {
-  profileEnabled: boolean;
-  friendsHref?: string;
-  onOpenFriendsPanel?: () => void;
-  onNavigate: () => void;
-}) => {
-  if (profileEnabled && friendsHref) {
-    return (
-      <Button asChild variant={{ kind: 'link', color: 'accent' }} textColor={{ color: 'surface', intensity: 950 }} onClick={onNavigate}>
-        <Link to={friendsHref}>Friends</Link>
-      </Button>
-    );
-  }
-  if (!profileEnabled && onOpenFriendsPanel) {
-    return (
-      <Button
-        variant={{ kind: 'link', color: 'accent' }}
-        textColor={{ color: 'surface', intensity: 950 }}
-        className="justify-start"
-        onClick={() => {
-          onNavigate();
-          onOpenFriendsPanel();
-        }}
-      >
-        Friends
-      </Button>
-    );
-  }
-  return null;
-};
-
 const AuthenticatedDrawerContent = ({
   primaryNavPages,
   profileNavPages,
   currentUser,
   profileEnabled,
   onChangePasswordClick,
-  friendsHref,
-  onOpenFriendsPanel,
   onLogout,
   close,
 }: {
@@ -190,8 +140,6 @@ const AuthenticatedDrawerContent = ({
   currentUser: NavbarUser;
   profileEnabled: boolean;
   onChangePasswordClick?: () => void;
-  friendsHref?: string;
-  onOpenFriendsPanel?: () => void;
   onLogout?: () => void;
   close: () => void;
 }) => (
@@ -214,12 +162,6 @@ const AuthenticatedDrawerContent = ({
         currentUser={currentUser}
         profileEnabled={profileEnabled}
         onChangePasswordClick={onChangePasswordClick}
-        onNavigate={close}
-      />
-      <FriendsDrawerLink
-        profileEnabled={profileEnabled}
-        friendsHref={friendsHref}
-        onOpenFriendsPanel={onOpenFriendsPanel}
         onNavigate={close}
       />
     </Box>
@@ -294,8 +236,6 @@ export const Navbar = ({
   showPersistentNotificationCenter = false,
   profileEnabled = true,
   onChangePasswordClick,
-  friendsHref,
-  onOpenFriendsPanel,
 }: NavbarProps) => {
   const openAuthenticatedDrawer = () => {
     if (!currentUser) return;
@@ -307,8 +247,6 @@ export const Navbar = ({
           currentUser={currentUser}
           profileEnabled={profileEnabled}
           onChangePasswordClick={onChangePasswordClick}
-          friendsHref={friendsHref}
-          onOpenFriendsPanel={onOpenFriendsPanel}
           onLogout={onLogout}
           close={close}
         />

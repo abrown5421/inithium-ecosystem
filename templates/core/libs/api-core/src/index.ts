@@ -7,12 +7,8 @@ import presenceRouter from './routes/presence.route';
 import notificationsRouter from './routes/notifications.route';
 import usersRouter from './routes/users.route';
 import settingsRouter from './routes/settings.route';
-import blogRouter from './routes/blog.route';
 import profileRouter from './routes/profile.route';
-import storageRouter from './routes/storage.route';
-import friendsRouter from './routes/friends.route';
-import galleryRouter from './routes/gallery.route';
-import contactRouter from './routes/contact.route';
+// inithium:anchor:imports
 
 export const registerCoreRoutes = (app: Express): void => {
   app.use(healthRouter);
@@ -23,15 +19,9 @@ export const registerCoreRoutes = (app: Express): void => {
   app.use(notificationsRouter);
   app.use(usersRouter);
   app.use(settingsRouter);
-  app.use(blogRouter);
   app.use(profileRouter);
-  app.use(storageRouter);
-  app.use(friendsRouter);
-  app.use(galleryRouter);
-  app.use(contactRouter);
-  console.log(
-    '📋 Core routes registered: /health, /auth/*, /api/health, /api/test-error, /api/pages/*, /api/users/:id/presence, /api/notifications*, /api/users*, /api/settings*, /api/blog*, /api/profile*, /api/storage*, /api/friends*, /api/gallery*, /api/contact*'
-  );
+  // inithium:anchor:routes
+  console.log('✅ Core routes registered');
 };
 
 export { createCrudService } from './services/createCrudService';

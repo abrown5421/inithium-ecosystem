@@ -10,29 +10,30 @@
     "plugins": []
   },
   "injections": [
-    { "target": "libs/permissions/src/roles/role-capability-defaults.ts", "source": "src/permissions/roles/role-capability-defaults.ts" },
+    { "target": "libs/permissions/src/roles/role-capability-defaults.ts", "source": "src/permissions/roles/role-capability-defaults.fragment.ts", "strategy": "merge" },
+
     { "target": "libs/db/src/contracts/gallery-image.contract.ts", "source": "src/db/contracts/gallery-image.contract.ts" },
-    { "target": "libs/db/src/contracts/db-provider.contract.ts", "source": "src/db/contracts/db-provider.contract.ts" },
+    { "target": "libs/db/src/contracts/db-provider.contract.ts", "source": "src/db/contracts/db-provider.fragment.ts", "strategy": "merge" },
     { "target": "libs/db/src/schemas/gallery-image.schema.ts", "source": "src/db/schemas/gallery-image.schema.ts" },
     { "target": "libs/db/src/providers/mongo/gallery-image.repository.ts", "source": "src/db/providers/mongo/gallery-image.repository.ts" },
-    { "target": "libs/db/src/providers/mongo/mongo.provider.ts", "source": "src/db/providers/mongo/mongo.provider.ts" },
-    { "target": "libs/db/src/index.ts", "source": "src/db/index.ts" },
+    { "target": "libs/db/src/providers/mongo/mongo.provider.ts", "source": "src/db/providers/mongo/mongo.provider.fragment.ts", "strategy": "merge" },
+    { "target": "libs/db/src/index.ts", "source": "src/db/index.fragment.ts", "strategy": "merge" },
     { "target": "libs/db/src/page-seeds/gallery.page-seed.ts", "source": "src/db/page-seeds/gallery.page-seed.ts" },
-    { "target": "libs/db/src/page-seeds/registry.ts", "source": "src/db/page-seeds/registry.ts" },
+    { "target": "libs/db/src/page-seeds/registry.ts", "source": "src/db/page-seeds/registry.fragment.ts", "strategy": "merge" },
 
     { "target": "libs/api-core/src/schemas/gallery.schema.ts", "source": "src/api-core/schemas/gallery.schema.ts" },
     { "target": "libs/api-core/src/routes/gallery.route.ts", "source": "src/api-core/routes/gallery.route.ts" },
-    { "target": "libs/api-core/src/index.ts", "source": "src/api-core/index.ts" },
+    { "target": "libs/api-core/src/index.ts", "source": "src/api-core/index.fragment.ts", "strategy": "merge" },
     { "target": "libs/api-core/src/routes/gallery.route.ts", "source": "src/api-core/routes/gallery.route.storage.ts", "requires": "storage" },
 
     { "target": "apps/api/uploads/gallery/.gitkeep", "source": "src/apps/api/uploads/gallery/.gitkeep" },
 
     { "target": "libs/api-client/src/endpoints/gallery.endpoints.ts", "source": "src/api-client/endpoints/gallery.endpoints.ts" },
-    { "target": "libs/api-client/src/baseApi.ts", "source": "src/api-client/baseApi.ts" },
-    { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.ts" },
+    { "target": "libs/api-client/src/baseApi.ts", "source": "src/api-client/baseApi.fragment.ts", "strategy": "merge" },
+    { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.fragment.ts", "strategy": "merge" },
 
     { "target": "apps/web/src/pages/GalleryPage.tsx", "source": "src/pages/GalleryPage.tsx" },
-    { "target": "apps/web/src/pages/pageComponents.ts", "source": "src/pages/pageComponents.ts" },
+    { "target": "apps/web/src/pages/pageComponents.ts", "source": "src/pages/pageComponents.fragment.ts", "strategy": "merge" },
 
     { "target": "libs/cms/src/modules/gallery-admin.module.tsx", "source": "src/cms/modules/gallery-admin.module.tsx", "requires": "cms" },
     { "target": "libs/cms/src/modules/gallery/GalleryAdminModule.tsx", "source": "src/cms/modules/gallery/GalleryAdminModule.tsx", "requires": "cms" },

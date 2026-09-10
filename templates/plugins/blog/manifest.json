@@ -12,37 +12,33 @@
     "plugins": []
   },
   "injections": [
-    { "target": "libs/permissions/src/roles/role-capability-defaults.ts", "source": "src/permissions/roles/role-capability-defaults.ts" },
+    { "target": "libs/permissions/src/roles/role-capability-defaults.ts", "source": "src/permissions/roles/role-capability-defaults.fragment.ts", "strategy": "merge" },
+
     { "target": "libs/db/src/contracts/blog.contract.ts", "source": "src/db/contracts/blog.contract.ts" },
-    { "target": "libs/db/src/contracts/db-provider.contract.ts", "source": "src/db/contracts/db-provider.contract.ts" },
+    { "target": "libs/db/src/contracts/db-provider.contract.ts", "source": "src/db/contracts/db-provider.fragment.ts", "strategy": "merge" },
     { "target": "libs/db/src/schemas/blog-post.schema.ts", "source": "src/db/schemas/blog-post.schema.ts" },
     { "target": "libs/db/src/providers/mongo/blog-post.repository.ts", "source": "src/db/providers/mongo/blog-post.repository.ts" },
-    { "target": "libs/db/src/providers/mongo/mongo.provider.ts", "source": "src/db/providers/mongo/mongo.provider.ts" },
+    { "target": "libs/db/src/providers/mongo/mongo.provider.ts", "source": "src/db/providers/mongo/mongo.provider.fragment.ts", "strategy": "merge" },
     { "target": "libs/db/src/utils/generateExcerptFromHtml.ts", "source": "src/db/utils/generateExcerptFromHtml.ts" },
-    { "target": "libs/db/src/index.ts", "source": "src/db/index.ts" },
+    { "target": "libs/db/src/index.ts", "source": "src/db/index.fragment.ts", "strategy": "merge" },
     { "target": "libs/db/src/page-seeds/blog.page-seed.ts", "source": "src/db/page-seeds/blog.page-seed.ts" },
     { "target": "libs/db/src/page-seeds/blog-post.page-seed.ts", "source": "src/db/page-seeds/blog-post.page-seed.ts" },
-    { "target": "libs/db/src/page-seeds/registry.ts", "source": "src/db/page-seeds/registry.ts" },
+    { "target": "libs/db/src/page-seeds/registry.ts", "source": "src/db/page-seeds/registry.fragment.ts", "strategy": "merge" },
 
     { "target": "libs/api-core/src/schemas/blog.schema.ts", "source": "src/api-core/schemas/blog.schema.ts" },
     { "target": "libs/api-core/src/routes/blog.route.ts", "source": "src/api-core/routes/blog.route.ts" },
-    { "target": "libs/api-core/src/index.ts", "source": "src/api-core/index.ts" },
+    { "target": "libs/api-core/src/index.ts", "source": "src/api-core/index.fragment.ts", "strategy": "merge" },
 
     { "target": "libs/api-client/src/endpoints/blog.endpoints.ts", "source": "src/api-client/endpoints/blog.endpoints.ts" },
-    { "target": "libs/api-client/src/baseApi.ts", "source": "src/api-client/baseApi.ts" },
-    { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.ts" },
-
-    { "target": "libs/ui/src/components/Card/Card.tsx", "source": "src/ui/components/Card/Card.tsx" },
-    { "target": "libs/ui/src/components/Pill/Pill.tsx", "source": "src/ui/components/Pill/Pill.tsx" },
-    { "target": "libs/ui/src/components/index.ts", "source": "src/ui/components/index.ts" },
-    { "target": "libs/ui/src/index.ts", "source": "src/ui/index.ts" },
+    { "target": "libs/api-client/src/baseApi.ts", "source": "src/api-client/baseApi.fragment.ts", "strategy": "merge" },
+    { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.fragment.ts", "strategy": "merge" },
 
     { "target": "apps/web/src/pages/blogBannerConfig.ts", "source": "src/pages/blogBannerConfig.ts" },
     { "target": "apps/web/src/pages/BlogIndexPage.tsx", "source": "src/pages/BlogIndexPage.tsx" },
     { "target": "apps/web/src/pages/BlogPostPage.tsx", "source": "src/pages/BlogPostPage.tsx" },
-    { "target": "apps/web/src/pages/pageComponents.ts", "source": "src/pages/pageComponents.ts" },
+    { "target": "apps/web/src/pages/pageComponents.ts", "source": "src/pages/pageComponents.fragment.ts", "strategy": "merge" },
 
-    { "target": "libs/cms/package.json", "source": "src/cms/package.json", "requires": "cms" },
+    { "target": "libs/cms/package.json", "source": "src/cms/package.deps.json", "strategy": "package-json-merge", "requires": "cms" },
     { "target": "libs/cms/src/settings/definitions/blog-comments-enabled.setting.ts", "source": "src/cms/settings/definitions/blog-comments-enabled.setting.ts", "requires": "cms" },
     { "target": "libs/cms/src/permissions/definitions/blog-manage.capability.ts", "source": "src/cms/permissions/definitions/blog-manage.capability.ts", "requires": "cms" },
     { "target": "libs/cms/src/permissions/definitions/blog-manage-comments.capability.ts", "source": "src/cms/permissions/definitions/blog-manage-comments.capability.ts", "requires": "cms" },

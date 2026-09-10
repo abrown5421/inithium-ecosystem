@@ -23,9 +23,7 @@
       "@inithium/api-core": ["./libs/api-core/src/index.ts"],
       "@inithium/api-client": ["./libs/api-client/src/index.ts"],
       "@inithium/api-utils": ["./libs/api-utils/src/index.ts"],
-      "@inithium/ui": ["./libs/ui/src/index.ts"],
-      "@inithium/cms": ["./libs/cms/src/index.ts"],
-      "@inithium/storage": ["./libs/storage/src/index.ts"]
+      "@inithium/ui": ["./libs/ui/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

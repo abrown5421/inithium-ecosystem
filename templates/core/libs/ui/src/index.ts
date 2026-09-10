@@ -187,6 +187,7 @@ export {
   Banner,
   Card,
   Pill,
+  // inithium:anchor:components
 } from './components';
 export type {
   TextProps,
@@ -219,6 +220,7 @@ export type {
   BannerProps,
   CardProps,
   PillProps,
+  // inithium:anchor:component-types
 } from './components';
 
 export {
@@ -233,14 +235,10 @@ export {
   ColorSpecPicker,
   AutoIncrementingList,
   Pagination,
-  SearchFilterBar,
-  ListRow,
-  useSelection,
   ChangePasswordDialog,
   AvatarEditDialog,
   BannerEditDialog,
-  MediaField,
-  CommunicationThread,
+  // inithium:anchor:composites
 } from './composites';
 export type {
   NavbarProps,
@@ -258,16 +256,5 @@ export type {
   ChangePasswordDialogProps,
   AvatarEditDialogProps,
   BannerEditDialogProps,
-  CommunicationThreadProps,
-  CommunicationThreadData,
-  CommunicationThreadMessage,
-  CommunicationThreadAuthorRole,
-  MediaFieldProps,
-  MediaFieldTab,
-  MediaFieldHandle,
-  UploadedAsset,
-  SearchFilterBarProps,
-  SearchFilterFieldOption,
-  ListRowProps,
-  UseSelectionResult,
+  // inithium:anchor:composite-types
 } from './composites';

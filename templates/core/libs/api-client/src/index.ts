@@ -69,8 +69,6 @@ export {
   useShowPersistentNotificationCenter,
   useIsProfileEnabled,
   useIsDarkModeFeatureEnabled,
-  useIsContactCaptchaEnabled,
-  useContactCaptchaSiteKey,
   useCustomBrandColors,
   SETTING_TYPES,
 } from './endpoints/settings.endpoints';
@@ -91,90 +89,4 @@ export {
 } from './endpoints/profile.endpoints';
 export type { ProfileDto, UpdateMyProfileInput, ChangePasswordInput } from './endpoints/profile.endpoints';
 
-export {
-  blogApi,
-  useListBlogPostsQuery,
-  useGetBlogPostQuery,
-  useCreateBlogPostMutation,
-  useUpdateBlogPostMutation,
-  useDeleteBlogPostMutation,
-  useAddBlogCommentMutation,
-  useReplyToBlogCommentMutation,
-  useDeleteBlogCommentMutation,
-  useListBlogCategoriesQuery,
-  useListBlogAuthorsQuery,
-} from './endpoints/blog.endpoints';
-export type {
-  BlogPostEntity,
-  CommentEntity,
-  ListBlogPostsParams,
-  ListBlogPostsResult,
-  CreateBlogPostInput,
-  UpdateBlogPostInput,
-} from './endpoints/blog.endpoints';
-
-export { storageApi, useUploadAssetMutation, useListUserAssetsQuery, useDeleteAssetMutation } from './endpoints/storage.endpoints';
-export type { UploadAssetResult, UploadAssetInput, AssetDto, ListUserAssetsParams } from './endpoints/storage.endpoints';
-
-export {
-  friendsApi,
-  useListMyFriendsQuery,
-  useListFriendCandidatesQuery,
-  useListUserFriendsQuery,
-  useGetFriendStatusQuery,
-  useSendFriendRequestMutation,
-  useAcceptFriendRequestMutation,
-  useDeleteFriendRequestMutation,
-  useMarkFriendRequestsSeenMutation,
-} from './endpoints/friends.endpoints';
-export type {
-  FriendStatus,
-  FriendDirection,
-  FriendUserSummary,
-  FriendListEntry,
-  FriendOfUserEntry,
-  FriendStatusResult,
-  ListFriendsParams,
-  ListFriendsResult,
-  ListFriendCandidatesParams,
-  ListFriendCandidatesResult,
-  ListUserFriendsParams,
-  ListUserFriendsResult,
-} from './endpoints/friends.endpoints';
-
-export {
-  galleryApi,
-  useListPublishedGalleryImagesQuery,
-  useListGalleryImagesAdminQuery,
-  useUploadGalleryImageLocalMutation,
-  useCreateGalleryImageMutation,
-  useUpdateGalleryImageMutation,
-  useDeleteGalleryImageMutation,
-} from './endpoints/gallery.endpoints';
-export type {
-  GalleryImageDto,
-  ListPublishedGalleryImagesParams,
-  ListGalleryImagesAdminParams,
-  ListGalleryImagesResult,
-  GalleryImageWriteInput,
-  UpdateGalleryImageInput,
-  UploadGalleryImageLocalResult,
-} from './endpoints/gallery.endpoints';
-
-export {
-  contactApi,
-  useSubmitContactMutation,
-  useAddContactMessageMutation,
-  useGetContactInboxQuery,
-  useGetMyContactThreadsQuery,
-  useGetContactThreadQuery,
-  useDeleteContactMutation,
-} from './endpoints/contact.endpoints';
-export type {
-  CommunicationMessageDto,
-  CommunicationDto,
-  SubmitContactInput,
-  AddContactMessageInput,
-  ListContactInboxParams,
-  ListContactInboxResult,
-} from './endpoints/contact.endpoints';
+// inithium:anchor:exports

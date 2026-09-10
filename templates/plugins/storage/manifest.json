@@ -12,7 +12,8 @@
     "plugins": []
   },
   "injections": [
-    { "target": "libs/permissions/src/roles/role-capability-defaults.ts", "source": "src/permissions/roles/role-capability-defaults.ts" },
+    { "target": "libs/permissions/src/roles/role-capability-defaults.ts", "source": "src/permissions/roles/role-capability-defaults.fragment.ts", "strategy": "merge" },
+
     { "target": "libs/storage/package.json", "source": "src/storage/package.json" },
     { "target": "libs/storage/project.json", "source": "src/storage/project.json" },
     { "target": "libs/storage/tsconfig.json", "source": "src/storage/tsconfig.json" },
@@ -24,26 +25,25 @@
     { "target": "libs/db/src/contracts/asset.contract.ts", "source": "src/db/contracts/asset.contract.ts" },
     { "target": "libs/db/src/schemas/asset.schema.ts", "source": "src/db/schemas/asset.schema.ts" },
     { "target": "libs/db/src/providers/mongo/asset.repository.ts", "source": "src/db/providers/mongo/asset.repository.ts" },
-    { "target": "libs/db/src/contracts/db-provider.contract.ts", "source": "src/db/contracts/db-provider.contract.ts" },
-    { "target": "libs/db/src/providers/mongo/mongo.provider.ts", "source": "src/db/providers/mongo/mongo.provider.ts" },
-    { "target": "libs/db/src/index.ts", "source": "src/db/index.ts" },
+    { "target": "libs/db/src/contracts/db-provider.contract.ts", "source": "src/db/contracts/db-provider.fragment.ts", "strategy": "merge" },
+    { "target": "libs/db/src/providers/mongo/mongo.provider.ts", "source": "src/db/providers/mongo/mongo.provider.fragment.ts", "strategy": "merge" },
+    { "target": "libs/db/src/index.ts", "source": "src/db/index.fragment.ts", "strategy": "merge" },
 
     { "target": "libs/api-core/src/schemas/storage.schema.ts", "source": "src/api-core/schemas/storage.schema.ts" },
     { "target": "libs/api-core/src/routes/storage.route.ts", "source": "src/api-core/routes/storage.route.ts" },
-    { "target": "libs/api-core/src/index.ts", "source": "src/api-core/index.ts" },
+    { "target": "libs/api-core/src/index.ts", "source": "src/api-core/index.fragment.ts", "strategy": "merge" },
 
     { "target": "libs/api-client/src/endpoints/storage.endpoints.ts", "source": "src/api-client/endpoints/storage.endpoints.ts" },
-    { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.ts" },
-    { "target": "libs/api-client/src/baseApi.ts", "source": "src/api-client/baseApi.ts" },
+    { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.fragment.ts", "strategy": "merge" },
+    { "target": "libs/api-client/src/baseApi.ts", "source": "src/api-client/baseApi.fragment.ts", "strategy": "merge" },
 
     { "target": "libs/ui/src/composites/MediaField.tsx", "source": "src/ui/composites/MediaField.tsx" },
     { "target": "libs/ui/src/composites/AvatarEditDialog.tsx", "source": "src/ui/composites/AvatarEditDialog.tsx" },
     { "target": "libs/ui/src/composites/BannerEditDialog.tsx", "source": "src/ui/composites/BannerEditDialog.tsx" },
-    { "target": "libs/ui/src/composites/index.ts", "source": "src/ui/composites/index.ts" },
-    { "target": "libs/ui/src/index.ts", "source": "src/ui/index.ts" },
-    { "target": "libs/ui/tsconfig.lib.json", "source": "src/ui/tsconfig.lib.json" },
+    { "target": "libs/ui/src/composites/index.ts", "source": "src/ui/composites/index.fragment.ts", "strategy": "merge" },
+    { "target": "libs/ui/src/index.ts", "source": "src/ui/index.fragment.ts", "strategy": "merge" },
 
-    { "target": "tsconfig.base.json", "source": "src/tsconfig.base.json" },
+    { "target": "tsconfig.base.json", "source": "src/tsconfig-paths.fragment.json", "strategy": "tsconfig-paths-merge" },
 
     { "target": "apps/web/src/pages/profile/tabs/assets.tab.tsx", "source": "src/pages/profile/tabs/assets.tab.tsx" },
 

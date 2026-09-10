@@ -1,6 +1,16 @@
 import fs from 'fs-extra';
 import path from 'path';
 
+export type InjectionStrategy = 'overwrite' | 'merge' | 'package-json-merge' | 'tsconfig-paths-merge';
+
+export interface PluginManifestInjection {
+  target: string;
+  source: string;
+  requires?: string;
+  /** Defaults to 'overwrite' (today's whole-file/whole-directory copy) when omitted. */
+  strategy?: InjectionStrategy;
+}
+
 export interface PluginManifest {
   name: string;
   version: string;
@@ -9,11 +19,7 @@ export interface PluginManifest {
     npm?: Record<string, string>;
     plugins?: string[];
   };
-  injections?: Array<{
-    target: string;
-    source: string;
-    requires?: string;
-  }>;
+  injections?: PluginManifestInjection[];
 }
 
 export const readJsonFile = async <T>(filePath: string): Promise<T | null> => {
@@ -60,13 +66,22 @@ export const updatePackageJsonWithPlugin = async (
 
 export const removePackageDependencies = (
   targetDeps: Record<string, string> = {},
-  depsToRemove: Record<string, string> = {}
+  depsToRemove: Record<string, string> = {},
+  stillNeeded: Record<string, string> = {}
 ): Record<string, string> =>
-  Object.fromEntries(Object.entries(targetDeps).filter(([key]) => !(key in depsToRemove)));
+  Object.fromEntries(
+    Object.entries(targetDeps).filter(([key]) => !(key in depsToRemove) || key in stillNeeded)
+  );
 
+/**
+ * `stillNeededDeps` should be the union of every OTHER still-installed plugin's own npm
+ * dependencies — without it, removing one plugin can strip a package a different installed
+ * plugin still relies on (confirmed real: both `gallery` and `storage` declare `multer`).
+ */
 export const removePackageJsonPlugin = async (
   targetProjectRoot: string,
-  pluginManifest: PluginManifest
+  pluginManifest: PluginManifest,
+  stillNeededDeps: Record<string, string> = {}
 ): Promise<void> => {
   const pkgPath = path.join(targetProjectRoot, 'package.json');
   const existingPkg = await readJsonFile<Record<string, unknown>>(pkgPath);
@@ -78,7 +93,7 @@ export const removePackageJsonPlugin = async (
 
   const updatedPkg = {
     ...existingPkg,
-    dependencies: removePackageDependencies(currentDeps, depsToRemove),
+    dependencies: removePackageDependencies(currentDeps, depsToRemove, stillNeededDeps),
   };
 
   await writeJsonFile(pkgPath, updatedPkg);

@@ -18,6 +18,16 @@ export const baseApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Page', 'User', 'Presence', 'Notification', 'Settings', 'Post', 'Comment', 'Profile', 'Asset', 'Friend', 'GalleryImage', 'Communication'],
+  // One tag type per line (not a single-line array) so a plugin's merge fragment can append its
+  // own tag(s) as new lines before the closing bracket, instead of splicing inside one line.
+  tagTypes: [
+    'Page',
+    'User',
+    'Presence',
+    'Notification',
+    'Settings',
+    'Profile',
+    // inithium:anchor:tag-types
+  ],
   endpoints: () => ({}),
 });

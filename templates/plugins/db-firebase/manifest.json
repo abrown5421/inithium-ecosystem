@@ -18,6 +18,18 @@
       "source": "src/firebase/userRepositoryFirebase.ts"
     },
     {
+      "target": "libs/db/src/providers/firebase/pageRepositoryFirebase.ts",
+      "source": "src/firebase/pageRepositoryFirebase.ts"
+    },
+    {
+      "target": "libs/db/src/providers/firebase/notificationRepositoryFirebase.ts",
+      "source": "src/firebase/notificationRepositoryFirebase.ts"
+    },
+    {
+      "target": "libs/db/src/providers/firebase/settingsRepositoryFirebase.ts",
+      "source": "src/firebase/settingsRepositoryFirebase.ts"
+    },
+    {
       "target": "libs/db/src/providers/active-provider.ts",
       "source": "src/active-provider.ts"
     }
