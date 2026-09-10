@@ -5,7 +5,7 @@ import { StorageProvider, UploadObjectInput, UploadObjectResult } from '../../co
 
 // One driver serves Cloudflare R2 / AWS S3 / DigitalOcean Spaces / any custom S3-compatible
 // endpoint - they only differ by endpoint+credentials, not by API, so there's no per-vendor
-// provider to swap (unlike @inithium/db's Mongo/Firebase split, which genuinely changes SDKs).
+// provider to swap (unlike a swappable database driver, which genuinely changes SDKs).
 const envSchema = z.object({
   STORAGE_ENDPOINT: z.string().min(1, 'STORAGE_ENDPOINT environment variable must be set'),
   STORAGE_REGION: z.string().min(1).default('auto'),

@@ -26,10 +26,7 @@ app.use(express.json());
 
 const startServer = async () => {
   try {
-    await connectDatabase({
-      uri: process.env['MONGO_URI'],
-      credentials: JSON.parse(process.env['FIREBASE_SERVICE_ACCOUNT_KEY'] || '{}'),
-    });
+    await connectDatabase({ uri: process.env['MONGO_URI'] });
     await connectRealtime();
     // Idempotent - creates only the pages missing by slug, never touches an existing (possibly
     // admin-edited) one. Runs on every boot, which is what makes a plugin's newly seeded pages
