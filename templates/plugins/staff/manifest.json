@@ -1,0 +1,45 @@
+{
+  "name": "staff",
+  "version": "1.0.0",
+  "description": "Staff member directory linked to user accounts, with a public team page and an optional CMS management module",
+  "dependencies": {
+    "npm": {
+      "multer": "^2.0.0",
+      "@types/multer": "^1.4.12"
+    },
+    "plugins": []
+  },
+  "injections": [
+    { "target": "libs/permissions/src/roles/role-capability-defaults.ts", "source": "src/permissions/roles/role-capability-defaults.fragment.ts", "strategy": "merge" },
+
+    { "target": "libs/db/src/contracts/staff.contract.ts", "source": "src/db/contracts/staff.contract.ts" },
+    { "target": "libs/db/src/contracts/db-provider.contract.ts", "source": "src/db/contracts/db-provider.fragment.ts", "strategy": "merge" },
+    { "target": "libs/db/src/schemas/staff.schema.ts", "source": "src/db/schemas/staff.schema.ts" },
+    { "target": "libs/db/src/providers/mongo/staff.repository.ts", "source": "src/db/providers/mongo/staff.repository.ts" },
+    { "target": "libs/db/src/providers/mongo/mongo.provider.ts", "source": "src/db/providers/mongo/mongo.provider.fragment.ts", "strategy": "merge" },
+    { "target": "libs/db/src/index.ts", "source": "src/db/index.fragment.ts", "strategy": "merge" },
+    { "target": "libs/db/src/page-seeds/staff.page-seed.ts", "source": "src/db/page-seeds/staff.page-seed.ts" },
+    { "target": "libs/db/src/page-seeds/registry.ts", "source": "src/db/page-seeds/registry.fragment.ts", "strategy": "merge" },
+
+    { "target": "libs/api-core/src/schemas/staff.schema.ts", "source": "src/api-core/schemas/staff.schema.ts" },
+    { "target": "libs/api-core/src/routes/staff.route.ts", "source": "src/api-core/routes/staff.route.ts" },
+    { "target": "libs/api-core/src/index.ts", "source": "src/api-core/index.fragment.ts", "strategy": "merge" },
+    { "target": "libs/api-core/src/routes/staff.route.ts", "source": "src/api-core/routes/staff.route.storage.ts", "requires": "storage" },
+
+    { "target": "apps/api/uploads/staff/.gitkeep", "source": "src/apps/api/uploads/staff/.gitkeep" },
+
+    { "target": "libs/api-client/src/endpoints/staff.endpoints.ts", "source": "src/api-client/endpoints/staff.endpoints.ts" },
+    { "target": "libs/api-client/src/baseApi.ts", "source": "src/api-client/baseApi.fragment.ts", "strategy": "merge" },
+    { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.fragment.ts", "strategy": "merge" },
+
+    { "target": "apps/web/src/pages/StaffPage.tsx", "source": "src/pages/StaffPage.tsx" },
+    { "target": "apps/web/src/pages/pageComponents.ts", "source": "src/pages/pageComponents.fragment.ts", "strategy": "merge" },
+
+    { "target": "libs/cms/src/permissions/definitions/staff-manage.capability.ts", "source": "src/cms/permissions/definitions/staff-manage.capability.ts", "requires": "cms" },
+    { "target": "libs/cms/src/modules/staff-admin.module.tsx", "source": "src/cms/modules/staff-admin.module.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/staff/StaffAdminModule.tsx", "source": "src/cms/modules/staff/StaffAdminModule.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/staff/UserPicker.tsx", "source": "src/cms/modules/staff/UserPicker.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/staff/StaffEditDialog.tsx", "source": "src/cms/modules/staff/StaffEditDialog.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/staff/StaffEditDialog.tsx", "source": "src/cms/modules/staff/StaffEditDialog.storage.tsx", "requires": "storage" }
+  ]
+}
