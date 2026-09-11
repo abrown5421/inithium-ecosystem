@@ -1,0 +1,54 @@
+{
+  "name": "time",
+  "version": "1.0.0",
+  "description": "Employee time-clock: self-service clock in/out, an owner/admin review calendar with remediation and audit history, and configurable entry types - fully standalone of the CMS",
+  "dependencies": {
+    "npm": {},
+    "plugins": []
+  },
+  "injections": [
+    { "target": "libs/permissions/src/roles/role-capability-defaults.ts", "source": "src/permissions/roles/role-capability-defaults.fragment.ts", "strategy": "merge" },
+
+    { "target": "libs/db/src/contracts/time-entry.contract.ts", "source": "src/db/contracts/time-entry.contract.ts" },
+    { "target": "libs/db/src/contracts/time-entry-type.contract.ts", "source": "src/db/contracts/time-entry-type.contract.ts" },
+    { "target": "libs/db/src/contracts/time-settings.contract.ts", "source": "src/db/contracts/time-settings.contract.ts" },
+    { "target": "libs/db/src/contracts/time-audit-log.contract.ts", "source": "src/db/contracts/time-audit-log.contract.ts" },
+    { "target": "libs/db/src/contracts/db-provider.contract.ts", "source": "src/db/contracts/db-provider.fragment.ts", "strategy": "merge" },
+
+    { "target": "libs/db/src/schemas/time-entry.schema.ts", "source": "src/db/schemas/time-entry.schema.ts" },
+    { "target": "libs/db/src/schemas/time-entry-type.schema.ts", "source": "src/db/schemas/time-entry-type.schema.ts" },
+    { "target": "libs/db/src/schemas/time-settings.schema.ts", "source": "src/db/schemas/time-settings.schema.ts" },
+    { "target": "libs/db/src/schemas/time-audit-log.schema.ts", "source": "src/db/schemas/time-audit-log.schema.ts" },
+
+    { "target": "libs/db/src/providers/mongo/time-entry.repository.ts", "source": "src/db/providers/mongo/time-entry.repository.ts" },
+    { "target": "libs/db/src/providers/mongo/time-entry-type.repository.ts", "source": "src/db/providers/mongo/time-entry-type.repository.ts" },
+    { "target": "libs/db/src/providers/mongo/time-settings.repository.ts", "source": "src/db/providers/mongo/time-settings.repository.ts" },
+    { "target": "libs/db/src/providers/mongo/time-audit-log.repository.ts", "source": "src/db/providers/mongo/time-audit-log.repository.ts" },
+    { "target": "libs/db/src/providers/mongo/mongo.provider.ts", "source": "src/db/providers/mongo/mongo.provider.fragment.ts", "strategy": "merge" },
+    { "target": "libs/db/src/index.ts", "source": "src/db/index.fragment.ts", "strategy": "merge" },
+
+    { "target": "libs/api-core/src/routes/time/timeAccess.ts", "source": "src/api-core/routes/time/timeAccess.ts" },
+    { "target": "libs/api-core/src/routes/time/timeSweep.ts", "source": "src/api-core/routes/time/timeSweep.ts" },
+    { "target": "libs/api-core/src/routes/time/timeZoneMath.ts", "source": "src/api-core/routes/time/timeZoneMath.ts" },
+    { "target": "libs/api-core/src/routes/time/timeDto.ts", "source": "src/api-core/routes/time/timeDto.ts" },
+    { "target": "libs/api-core/src/routes/time/time-clock.route.ts", "source": "src/api-core/routes/time/time-clock.route.ts" },
+    { "target": "libs/api-core/src/routes/time/time-admin.route.ts", "source": "src/api-core/routes/time/time-admin.route.ts" },
+    { "target": "libs/api-core/src/routes/time/time-entry-types.route.ts", "source": "src/api-core/routes/time/time-entry-types.route.ts" },
+    { "target": "libs/api-core/src/routes/time/time-settings.route.ts", "source": "src/api-core/routes/time/time-settings.route.ts" },
+    { "target": "libs/api-core/src/routes/time/time-export.route.ts", "source": "src/api-core/routes/time/time-export.route.ts" },
+    { "target": "libs/api-core/src/schemas/time.schema.ts", "source": "src/api-core/schemas/time.schema.ts" },
+    { "target": "libs/api-core/src/index.ts", "source": "src/api-core/index.fragment.ts", "strategy": "merge" },
+
+    { "target": "libs/api-client/src/endpoints/time-clock.endpoints.ts", "source": "src/api-client/endpoints/time-clock.endpoints.ts" },
+    { "target": "libs/api-client/src/endpoints/time-admin.endpoints.ts", "source": "src/api-client/endpoints/time-admin.endpoints.ts" },
+    { "target": "libs/api-client/src/endpoints/time-entry-types.endpoints.ts", "source": "src/api-client/endpoints/time-entry-types.endpoints.ts" },
+    { "target": "libs/api-client/src/endpoints/time-settings.endpoints.ts", "source": "src/api-client/endpoints/time-settings.endpoints.ts" },
+    { "target": "libs/api-client/src/baseApi.ts", "source": "src/api-client/baseApi.fragment.ts", "strategy": "merge" },
+    { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.fragment.ts", "strategy": "merge" },
+
+    { "target": "libs/time", "source": "src/time" },
+
+    { "target": "apps/web/src/app/RootRouter.tsx", "source": "src/app/RootRouter.fragment.tsx", "strategy": "merge" },
+    { "target": "tsconfig.base.json", "source": "src/tsconfig-paths.fragment.json", "strategy": "tsconfig-paths-merge" }
+  ]
+}
