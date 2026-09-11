@@ -1,0 +1,3 @@
+{
+  "@inithium/time": ["./libs/time/src/index.ts"]
+}
