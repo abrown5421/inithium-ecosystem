@@ -1,11 +1,11 @@
-import { randomUUID } from 'node:crypto';
 import { ConflictError, NotFoundError, ValidationError } from '@inithium/api-utils';
 import { getOrderRepository } from '@inithium/db';
-import type { CreateOrderInput, OrderEntity, OrderLine, OrderStatus } from '@inithium/db';
+import type { CreateOrderInput, OrderEntity, OrderStatus } from '@inithium/db';
 import { getPaymentProvider } from '@inithium/payments';
 import type { PaymentResult } from '@inithium/payments';
 import type { CheckoutQuote } from '../views';
 import { failOrder, finalizeOrder, reserveOrderLines, sweepStalePendingOrders } from './order-lifecycle';
+import { toOrderDiscountSnapshot, toOrderLine } from './order-snapshot';
 import { ensurePaymentCustomer } from './payment-customer';
 import { prepareCheckout } from './prepare-checkout';
 import type { CheckoutDetailsInput, PreparedCheckout } from './prepare-checkout';
@@ -30,43 +30,7 @@ export type PlaceOrderResult =
 
 const buildPendingOrder = (prepared: PreparedCheckout): CreateOrderInput => {
   const { priced, quote, discountState } = prepared;
-  const lines = priced.lines.map((line): OrderLine => {
-    const taxCents = prepared.taxByLineId.get(line.lineId) ?? 0;
-    return {
-      id: randomUUID(),
-      cartLineId: line.lineId,
-      sourceType: line.ref.sourceType,
-      sourceId: line.ref.sourceId,
-      ...(line.ref.variantId ? { variantId: line.ref.variantId } : {}),
-      options: line.ref.options,
-      name: line.resolved.name,
-      ...(line.resolved.description ? { description: line.resolved.description } : {}),
-      ...(line.resolved.imageUrl ? { imageUrl: line.resolved.imageUrl } : {}),
-      ...(line.resolved.href ? { href: line.resolved.href } : {}),
-      categories: line.resolved.categories,
-      ...(line.resolved.taxCode ? { taxCode: line.resolved.taxCode } : {}),
-      requiresShipping: line.resolved.requiresShipping,
-      unitAmountCents: line.unitAmountCents,
-      quantity: line.ref.quantity,
-      subtotalCents: line.subtotalCents,
-      discountCents: line.discountCents,
-      taxCents,
-      totalCents: line.subtotalCents - line.discountCents + taxCents,
-      billing:
-        line.schedule && line.recurring
-          ? {
-              type: 'recurring',
-              interval: line.schedule.interval,
-              intervalCount: line.schedule.intervalCount,
-              recurringUnitAmountCents: line.recurring.unitAmountCents,
-              recurringDiscountCents: line.recurring.discountCents,
-              firstBillingAt: line.schedule.firstBillingAt,
-              ...(line.schedule.endsAt ? { endsAt: line.schedule.endsAt } : {}),
-            }
-          : { type: 'one_time' },
-      reserved: false,
-    };
-  });
+  const lines = priced.lines.map((line) => toOrderLine(line, prepared.taxByLineId.get(line.lineId) ?? 0, line.lineId));
 
   const discount = discountState?.applied ? discountState.discount : undefined;
   const now = new Date();
@@ -84,19 +48,7 @@ const buildPendingOrder = (prepared: PreparedCheckout): CreateOrderInput => {
       taxCents: quote.taxCents,
       totalCents: quote.totalCents,
     },
-    ...(discount
-      ? {
-          discount: {
-            discountId: discount.id,
-            code: discount.code,
-            kind: discount.kind,
-            scope: discount.scope,
-            value: discount.value,
-            duration: discount.duration,
-            ...(discount.durationInMonths ? { durationInMonths: discount.durationInMonths } : {}),
-          },
-        }
-      : {}),
+    ...(discount ? { discount: toOrderDiscountSnapshot(discount) } : {}),
     ...(prepared.shippingMethod && quote.shippingMethod
       ? { shipping: { methodId: prepared.shippingMethod.id, name: prepared.shippingMethod.name, amountCents: quote.shippingCents } }
       : {}),

@@ -9,8 +9,9 @@ import type { DiscountDuration, DiscountKind, DiscountScope } from './discount.c
 export const ORDER_STATUSES = ['pending', 'paid', 'fulfilled', 'cancelled', 'refunded', 'failed'] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
-// checkout - placed by the user through the cart; renewal - created by a subscription's recurring charge
-export const ORDER_KINDS = ['checkout', 'renewal'] as const;
+// checkout - placed by the user through the cart; renewal - created by a subscription's recurring
+// charge; manual - recorded by staff on a customer's behalf, already paid outside the system
+export const ORDER_KINDS = ['checkout', 'renewal', 'manual'] as const;
 export type OrderKind = (typeof ORDER_KINDS)[number];
 
 export type OrderLineBilling =
@@ -111,6 +112,11 @@ export interface OrderEntity {
   // was taken, so these never fail the order - they're surfaced for an admin to resolve.
   fulfillmentErrors: string[];
   statusHistory: OrderStatusChange[];
+  // Staff-only bookkeeping, never shown to the customer.
+  internalNotes?: string;
+  trackingNumber?: string;
+  // The staff member who recorded a manual order.
+  createdByUserId?: string;
   paidAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -123,7 +129,39 @@ export interface FindManyOrdersOptions {
   page: number;
   pageSize: number;
   status?: OrderStatus;
+  kind?: OrderKind;
   userId?: string;
+  // createdAt range, inclusive of from and exclusive of to.
+  from?: Date;
+  to?: Date;
+}
+
+export interface FindOrdersForExportOptions {
+  from: Date;
+  to: Date;
+  status?: OrderStatus;
+}
+
+// Revenue reporting counts orders that were paid and not later cancelled or refunded (checkout,
+// renewal, and manual alike), bucketed by when they were paid.
+export interface SalesAggregationOptions {
+  from: Date;
+  to: Date;
+  unit: 'day' | 'month';
+  // IANA zone the buckets are cut in, so "today" matches the viewer's calendar.
+  timezone: string;
+}
+
+export interface SalesBucket {
+  // 'YYYY-MM-DD' for day buckets, 'YYYY-MM' for month buckets.
+  label: string;
+  revenueCents: number;
+  orderCount: number;
+}
+
+export interface SalesTotals {
+  revenueCents: number;
+  orderCount: number;
 }
 
 export interface OrderRepository {
@@ -133,6 +171,11 @@ export interface OrderRepository {
   findByInvoiceId: (invoiceId: string) => Promise<OrderEntity | null>;
   findPendingCreatedBefore: (cutoff: Date) => Promise<OrderEntity[]>;
   countRedemptionsByUser: (userId: string, discountId: string) => Promise<number>;
+  findForExport: (options: FindOrdersForExportOptions) => Promise<OrderEntity[]>;
+  aggregateSales: (options: SalesAggregationOptions) => Promise<SalesBucket[]>;
+  sumSales: (from: Date, to: Date) => Promise<SalesTotals>;
+  // Paid orders holding a line that ships - what's waiting to be packed.
+  countAwaitingFulfillment: () => Promise<number>;
   create: (input: CreateOrderInput) => Promise<OrderEntity>;
   update: (id: string, input: UpdateOrderInput) => Promise<OrderEntity | null>;
   // Compare-and-set on status - returns null when the order isn't currently in one of `from`, so

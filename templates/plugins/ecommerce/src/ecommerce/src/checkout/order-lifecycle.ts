@@ -247,7 +247,9 @@ export const finalizeOrder = async (orderId: string, paymentMethodId?: string): 
     }
   }
 
-  await attempt('Cart cleanup', async () => {
+  // Only a shopper's own checkout came from their cart - a staff-recorded order must never touch
+  // the customer's cart or the promo code they may have applied there.
+  if (paid.kind === 'checkout') await attempt('Cart cleanup', async () => {
     const carts = getCartRepository();
     await carts.removeLines(
       paid.userId,

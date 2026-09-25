@@ -5,10 +5,28 @@ import type { LineBillingDto, ProductDto, ProductVariantDto } from '../endpoints
 
 // Amounts are integer minor units; the currency's own fraction digits (2 for USD, 0 for JPY)
 // decide the divisor, so no currency is hardcoded as "cents".
-export const formatMoney = (amountMinor: number, currency: string): string => {
-  const formatter = new Intl.NumberFormat(undefined, { style: 'currency', currency: currency.toUpperCase() });
-  const fractionDigits = formatter.resolvedOptions().maximumFractionDigits ?? 2;
-  return formatter.format(amountMinor / 10 ** fractionDigits);
+export const currencyFractionDigits = (currency: string): number =>
+  new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() }).resolvedOptions().maximumFractionDigits ?? 2;
+
+export const formatMoney = (amountMinor: number, currency: string): string =>
+  new Intl.NumberFormat(undefined, { style: 'currency', currency: currency.toUpperCase() }).format(
+    amountMinor / 10 ** currencyFractionDigits(currency),
+  );
+
+// Admin money inputs: people type major units ("45", "45.50"); the API stores minor units.
+export const formatMinorUnitsForInput = (amountMinor: number | undefined, currency: string): string => {
+  if (amountMinor === undefined) return '';
+  const digits = currencyFractionDigits(currency);
+  return (amountMinor / 10 ** digits).toFixed(digits);
+};
+
+// null for anything that isn't a non-negative amount with at most the currency's fraction digits.
+export const parseMinorUnitsInput = (value: string, currency: string): number | null => {
+  const trimmed = value.trim().replace(/^\$/, '');
+  const digits = currencyFractionDigits(currency);
+  const pattern = digits > 0 ? new RegExp(`^\\d+(\\.\\d{1,${digits}})?$`) : /^\d+$/;
+  if (!pattern.test(trimmed)) return null;
+  return Math.round(Number(trimmed) * 10 ** digits);
 };
 
 // ---- Billing ----

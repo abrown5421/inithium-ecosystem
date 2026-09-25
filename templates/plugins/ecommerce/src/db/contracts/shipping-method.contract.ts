@@ -1,3 +1,5 @@
+import type { ClearableUpdate } from './commerce.contract';
+
 export interface ShippingMethodEntity {
   id: string;
   name: string; // e.g. "Standard", "Studio pickup"
@@ -14,7 +16,7 @@ export interface ShippingMethodEntity {
 }
 
 export type CreateShippingMethodInput = Omit<ShippingMethodEntity, 'id' | 'createdAt' | 'updatedAt'>;
-export type UpdateShippingMethodInput = Partial<CreateShippingMethodInput>;
+export type UpdateShippingMethodInput = ClearableUpdate<CreateShippingMethodInput>;
 
 export interface ShippingMethodRepository {
   findAll: () => Promise<ShippingMethodEntity[]>;

@@ -1,5 +1,5 @@
 import type { PaginatedResult } from './pagination.contract';
-import type { ProductBilling } from './commerce.contract';
+import type { ClearableUpdate, ProductBilling } from './commerce.contract';
 
 export const PRODUCT_IMAGE_SOURCE_TYPES = ['local', 'cloud', 'external'] as const;
 export type ProductImageSourceType = (typeof PRODUCT_IMAGE_SOURCE_TYPES)[number];
@@ -53,7 +53,7 @@ export interface ProductEntity {
 }
 
 export type CreateProductInput = Omit<ProductEntity, 'id' | 'createdAt' | 'updatedAt'>;
-export type UpdateProductInput = Partial<CreateProductInput>;
+export type UpdateProductInput = ClearableUpdate<CreateProductInput>;
 
 export interface FindManyProductsOptions {
   page: number;
@@ -75,6 +75,8 @@ export interface ProductRepository {
   findPublished: (options: FindPublishedProductsOptions) => Promise<PaginatedResult<ProductEntity>>;
   // Distinct categories across published products, sorted - the storefront's filter choices.
   listPublishedCategories: () => Promise<string[]>;
+  // Every category in use, published or not - the admin editor's suggestions.
+  listAllCategories: () => Promise<string[]>;
   findById: (id: string) => Promise<ProductEntity | null>;
   findBySlug: (slug: string) => Promise<ProductEntity | null>;
   create: (input: CreateProductInput) => Promise<ProductEntity>;

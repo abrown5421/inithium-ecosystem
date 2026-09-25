@@ -28,6 +28,9 @@ export interface OrderDocument extends Document {
   subscriptionIds: string[];
   fulfillmentErrors: string[];
   statusHistory: OrderStatusChange[];
+  internalNotes?: string;
+  trackingNumber?: string;
+  createdByUserId?: string;
   paidAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -51,7 +54,10 @@ const orderSchema = new Schema<OrderDocument>(
     subscriptionIds: { type: [String], default: [] },
     fulfillmentErrors: { type: [String], default: [] },
     statusHistory: { type: Schema.Types.Mixed, default: () => [] },
-    paidAt: { type: Date, required: false },
+    internalNotes: { type: String, required: false },
+    trackingNumber: { type: String, required: false },
+    createdByUserId: { type: String, required: false },
+    paidAt: { type: Date, required: false, index: true },
   },
   { timestamps: true, minimize: false },
 );

@@ -3,13 +3,22 @@ import type { Request, Response, Router as RouterType } from 'express';
 import { asyncHandler, createSuccessResponse } from '@inithium/api-utils';
 import { requireAuth } from '@inithium/auth';
 import { requirePermission } from '@inithium/permissions';
-import { BILLING_SUBSCRIPTION_STATUSES, getBillingSubscriptionRepository } from '@inithium/db';
-import type { BillingSubscriptionStatus } from '@inithium/db';
+import { BILLING_SUBSCRIPTION_STATUSES, getBillingSubscriptionRepository, getUserRepository } from '@inithium/db';
+import type { BillingSubscriptionEntity, BillingSubscriptionStatus } from '@inithium/db';
 import { cancelSubscriptionByAdmin, cancelSubscriptionLine, listUserSubscriptions } from '@inithium/ecommerce';
 import { currentUserId, normalizeParam, paginatedResponse, parsePaging, queryString } from './ecommerceHttp';
 
 const router: RouterType = Router();
 const MANAGE = 'ecommerce:manage-orders';
+
+// Admin views resolve the subscriber at response time, like the admin order views.
+const toAdminSubscriptionDto = async (subscription: BillingSubscriptionEntity) => {
+  const user = await getUserRepository().findById(subscription.userId);
+  return {
+    ...subscription,
+    customer: { id: subscription.userId, firstName: user?.firstName ?? '', lastName: user?.lastName, email: user?.email ?? '' },
+  };
+};
 
 const isSubscriptionStatus = (value: unknown): value is BillingSubscriptionStatus =>
   typeof value === 'string' && (BILLING_SUBSCRIPTION_STATUSES as readonly string[]).includes(value);
@@ -52,7 +61,7 @@ router.get(
       ...(isSubscriptionStatus(status) ? { status } : {}),
       ...(userId ? { userId } : {}),
     });
-    res.status(200).json(paginatedResponse(result, result.items));
+    res.status(200).json(paginatedResponse(result, await Promise.all(result.items.map(toAdminSubscriptionDto))));
   }),
 );
 
@@ -61,7 +70,8 @@ router.post(
   requireAuth,
   requirePermission(MANAGE),
   asyncHandler(async (req: Request, res: Response) => {
-    res.status(200).json(createSuccessResponse(await cancelSubscriptionByAdmin(normalizeParam(req.params['id']))));
+    const subscription = await cancelSubscriptionByAdmin(normalizeParam(req.params['id']));
+    res.status(200).json(createSuccessResponse(await toAdminSubscriptionDto(subscription)));
   }),
 );
 

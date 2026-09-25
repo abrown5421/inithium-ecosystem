@@ -43,6 +43,7 @@
     { "target": "libs/db/src/providers/mongo/shipping-method.repository.ts", "source": "src/db/providers/mongo/shipping-method.repository.ts" },
     { "target": "libs/db/src/providers/mongo/payment-customer.repository.ts", "source": "src/db/providers/mongo/payment-customer.repository.ts" },
     { "target": "libs/db/src/providers/mongo/payment-event.repository.ts", "source": "src/db/providers/mongo/payment-event.repository.ts" },
+    { "target": "libs/db/src/utils/toUpdateOperations.ts", "source": "src/db/utils/toUpdateOperations.ts" },
     { "target": "libs/db/src/providers/mongo/mongo.provider.ts", "source": "src/db/providers/mongo/mongo.provider.fragment.ts", "strategy": "merge" },
     { "target": "libs/db/src/index.ts", "source": "src/db/index.fragment.ts", "strategy": "merge" },
 
@@ -87,6 +88,8 @@
 
     { "target": "libs/api-client/src/endpoints/ecommerce.endpoints.ts", "source": "src/api-client/endpoints/ecommerce.endpoints.ts" },
     { "target": "libs/api-client/src/ecommerce/storefront.ts", "source": "src/api-client/ecommerce/storefront.ts" },
+    { "target": "libs/api-client/src/endpoints/ecommerce-admin.endpoints.ts", "source": "src/api-client/endpoints/ecommerce-admin.endpoints.ts" },
+    { "target": "libs/api-client/src/ecommerce/downloadOrdersCsv.ts", "source": "src/api-client/ecommerce/downloadOrdersCsv.ts" },
     { "target": "libs/api-client/src/baseApi.ts", "source": "src/api-client/baseApi.fragment.ts", "strategy": "merge" },
     { "target": "libs/api-client/src/index.ts", "source": "src/api-client/index.fragment.ts", "strategy": "merge" },
 
@@ -102,6 +105,25 @@
     { "target": "libs/cms/src/permissions/definitions/ecommerce-manage-products.capability.ts", "source": "src/cms/permissions/definitions/ecommerce-manage-products.capability.ts", "requires": "cms" },
     { "target": "libs/cms/src/permissions/definitions/ecommerce-manage-orders.capability.ts", "source": "src/cms/permissions/definitions/ecommerce-manage-orders.capability.ts", "requires": "cms" },
     { "target": "libs/cms/src/permissions/definitions/ecommerce-manage-discounts.capability.ts", "source": "src/cms/permissions/definitions/ecommerce-manage-discounts.capability.ts", "requires": "cms" },
-    { "target": "libs/cms/src/permissions/definitions/ecommerce-manage-shipping.capability.ts", "source": "src/cms/permissions/definitions/ecommerce-manage-shipping.capability.ts", "requires": "cms" }
+    { "target": "libs/cms/src/permissions/definitions/ecommerce-manage-shipping.capability.ts", "source": "src/cms/permissions/definitions/ecommerce-manage-shipping.capability.ts", "requires": "cms" },
+    { "target": "libs/cms/src/permissions/definitions/ecommerce-record-sales.capability.ts", "source": "src/cms/permissions/definitions/ecommerce-record-sales.capability.ts", "requires": "cms" },
+
+    { "target": "libs/cms/src/modules/ecommerce", "source": "src/cms/modules/ecommerce", "requires": "cms" },
+    { "target": "libs/cms/src/modules/products-admin.module.tsx", "source": "src/cms/modules/products-admin.module.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/products/ProductsAdminModule.tsx", "source": "src/cms/modules/products/ProductsAdminModule.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/products/ProductEditDialog.tsx", "source": "src/cms/modules/products/ProductEditDialog.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/products/VariantsEditor.tsx", "source": "src/cms/modules/products/VariantsEditor.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/products/productImage.contract.ts", "source": "src/cms/modules/products/productImage.contract.ts", "requires": "cms" },
+    { "target": "libs/cms/src/modules/products/ProductImageField.tsx", "source": "src/cms/modules/products/ProductImageField.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/products/ProductImageField.tsx", "source": "src/cms/modules/products/ProductImageField.storage.tsx", "requires": "storage" },
+    { "target": "libs/cms/src/modules/orders-admin.module.tsx", "source": "src/cms/modules/orders-admin.module.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/orders", "source": "src/cms/modules/orders", "requires": "cms" },
+    { "target": "libs/cms/src/modules/discounts-admin.module.tsx", "source": "src/cms/modules/discounts-admin.module.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/discounts", "source": "src/cms/modules/discounts", "requires": "cms" },
+    { "target": "libs/cms/src/modules/shipping-admin.module.tsx", "source": "src/cms/modules/shipping-admin.module.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/shipping", "source": "src/cms/modules/shipping", "requires": "cms" },
+    { "target": "libs/cms/src/modules/subscriptions-admin.module.tsx", "source": "src/cms/modules/subscriptions-admin.module.tsx", "requires": "cms" },
+    { "target": "libs/cms/src/modules/subscriptions", "source": "src/cms/modules/subscriptions", "requires": "cms" },
+    { "target": "libs/cms/src/dashboard/widgets/sales-over-time.widget.tsx", "source": "src/cms/dashboard/widgets/sales-over-time.widget.tsx", "requires": "cms" }
   ]
 }

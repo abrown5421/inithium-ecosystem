@@ -69,7 +69,7 @@ const productShape = {
 // Same cross-field image rule as the staff/gallery schemas: which of assetId/storageKey is
 // required depends on imageSourceType.
 const requireImageSourceFields = (
-  data: { imageSourceType?: string; imageUrl?: string; imageAssetId?: string; imageStorageKey?: string },
+  data: { imageSourceType?: string | null; imageUrl?: string | null; imageAssetId?: string | null; imageStorageKey?: string | null },
   ctx: IssueContext,
 ) => {
   if (!data.imageSourceType) return;
@@ -108,10 +108,16 @@ export const createProductSchema = z.object(productShape).superRefine(refineProd
 export type CreateProductRequestBody = z.infer<typeof createProductSchema>;
 
 // Partial updates must not re-apply creation defaults (e.g. silently unpublishing), so the update
-// shape strips every .default().
+// shape strips every .default(). Optional fields accept null to clear them (e.g. removing an image).
 export const updateProductSchema = z
   .object({
     ...productShape,
+    description: productShape.description.unwrap().nullable(),
+    imageUrl: productShape.imageUrl.unwrap().nullable(),
+    imageSourceType: productShape.imageSourceType.unwrap().nullable(),
+    imageAssetId: productShape.imageAssetId.unwrap().nullable(),
+    imageStorageKey: productShape.imageStorageKey.unwrap().nullable(),
+    taxCode: productShape.taxCode.unwrap().nullable(),
     categories: z.array(z.string().min(1).max(100)),
     requiresShipping: z.boolean(),
     billing: billingSchema,
@@ -156,7 +162,7 @@ const discountShape = {
 };
 
 const refineDiscount = (
-  data: { kind?: string; value?: number; duration?: string; durationInMonths?: number; startsAt?: Date; endsAt?: Date },
+  data: { kind?: string; value?: number; duration?: string; durationInMonths?: number | null; startsAt?: Date | null; endsAt?: Date | null },
   ctx: IssueContext,
 ) => {
   if (data.kind === 'percent' && data.value !== undefined && data.value > 100) {
@@ -173,9 +179,18 @@ const refineDiscount = (
 export const createDiscountSchema = z.object(discountShape).superRefine(refineDiscount);
 export type CreateDiscountRequestBody = z.infer<typeof createDiscountSchema>;
 
+// Optional limits/dates accept null to clear them (e.g. removing an end date).
 export const updateDiscountSchema = z
   .object({
     ...discountShape,
+    description: discountShape.description.unwrap().nullable(),
+    durationInMonths: discountShape.durationInMonths.unwrap().nullable(),
+    minSubtotalCents: discountShape.minSubtotalCents.unwrap().nullable(),
+    minQuantity: discountShape.minQuantity.unwrap().nullable(),
+    startsAt: discountShape.startsAt.unwrap().nullable(),
+    endsAt: discountShape.endsAt.unwrap().nullable(),
+    maxRedemptions: discountShape.maxRedemptions.unwrap().nullable(),
+    maxRedemptionsPerUser: discountShape.maxRedemptionsPerUser.unwrap().nullable(),
     target: z.object({ sourceTypes: z.array(z.string().min(1)), sourceIds: z.array(z.string().min(1)), categories: z.array(z.string().min(1)) }),
     appliesToBilling: z.enum(DISCOUNT_BILLING_TARGETS),
     duration: z.enum(DISCOUNT_DURATIONS),
@@ -199,7 +214,14 @@ const shippingMethodShape = {
 
 export const createShippingMethodSchema = z.object(shippingMethodShape);
 export const updateShippingMethodSchema = z
-  .object({ ...shippingMethodShape, requiresAddress: z.boolean(), isActive: z.boolean(), sortOrder: z.number().int() })
+  .object({
+    ...shippingMethodShape,
+    description: shippingMethodShape.description.unwrap().nullable(),
+    freeOverCents: shippingMethodShape.freeOverCents.unwrap().nullable(),
+    requiresAddress: z.boolean(),
+    isActive: z.boolean(),
+    sortOrder: z.number().int(),
+  })
   .partial();
 
 // ---- Cart & checkout ----
@@ -232,4 +254,35 @@ export const placeOrderSchema = checkoutDetailsSchema.extend({
 export const setOrderStatusSchema = z.object({
   status: z.enum(['fulfilled', 'cancelled', 'refunded']),
   note: z.string().max(1000).optional(),
+});
+
+// Staff bookkeeping on an existing order. An empty string clears the field.
+export const updateOrderAdminSchema = z
+  .object({
+    internalNotes: z.string().max(5000).optional(),
+    trackingNumber: z.string().max(200).optional(),
+  })
+  .refine((data) => data.internalNotes !== undefined || data.trackingNumber !== undefined, {
+    message: 'Provide internalNotes or trackingNumber',
+  });
+
+// An order recorded by staff on a customer's behalf (already paid outside the system).
+export const manualOrderSchema = z.object({
+  customerUserId: z.string().min(1, 'Choose a customer'),
+  lines: z
+    .array(
+      z.object({
+        sourceType: z.string().min(1).max(50),
+        sourceId: z.string().min(1).max(100),
+        variantId: z.string().min(1).max(100).optional(),
+        options: lineOptions.optional(),
+        quantity: z.number().int().min(1).max(99),
+      }),
+    )
+    .min(1, 'Add at least one item')
+    .max(50),
+  discountCode: z.string().trim().max(40).optional(),
+  shippingMethodId: z.string().min(1).optional(),
+  shippingAddress: postalAddressSchema.optional(),
+  internalNotes: z.string().max(5000).optional(),
 });

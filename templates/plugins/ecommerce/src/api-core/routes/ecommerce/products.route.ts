@@ -114,6 +114,15 @@ router.get(
 );
 
 router.get(
+  '/api/products/admin/categories',
+  requireAuth,
+  requirePermission(MANAGE),
+  asyncHandler(async (_req: Request, res: Response) => {
+    res.status(200).json(createSuccessResponse(await getProductRepository().listAllCategories()));
+  }),
+);
+
+router.get(
   '/api/products/admin/:id',
   requireAuth,
   requirePermission(MANAGE),

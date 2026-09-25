@@ -13,7 +13,8 @@ Products (with variants and stock), a per-user cart, promo codes, shipping metho
 | `libs/api-client` | RTK Query endpoints (`ecommerce.endpoints.ts`) and pure storefront helpers (`ecommerce/storefront.ts`: money formatting, variant selection, API error parsing). |
 | `apps/web` | Shop (`/products`), Cart (`/cart`), Checkout (`/checkout`), and Order (`/orders/:id`) pages, a profile **Orders** tab, and a navbar cart button. |
 | `apps/api/src/main.ts` | Mounts the payment webhook at the `pre-body-parser` anchor. |
-| Permissions | `ecommerce:manage-products`, `:manage-orders`, `:manage-discounts`, `:manage-shipping`. Admin-only by default. |
+| Permissions | `ecommerce:manage-products`, `:manage-orders`, `:manage-discounts`, `:manage-shipping`, `:record-sales`. Admin-only by default. |
+| `libs/cms` (with the cms plugin) | Products, Orders, Discounts, Shipping, and Subscriptions modules, plus a Sales dashboard widget. |
 
 With **storage** installed, `products.route.ts` is swapped for a variant that also deletes cloud product images. With **cms** installed, the four capabilities appear in the Permissions module.
 
@@ -50,7 +51,14 @@ With **storage** installed, `products.route.ts` is swapped for a variant that al
 | `POST /api/checkout` | user | Place the order and charge |
 | `POST /api/checkout/orders/:orderId/confirm` | user | Resume after a 3-D Secure step |
 | `GET /api/orders/mine[/:id]` | user | Purchase history |
-| `GET /api/orders/admin[/:id]`, `PATCH /api/orders/admin/:id/status` | manage-orders | All orders, and record fulfilled/cancelled/refunded |
+| `GET /api/orders/admin?status=&kind=&userId=&from=&to=`, `GET /api/orders/admin/:id` | manage-orders | All orders (filterable), one order with the purchaser resolved |
+| `PATCH /api/orders/admin/:id/status` | manage-orders | Record fulfilled/cancelled/refunded (no money moves) |
+| `PATCH /api/orders/admin/:id` | manage-orders | Internal notes and tracking number |
+| `GET /api/orders/admin/stats?period=week\|month\|year&tz=` | manage-orders | Sales buckets and totals for the dashboard widget |
+| `GET /api/orders/admin/export.csv?from=&to=&status=` | manage-orders | One CSV row per order, for accounting |
+| `GET /api/orders/admin/customers?search=`, `POST /api/orders/admin/quote`, `POST /api/orders/admin` | record-sales | Find a customer, price an order, and record an order on their behalf |
+| `GET /api/products/admin/categories` | manage-products | Every category in use, including drafts |
+| `GET /api/discounts/source-types` | manage-discounts | Registered purchasable item types, for targeting codes |
 | `GET /api/subscriptions/mine`, `DELETE /api/subscriptions/mine/:id/lines/:lineId` | user | View subscriptions and stop billing one line |
 | `GET /api/subscriptions/admin`, `POST /api/subscriptions/admin/:id/cancel` | manage-orders | All subscriptions, and admin cancel |
 
@@ -75,6 +83,19 @@ Redirect-based payment methods are disabled (`allow_redirects: 'never'`). Cards 
 - **Signed-out visitors** can browse. Cart, checkout, and order pages show a sign-in prompt, and "Add to cart" sends them to `/login?redirect=...` so they come back to where they were.
 - The **cart and order caches are keyed by user id**, since logging out doesn't reset RTK Query's cache.
 - The **navbar cart button** is a `*.navbar-action.tsx` file in core's navbar-action registry (`apps/web/src/app/navbarActions`).
+
+## CMS
+
+Installed only when the cms plugin is present, and removed again if it's uninstalled. Each module is gated by its own capability.
+
+- **Products** (`manage-products`): list with search, a publish toggle, and a stock summary. The editor covers details, categories, price, one-time or recurring billing, "ships" and tax code, the image, and options and variants. **Generate variants** builds every Size × Color combination; each existing variant keeps its id, so items already in carts stay valid. With the storage plugin, the image field uses `MediaField` (cloud upload with a square crop). Without it, the field takes a URL or a local upload. Only `ProductImageField.tsx` differs between the two.
+- **Orders** (`manage-orders`): filters for status, type (online, renewal, staff-recorded) and date range, plus a CSV export. The detail view shows the customer, payment reference, "needs attention" follow-up errors, lines, totals, addresses, status actions (fulfilled / cancelled / refunded, each with a note), internal notes and tracking number, and the status history. Orders are never deleted or edited.
+  - **Create Order** also needs `record-sales`. It records a purchase the customer already paid for outside the store. The order is created paid, with no charge and no tax. Stock, promo codes, and each item's `onPaid` hook (e.g. an enrollment) run as they would at checkout. Recurring items are blocked, since there's no saved card to bill renewals. The built-in item picker offers store products; other sources can be recorded through `POST /api/orders/admin`.
+- **Discounts** (`manage-discounts`): code (with a generator), percent or fixed amount, whole order or specific items (by item type, category, or product), which billing it applies to and how long it discounts subscriptions, start and end dates, minimums, usage limits, and a status badge (Active / Scheduled / Expired / Used up / Inactive).
+- **Shipping** (`manage-shipping`) and **Subscriptions** (`manage-orders`): full CRUD for shipping methods, and a subscription list with cancellation.
+- **Sales widget** (`manage-orders`): Week / Month / Year revenue chart in the viewer's timezone, with revenue, orders and "to fulfill" tiles compared against the previous period. Revenue means paid and not cancelled or refunded, and includes renewals and staff-recorded orders.
+
+**Clearing fields:** the product, discount, and shipping-method `PUT` routes treat `null` as "clear this optional field" (e.g. remove an end date or image). An omitted field is left unchanged.
 
 ## How billing works
 

@@ -5,12 +5,11 @@ import { getTaxProvider } from '@inithium/payments';
 import type { TaxCalculation } from '@inithium/payments';
 import { evaluateCartDiscount, resolveCartLines } from '../cart/cart-lines';
 import type { CartDiscountState } from '../cart/cart-lines';
-import { scheduleKey } from '../pricing/billing';
 import { priceCart } from '../pricing/pricing';
-import type { PricedCart, PricedLine } from '../pricing/pricing';
+import type { PricedCart } from '../pricing/pricing';
 import { getStoreCurrency } from '../settings';
-import { toLineBillingView } from '../views';
-import type { CheckoutQuote, RecurringChargeView } from '../views';
+import type { CheckoutQuote } from '../views';
+import { buildQuoteView } from './quote-view';
 
 export interface CheckoutDetailsInput {
   shippingMethodId?: string;
@@ -48,28 +47,6 @@ const resolveShipping = async (
   return { method, ...(method.requiresAddress && input.shippingAddress ? { address: input.shippingAddress } : {}) };
 };
 
-const lineNetCents = (line: PricedLine): number => line.subtotalCents - line.discountCents;
-
-const summarizeRecurring = (lines: PricedLine[]): RecurringChargeView[] => {
-  const groups = lines.reduce<Map<string, PricedLine[]>>((acc, line) => {
-    if (!line.schedule) return acc;
-    const key = scheduleKey(line.schedule);
-    return acc.set(key, [...(acc.get(key) ?? []), line]);
-  }, new Map());
-
-  return [...groups.values()].map((group) => {
-    const schedule = group[0].schedule!;
-    return {
-      interval: schedule.interval,
-      intervalCount: schedule.intervalCount,
-      firstBillingAt: schedule.firstBillingAt,
-      ...(schedule.endsAt ? { endsAt: schedule.endsAt } : {}),
-      amountCents: group.reduce((sum, line) => sum + (line.recurring ? line.recurring.subtotalCents - line.recurring.discountCents : 0), 0),
-      lineIds: group.map((line) => line.lineId),
-    };
-  });
-};
-
 export const prepareCheckout = async (userId: string, input: CheckoutDetailsInput): Promise<PreparedCheckout> => {
   const cart = await getCartRepository().findByUserId(userId);
   if (!cart || cart.lines.length === 0) throw ValidationError('Your cart is empty');
@@ -96,7 +73,7 @@ export const prepareCheckout = async (userId: string, input: CheckoutDetailsInpu
     addressSource: shipping.address ? 'shipping' : 'billing',
     lines: priced.lines.map((line) => ({
       reference: line.lineId,
-      amountCents: lineNetCents(line),
+      amountCents: line.subtotalCents - line.discountCents,
       quantity: line.ref.quantity,
       ...(line.resolved.taxCode ? { taxCode: line.resolved.taxCode } : {}),
     })),
@@ -104,42 +81,14 @@ export const prepareCheckout = async (userId: string, input: CheckoutDetailsInpu
   });
   const taxByLineId = new Map(tax.lines.map((line) => [line.reference, line.taxCents]));
 
-  const quote: CheckoutQuote = {
+  const quote: CheckoutQuote = buildQuoteView({
     currency,
-    lines: priced.lines.map((line) => {
-      const taxCents = taxByLineId.get(line.lineId) ?? 0;
-      return {
-        id: line.lineId,
-        sourceType: line.ref.sourceType,
-        sourceId: line.ref.sourceId,
-        ...(line.ref.variantId ? { variantId: line.ref.variantId } : {}),
-        options: line.ref.options,
-        name: line.resolved.name,
-        ...(line.resolved.imageUrl ? { imageUrl: line.resolved.imageUrl } : {}),
-        ...(line.resolved.href ? { href: line.resolved.href } : {}),
-        quantity: line.ref.quantity,
-        unitAmountCents: line.unitAmountCents,
-        subtotalCents: line.subtotalCents,
-        discountCents: line.discountCents,
-        taxCents,
-        totalCents: lineNetCents(line) + taxCents,
-        billing: toLineBillingView(line),
-      };
-    }),
-    subtotalCents: priced.subtotalCents,
-    discountCents: priced.discountCents,
-    shippingCents: priced.shippingCents,
-    taxCents: tax.totalTaxCents,
-    totalCents: priced.subtotalCents - priced.discountCents + priced.shippingCents + tax.totalTaxCents,
-    discount: discountState
-      ? { code: discountState.code, applied: discountState.applied, ...(discountState.message ? { message: discountState.message } : {}) }
-      : null,
-    shippingMethod: shipping.method
-      ? { id: shipping.method.id, name: shipping.method.name, amountCents: priced.shippingCents }
-      : null,
-    requiresShipping,
-    recurring: summarizeRecurring(priced.lines),
-  };
+    priced,
+    taxByLineId,
+    taxTotalCents: tax.totalTaxCents,
+    discountState,
+    shippingMethod: shipping.method,
+  });
 
   return {
     userId,

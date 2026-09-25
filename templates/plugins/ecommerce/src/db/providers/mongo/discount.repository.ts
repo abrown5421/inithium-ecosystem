@@ -8,6 +8,7 @@ import {
   UpdateDiscountInput,
 } from '../../contracts/discount.contract';
 import type { PaginatedResult } from '../../contracts/pagination.contract';
+import { toUpdateOperations } from '../../utils/toUpdateOperations';
 import { escapeRegExp } from '../../utils/escapeRegExp';
 import { DiscountDocument } from '../../schemas/discount.schema';
 
@@ -72,7 +73,7 @@ export const createMongoDiscountRepository = (model: Model<DiscountDocument>): D
   },
   update: async (id: string, input: UpdateDiscountInput): Promise<DiscountEntity | null> => {
     if (!isValidObjectId(id)) return null;
-    const doc = await model.findByIdAndUpdate(id, { $set: input }, { new: true, runValidators: true }).exec();
+    const doc = await model.findByIdAndUpdate(id, toUpdateOperations(input), { new: true, runValidators: true }).exec();
     return doc ? mapToDiscountEntity(doc) : null;
   },
   delete: async (id: string): Promise<boolean> => {

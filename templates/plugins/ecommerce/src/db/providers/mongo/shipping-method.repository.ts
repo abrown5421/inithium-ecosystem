@@ -6,6 +6,7 @@ import {
   ShippingMethodRepository,
   UpdateShippingMethodInput,
 } from '../../contracts/shipping-method.contract';
+import { toUpdateOperations } from '../../utils/toUpdateOperations';
 import { ShippingMethodDocument } from '../../schemas/shipping-method.schema';
 
 const mapToShippingMethodEntity = (doc: ShippingMethodDocument): ShippingMethodEntity => ({
@@ -41,7 +42,7 @@ export const createMongoShippingMethodRepository = (model: Model<ShippingMethodD
   },
   update: async (id: string, input: UpdateShippingMethodInput): Promise<ShippingMethodEntity | null> => {
     if (!isValidObjectId(id)) return null;
-    const doc = await model.findByIdAndUpdate(id, { $set: input }, { new: true, runValidators: true }).exec();
+    const doc = await model.findByIdAndUpdate(id, toUpdateOperations(input), { new: true, runValidators: true }).exec();
     return doc ? mapToShippingMethodEntity(doc) : null;
   },
   delete: async (id: string): Promise<boolean> => {

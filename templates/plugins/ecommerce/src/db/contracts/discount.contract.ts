@@ -1,4 +1,5 @@
 import type { PaginatedResult } from './pagination.contract';
+import type { ClearableUpdate } from './commerce.contract';
 
 // percent - `value` is 1-100
 // fixed   - `value` is cents: per eligible unit for 'items' scope, split across eligible lines for 'order' scope
@@ -51,7 +52,7 @@ export interface DiscountEntity {
 }
 
 export type CreateDiscountInput = Omit<DiscountEntity, 'id' | 'timesRedeemed' | 'createdAt' | 'updatedAt'>;
-export type UpdateDiscountInput = Partial<CreateDiscountInput>;
+export type UpdateDiscountInput = ClearableUpdate<CreateDiscountInput>;
 
 export interface FindManyDiscountsOptions {
   page: number;

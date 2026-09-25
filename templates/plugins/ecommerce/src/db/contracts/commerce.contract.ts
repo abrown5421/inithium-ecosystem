@@ -16,6 +16,9 @@ export type ProductBilling = { type: 'one_time' } | ({ type: 'recurring' } & Rec
 // forwards it but never interprets it - only the owning PurchasableSource adapter does.
 export type LineOptions = Record<string, string>;
 
+// A partial update where null clears an optional field (undefined leaves it untouched).
+export type ClearableUpdate<T> = { [K in keyof T]?: T[K] | null };
+
 export interface PostalAddress {
   name?: string;
   line1: string;

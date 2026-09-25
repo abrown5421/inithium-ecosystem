@@ -47,6 +47,10 @@ export type {
   CreateOrderInput,
   UpdateOrderInput,
   FindManyOrdersOptions,
+  FindOrdersForExportOptions,
+  SalesAggregationOptions,
+  SalesBucket,
+  SalesTotals,
   OrderRepository,
 } from './contracts/order.contract';
 export { DISCOUNT_KINDS, DISCOUNT_SCOPES, DISCOUNT_BILLING_TARGETS, DISCOUNT_DURATIONS } from './contracts/discount.contract';

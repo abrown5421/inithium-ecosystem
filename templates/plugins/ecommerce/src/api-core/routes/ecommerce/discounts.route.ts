@@ -4,6 +4,7 @@ import { asyncHandler, ConflictError, createSuccessResponse, NotFoundError } fro
 import { requireAuth } from '@inithium/auth';
 import { requirePermission } from '@inithium/permissions';
 import { getDiscountRepository } from '@inithium/db';
+import { purchasableSources } from '@inithium/ecommerce';
 import { createDiscountSchema, updateDiscountSchema } from '../../schemas/ecommerce.schema';
 import { normalizeParam, paginatedResponse, parseBody, parsePaging, queryString } from './ecommerceHttp';
 
@@ -21,6 +22,16 @@ router.get(
     const search = queryString(req, 'search');
     const result = await getDiscountRepository().findMany({ page, pageSize, ...(search ? { search, searchField: 'code' } : {}) });
     res.status(200).json(paginatedResponse(result, result.items));
+  }),
+);
+
+// Every registered purchasable source type (product, plus whatever a workspace adds - class,
+// ticket, ...), so item-scoped codes can target a type without the CMS hardcoding the list.
+// Registered ahead of "/api/discounts/:id".
+router.get(
+  '/api/discounts/source-types',
+  asyncHandler(async (_req: Request, res: Response) => {
+    res.status(200).json(createSuccessResponse(purchasableSources.map((source) => source.sourceType)));
   }),
 );
 

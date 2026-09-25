@@ -33,6 +33,12 @@ export {
 export type { PlaceOrderInput, PlaceOrderResult } from './checkout/checkout.service';
 export type { CheckoutDetailsInput } from './checkout/prepare-checkout';
 
+export { createManualOrder, quoteManualOrder, MANUAL_PAYMENT_PROVIDER } from './orders/manual-order.service';
+export type { ManualOrderInput, ManualOrderLineInput } from './orders/manual-order.service';
+export { getSalesReport, SALES_PERIODS } from './orders/sales-report';
+export type { SalesPeriod, SalesReport } from './orders/sales-report';
+export { buildOrdersCsv } from './orders/orders-csv';
+
 export {
   listUserSubscriptions,
   cancelSubscriptionLine,

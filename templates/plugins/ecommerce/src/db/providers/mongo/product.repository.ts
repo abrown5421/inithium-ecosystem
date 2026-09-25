@@ -11,6 +11,7 @@ import {
   UpdateProductInput,
 } from '../../contracts/product.contract';
 import type { PaginatedResult } from '../../contracts/pagination.contract';
+import { toUpdateOperations } from '../../utils/toUpdateOperations';
 import { escapeRegExp } from '../../utils/escapeRegExp';
 import { ProductDocument } from '../../schemas/product.schema';
 
@@ -82,6 +83,10 @@ export const createMongoProductRepository = (model: Model<ProductDocument>): Pro
     const categories: string[] = await model.distinct('categories', { isPublished: true }).exec();
     return categories.filter(Boolean).sort((a, b) => a.localeCompare(b));
   },
+  listAllCategories: async (): Promise<string[]> => {
+    const categories: string[] = await model.distinct('categories').exec();
+    return categories.filter(Boolean).sort((a, b) => a.localeCompare(b));
+  },
   findById: async (id: string): Promise<ProductEntity | null> => {
     if (!isValidObjectId(id)) return null;
     const doc = await model.findById(id).exec();
@@ -97,7 +102,7 @@ export const createMongoProductRepository = (model: Model<ProductDocument>): Pro
   },
   update: async (id: string, input: UpdateProductInput): Promise<ProductEntity | null> => {
     if (!isValidObjectId(id)) return null;
-    const doc = await model.findByIdAndUpdate(id, { $set: input }, { new: true, runValidators: true }).exec();
+    const doc = await model.findByIdAndUpdate(id, toUpdateOperations(input), { new: true, runValidators: true }).exec();
     return doc ? mapToProductEntity(doc) : null;
   },
   delete: async (id: string): Promise<boolean> => {

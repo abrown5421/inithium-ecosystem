@@ -3,10 +3,14 @@ import type { Model, QueryFilter } from 'mongoose';
 import {
   CreateOrderInput,
   FindManyOrdersOptions,
+  FindOrdersForExportOptions,
   OrderEntity,
   OrderRepository,
   OrderStatus,
   OrderStatusChange,
+  SalesAggregationOptions,
+  SalesBucket,
+  SalesTotals,
   UpdateOrderInput,
 } from '../../contracts/order.contract';
 import type { PaginatedResult } from '../../contracts/pagination.contract';
@@ -15,6 +19,11 @@ import { OrderDocument } from '../../schemas/order.schema';
 // Statuses that mean a code was actually used - a failed or still-pending checkout never counts
 // against a per-user redemption limit.
 const REDEEMED_STATUSES: OrderStatus[] = ['paid', 'fulfilled', 'cancelled', 'refunded'];
+
+// What counts as revenue: paid and not since cancelled or refunded.
+const REVENUE_STATUSES: OrderStatus[] = ['paid', 'fulfilled'];
+
+const revenueMatch = (from: Date, to: Date) => ({ status: { $in: REVENUE_STATUSES }, paidAt: { $gte: from, $lt: to } });
 
 const mapToOrderEntity = (doc: OrderDocument): OrderEntity => {
   const plain = doc.toObject();
@@ -34,6 +43,9 @@ const mapToOrderEntity = (doc: OrderDocument): OrderEntity => {
     subscriptionIds: plain.subscriptionIds ?? [],
     fulfillmentErrors: plain.fulfillmentErrors ?? [],
     statusHistory: plain.statusHistory ?? [],
+    internalNotes: plain.internalNotes,
+    trackingNumber: plain.trackingNumber,
+    createdByUserId: plain.createdByUserId,
     paidAt: plain.paidAt,
     createdAt: plain.createdAt,
     updatedAt: plain.updatedAt,
@@ -42,10 +54,12 @@ const mapToOrderEntity = (doc: OrderDocument): OrderEntity => {
 
 export const createMongoOrderRepository = (model: Model<OrderDocument>): OrderRepository => ({
   findMany: async (options: FindManyOrdersOptions): Promise<PaginatedResult<OrderEntity>> => {
-    const { page, pageSize, status, userId } = options;
+    const { page, pageSize, status, kind, userId, from, to } = options;
     const filter: QueryFilter<OrderDocument> = {};
     if (status) filter.status = status;
+    if (kind) filter.kind = kind;
     if (userId) filter.userId = userId;
+    if (from || to) filter.createdAt = { ...(from ? { $gte: from } : {}), ...(to ? { $lt: to } : {}) };
 
     const skip = (page - 1) * pageSize;
     const [docs, total] = await Promise.all([
@@ -74,8 +88,41 @@ export const createMongoOrderRepository = (model: Model<OrderDocument>): OrderRe
   },
   countRedemptionsByUser: (userId: string, discountId: string): Promise<number> =>
     model
-      .countDocuments({ userId, kind: 'checkout', 'discount.discountId': discountId, status: { $in: REDEEMED_STATUSES } })
+      .countDocuments({ userId, kind: { $in: ['checkout', 'manual'] }, 'discount.discountId': discountId, status: { $in: REDEEMED_STATUSES } })
       .exec(),
+  findForExport: async ({ from, to, status }: FindOrdersForExportOptions): Promise<OrderEntity[]> => {
+    const filter: QueryFilter<OrderDocument> = { createdAt: { $gte: from, $lt: to } };
+    if (status) filter.status = status;
+    const docs = await model.find(filter).sort({ createdAt: 1 }).exec();
+    return docs.map(mapToOrderEntity);
+  },
+  aggregateSales: async ({ from, to, unit, timezone }: SalesAggregationOptions): Promise<SalesBucket[]> => {
+    const rows: { _id: string; revenueCents: number; orderCount: number }[] = await model
+      .aggregate([
+        { $match: revenueMatch(from, to) },
+        {
+          $group: {
+            _id: { $dateToString: { date: '$paidAt', format: unit === 'day' ? '%Y-%m-%d' : '%Y-%m', timezone } },
+            revenueCents: { $sum: '$totals.totalCents' },
+            orderCount: { $sum: 1 },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ])
+      .exec();
+    return rows.map((row) => ({ label: row._id, revenueCents: row.revenueCents, orderCount: row.orderCount }));
+  },
+  sumSales: async (from: Date, to: Date): Promise<SalesTotals> => {
+    const [row]: { revenueCents: number; orderCount: number }[] = await model
+      .aggregate([
+        { $match: revenueMatch(from, to) },
+        { $group: { _id: null, revenueCents: { $sum: '$totals.totalCents' }, orderCount: { $sum: 1 } } },
+      ])
+      .exec();
+    return { revenueCents: row?.revenueCents ?? 0, orderCount: row?.orderCount ?? 0 };
+  },
+  countAwaitingFulfillment: (): Promise<number> =>
+    model.countDocuments({ status: 'paid', lines: { $elemMatch: { requiresShipping: true } } }).exec(),
   create: async (input: CreateOrderInput): Promise<OrderEntity> => {
     const doc = await model.create(input);
     return mapToOrderEntity(doc);
