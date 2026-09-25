@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import type { AvatarConfig, NotificationEntity, PageEntity } from '@inithium/db';
 import { Avatar, Box, Button, Divider, Icon, Text } from '../components';
@@ -70,6 +71,10 @@ export interface NavbarProps {
   // in a wide dialog (see the friends plugin's own app.tsx wiring for what it renders).
   readonly friendsHref?: string;
   readonly onOpenFriendsPanel?: () => void;
+  // Extra controls rendered just left of the notification bell / login button, for signed-in and
+  // anonymous visitors alike (e.g. the ecommerce plugin's cart button). The app host builds this
+  // from its navbar-action registry, so a plugin adds one without editing this component.
+  readonly actions?: ReactNode;
 }
 
 const DEFAULT_HEIGHT = 64;
@@ -296,6 +301,7 @@ export const Navbar = ({
   onChangePasswordClick,
   friendsHref,
   onOpenFriendsPanel,
+  actions,
 }: NavbarProps) => {
   const openAuthenticatedDrawer = () => {
     if (!currentUser) return;
@@ -350,6 +356,8 @@ export const Navbar = ({
               <NavLink key={page.id} page={page} onNavigate={() => undefined} />
             ))}
           </Box>
+
+          {actions}
 
           {currentUser ? (
             <>

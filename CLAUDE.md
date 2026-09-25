@@ -141,6 +141,12 @@ Every plugin inside `templates/plugins/[plugin-name]/` must include a `manifest.
 
 **Extending the CMS dashboard:** the same auto-discovery convention applies one level deeper, to the dashboard page's own widget slot system — `libs/cms/src/dashboard/widgets/*.widget.tsx`, default-exporting a `{ id, title?, order?, span?, Component }` descriptor (`DashboardWidget`). Any plugin that wants to surface something on the dashboard (a graph, a stat tile) drops in one uniquely-named `*.widget.tsx` file the same way an admin module does — no shared file edits, same `"requires": "cms"` gating. `span` (`1 | 2 | 3`, default `1`) is how many columns of the dashboard's responsive 3-column grid the widget occupies; the dashboard itself has zero knowledge of what any given widget renders.
 
+**Extending ecommerce:** the `ecommerce` plugin's cart and checkout never know what they're selling - every cart line points at a `sourceType`/`sourceId` resolved through a `PurchasableSource` adapter (`libs/ecommerce/src/purchasables/`). The plugin ships only the `product` source; any other purchasable collection (e.g. a client's classes) adds its own adapter to `purchasables/registry.ts` rather than duplicating itself into `products`. Client-specific sources stay in the client workspace, never in the plugin. See `templates/plugins/ecommerce/README.md`.
+
+**Navbar actions:** a plugin adds a control to the top bar (e.g. ecommerce's cart button) by dropping a uniquely-named `apps/web/src/app/navbarActions/*.navbar-action.tsx` file default-exporting a `{ id, order?, Component }` descriptor. `app.tsx` renders them into `Navbar`'s `actions` slot, so no plugin ever needs to own `Navbar.tsx`.
+
+**Raw-body routes:** `apps/api/src/main.ts` has a `pre-body-parser` anchor above `express.json()` for routes that must read the untouched request body (the ecommerce payment webhook verifies its signature against the raw bytes). Anything mounted after `express.json()` can never see the original body.
+
 ### Plugin Dependency Resolution & the Install Lockfile
 A plugin can declare two distinct kinds of dependency on another plugin, resolved by the CLI's `add`/`remove` commands against a generated `.inithium/plugins.lock.json` file inside the **consumer** workspace (never hand-edited by plugin authors, never part of this repo's own tree):
 
